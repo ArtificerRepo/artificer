@@ -13,10 +13,8 @@
       value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
     <property name="s-ramp.s-ramp-ui.war.path"
       value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
-    
-    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
+
+    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}"/>
 
     <property name="ejb-jms.password" value="artificer1!" />
 
@@ -35,9 +33,7 @@
     <property name="s-ramp.s-ramp-ui.war.path"
               value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
 
-    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
+    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}"/>
 
     <property name="ejb-jms.password" value="artificer1!" />
 
@@ -56,9 +52,7 @@
     <property name="s-ramp.s-ramp-ui.war.path"
               value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
 
-    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
+    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}"/>
 
     <property name="ejb-jms.password" value="artificer1!" />
 
@@ -77,9 +71,7 @@
     <property name="s-ramp.s-ramp-ui.war.path"
               value="${maven.dependency.org.artificer.artificer-ui-wildfly8.war.path}" />
 
-    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-wildfly-adapter-dist.zip.path}" />
+    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}"/>
 
     <property name="ejb-jms.password" value="artificer1!" />
 

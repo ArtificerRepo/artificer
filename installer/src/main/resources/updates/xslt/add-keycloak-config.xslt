@@ -23,7 +23,42 @@
     <xsl:element name="profile" namespace="{$currentNS}">
       <xsl:apply-templates select="./node()|./text()" />
       <!-- Subsystem Config -->
-      <xsl:element name="subsystem" namespace="urn:jboss:domain:keycloak:1.0"/>
+      <xsl:element name="subsystem" namespace="urn:jboss:domain:keycloak:1.0">
+        <xsl:element name="auth-server" namespace="urn:jboss:domain:keycloak:1.0">
+          <xsl:attribute name="name">main-auth-server</xsl:attribute>
+          <xsl:element name="enabled" namespace="urn:jboss:domain:keycloak:1.0">true</xsl:element>
+          <xsl:element name="web-context" namespace="urn:jboss:domain:keycloak:1.0">auth</xsl:element>
+        </xsl:element>
+
+        <xsl:element name="realm" namespace="urn:jboss:domain:keycloak:1.0">
+          <xsl:attribute name="name">artificer</xsl:attribute>
+          <xsl:element name="realm-public-key" namespace="urn:jboss:domain:keycloak:1.0">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB</xsl:element>
+          <xsl:element name="auth-server-url" namespace="urn:jboss:domain:keycloak:1.0">/auth</xsl:element>
+          <xsl:element name="ssl-required" namespace="urn:jboss:domain:keycloak:1.0">none</xsl:element>
+          <xsl:element name="principal-attribute" namespace="urn:jboss:domain:keycloak:1.0">preferred_username</xsl:element>
+        </xsl:element>
+
+        <xsl:element name="secure-deployment" namespace="urn:jboss:domain:keycloak:1.0">
+          <xsl:attribute name="name">artificer-ui.war</xsl:attribute>
+          <xsl:element name="realm" namespace="urn:jboss:domain:keycloak:1.0">artificer</xsl:element>
+          <xsl:element name="resource" namespace="urn:jboss:domain:keycloak:1.0">artificer-ui</xsl:element>
+          <xsl:element name="credential" namespace="urn:jboss:domain:keycloak:1.0">
+            <xsl:attribute name="name">secret</xsl:attribute>
+            2b0ad840-ab4d-11e4-bcd8-0800200c9a66
+          </xsl:element>
+        </xsl:element>
+
+        <xsl:element name="secure-deployment" namespace="urn:jboss:domain:keycloak:1.0">
+          <xsl:attribute name="name">artificer-server.war</xsl:attribute>
+          <xsl:element name="realm" namespace="urn:jboss:domain:keycloak:1.0">artificer</xsl:element>
+          <xsl:element name="resource" namespace="urn:jboss:domain:keycloak:1.0">artificer-server</xsl:element>
+          <xsl:element name="credential" namespace="urn:jboss:domain:keycloak:1.0">
+            <xsl:attribute name="name">secret</xsl:attribute>
+            6d274880-ab4d-11e4-bcd8-0800200c9a66
+          </xsl:element>
+          <xsl:element name="enable-basic-auth" namespace="urn:jboss:domain:keycloak:1.0">true</xsl:element>
+        </xsl:element>
+      </xsl:element>
     </xsl:element>
   </xsl:template>
 

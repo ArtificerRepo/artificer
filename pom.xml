@@ -107,7 +107,7 @@
     <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
     <version.org.overlord.overlord-commons>3.1.0-SNAPSHOT</version.org.overlord.overlord-commons>
     <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
-    <version.org.keycloak>1.1.0.Final</version.org.keycloak>
+    <version.org.keycloak>1.2.0.Final</version.org.keycloak>
     <version.org.jboss.aesh>0.59</version.org.jboss.aesh>
 
     <!-- BOM Overrides -->
@@ -641,19 +641,7 @@
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-war-dist-all</artifactId>
-        <version>${version.org.keycloak}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-wildfly-adapter-dist</artifactId>
-        <version>${version.org.keycloak}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-eap6-adapter-dist</artifactId>
+        <artifactId>keycloak-server-overlay</artifactId>
         <version>${version.org.keycloak}</version>
         <type>zip</type>
       </dependency>

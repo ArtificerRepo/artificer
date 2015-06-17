@@ -50,35 +50,18 @@
       <dependencies>
         <dependency>
           <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
+          <artifactId>keycloak-server-overlay</artifactId>
           <type>zip</type>
           <exclusions>
             <exclusion>
               <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
+              <artifactId>keycloak-jboss-modules</artifactId>
             </exclusion>
             <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-dist</artifactId>
             </exclusion>
           </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-wildfly-adapter-dist</artifactId>
-          <type>zip</type>
         </dependency>
         <dependency>
           <groupId>org.overlord</groupId>
@@ -126,9 +109,7 @@
                       <include name="*.sh" />
                     </chmod>
 
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-wildfly-adapter-dist.zip.path}" />
+                    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}" />
 
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
@@ -153,35 +134,18 @@
       <dependencies>
         <dependency>
           <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
+          <artifactId>keycloak-server-overlay</artifactId>
           <type>zip</type>
           <exclusions>
             <exclusion>
               <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
+              <artifactId>keycloak-jboss-modules</artifactId>
             </exclusion>
             <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-dist</artifactId>
             </exclusion>
           </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
         </dependency>
         <dependency>
           <groupId>org.overlord</groupId>
@@ -229,9 +193,7 @@
                       <include name="*.sh" />
                     </chmod>
 
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
+                    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}" />
 
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
@@ -256,35 +218,18 @@
       <dependencies>
         <dependency>
           <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
+          <artifactId>keycloak-server-overlay</artifactId>
           <type>zip</type>
           <exclusions>
             <exclusion>
               <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
+              <artifactId>keycloak-jboss-modules</artifactId>
             </exclusion>
             <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-dist</artifactId>
             </exclusion>
           </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
         </dependency>
         <dependency>
           <groupId>org.overlord</groupId>
@@ -332,9 +277,7 @@
                       <include name="*.sh" />
                     </chmod>
 
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
+                    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}" />
 
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
