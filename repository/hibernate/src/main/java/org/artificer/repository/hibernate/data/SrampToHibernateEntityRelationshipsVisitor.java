@@ -21,7 +21,7 @@ import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.artificer.repository.hibernate.HibernateRelationshipFactory;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerRelationship;
-import org.artificer.repository.hibernate.entity.ArtificerRelationshipType;
+import org.artificer.common.query.RelationshipType;
 import org.artificer.repository.hibernate.entity.ArtificerTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
@@ -120,7 +120,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
         super.visitWsdlDerived(artifact);
         try {
-            setRelationships("extension", ArtificerRelationshipType.DERIVED, artifact.getExtension());
+            setRelationships("extension", RelationshipType.DERIVED, artifact.getExtension());
         } catch (Exception e) {
             error = e;
         }
@@ -134,7 +134,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (DocumentArtifactTarget documentation : artifact.getDocumentation()) {
                 targetTypes.add(documentation.getArtifactType().toString());
             }
-            setRelationships("documentation", ArtificerRelationshipType.MODELED, artifact.getDocumentation());
+            setRelationships("documentation", RelationshipType.MODELED, artifact.getDocumentation());
         } catch (Exception e) {
             error = e;
         }
@@ -148,7 +148,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (DocumentArtifactTarget documentation : artifact.getDocumentation()) {
                 targetTypes.add(documentation.getArtifactType().toString());
             }
-            setRelationships("documentation", ArtificerRelationshipType.MODELED, artifact.getDocumentation());
+            setRelationships("documentation", RelationshipType.MODELED, artifact.getDocumentation());
         } catch (Exception e) {
             error = e;
         }
@@ -162,27 +162,27 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (ElementTarget target : artifact.getRepresents()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("represents", ArtificerRelationshipType.MODELED, artifact.getRepresents());
+            setRelationships("represents", RelationshipType.MODELED, artifact.getRepresents());
 
             targetTypes = new ArrayList<String>();
             for (ElementTarget target : artifact.getUses()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("uses", ArtificerRelationshipType.MODELED, artifact.getUses());
+            setRelationships("uses", RelationshipType.MODELED, artifact.getUses());
 
             targetTypes = new ArrayList<String>();
             for (ServiceTarget target : artifact.getPerforms()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("performs", ArtificerRelationshipType.MODELED, artifact.getPerforms());
+            setRelationships("performs", RelationshipType.MODELED, artifact.getPerforms());
 
             if (artifact.getDirectsOrchestration() != null) {
-                setRelationship("directsOrchestration", ArtificerRelationshipType.MODELED,
+                setRelationship("directsOrchestration", RelationshipType.MODELED,
                         artifact.getDirectsOrchestration());
             }
 
             if (artifact.getDirectsOrchestrationProcess() != null) {
-                setRelationship("directsOrchestrationProcess", ArtificerRelationshipType.MODELED,
+                setRelationship("directsOrchestrationProcess", RelationshipType.MODELED,
                         artifact.getDirectsOrchestrationProcess());
             }
 
@@ -190,13 +190,13 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (EventTarget target : artifact.getGenerates()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("generates", ArtificerRelationshipType.MODELED, artifact.getGenerates());
+            setRelationships("generates", RelationshipType.MODELED, artifact.getGenerates());
 
             targetTypes = new ArrayList<String>();
             for (EventTarget target : artifact.getRespondsTo()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("respondsTo", ArtificerRelationshipType.MODELED, artifact.getRespondsTo());
+            setRelationships("respondsTo", RelationshipType.MODELED, artifact.getRespondsTo());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -210,13 +210,13 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (TaskTarget target : artifact.getDoes()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("does", ArtificerRelationshipType.MODELED, artifact.getDoes());
+            setRelationships("does", RelationshipType.MODELED, artifact.getDoes());
 
             targetTypes = new ArrayList<String>();
             for (PolicyTarget target : artifact.getSetsPolicy()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("setsPolicy", ArtificerRelationshipType.MODELED, artifact.getSetsPolicy());
+            setRelationships("setsPolicy", RelationshipType.MODELED, artifact.getSetsPolicy());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -230,7 +230,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     private void updateGenericRelationships(BaseArtifactType artifact) throws Exception {
         for (Relationship relationship : artifact.getRelationship()) {
             if (relationship.getRelationshipTarget().size() > 0) {
-                setRelationships(relationship.getRelationshipType(), ArtificerRelationshipType.GENERIC,
+                setRelationships(relationship.getRelationshipType(), RelationshipType.GENERIC,
                         relationship.getRelationshipTarget(), relationship.getOtherAttributes());
             }
         }
@@ -243,9 +243,9 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(XsdDocument artifact) {
         super.visit(artifact);
         try {
-            setRelationships("importedXsds", ArtificerRelationshipType.MODELED, artifact.getImportedXsds());
-            setRelationships("includedXsds", ArtificerRelationshipType.MODELED, artifact.getIncludedXsds());
-            setRelationships("redefinedXsds", ArtificerRelationshipType.MODELED, artifact.getRedefinedXsds());
+            setRelationships("importedXsds", RelationshipType.MODELED, artifact.getImportedXsds());
+            setRelationships("includedXsds", RelationshipType.MODELED, artifact.getIncludedXsds());
+            setRelationships("redefinedXsds", RelationshipType.MODELED, artifact.getRedefinedXsds());
         } catch (Exception e) {
             error = e;
         }
@@ -258,10 +258,10 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(WsdlDocument artifact) {
         super.visit(artifact);
         try {
-            setRelationships("importedXsds", ArtificerRelationshipType.MODELED, artifact.getImportedXsds());
-            setRelationships("includedXsds", ArtificerRelationshipType.MODELED, artifact.getIncludedXsds());
-            setRelationships("redefinedXsds", ArtificerRelationshipType.MODELED, artifact.getRedefinedXsds());
-            setRelationships("importedWsdls", ArtificerRelationshipType.MODELED, artifact.getImportedWsdls());
+            setRelationships("importedXsds", RelationshipType.MODELED, artifact.getImportedXsds());
+            setRelationships("includedXsds", RelationshipType.MODELED, artifact.getIncludedXsds());
+            setRelationships("redefinedXsds", RelationshipType.MODELED, artifact.getRedefinedXsds());
+            setRelationships("importedWsdls", RelationshipType.MODELED, artifact.getImportedWsdls());
         } catch (Exception e) {
             error = e;
         }
@@ -275,7 +275,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(Message artifact) {
         super.visit(artifact);
         try {
-            setRelationships("part", ArtificerRelationshipType.DERIVED, artifact.getPart());
+            setRelationships("part", RelationshipType.DERIVED, artifact.getPart());
         } catch (Exception e) {
             error = e;
         }
@@ -289,9 +289,9 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
         super.visit(artifact);
         try {
             if (artifact.getElement() != null) {
-                setRelationship("element", ArtificerRelationshipType.DERIVED, artifact.getElement());
+                setRelationship("element", RelationshipType.DERIVED, artifact.getElement());
             } else if (artifact.getType() != null) {
-                setRelationship("type", ArtificerRelationshipType.DERIVED, artifact.getType());
+                setRelationship("type", RelationshipType.DERIVED, artifact.getType());
             }
         } catch (Exception e) {
             error = e;
@@ -305,7 +305,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(PortType artifact) {
         super.visit(artifact);
         try {
-            setRelationships("operation", ArtificerRelationshipType.DERIVED, artifact.getOperation());
+            setRelationships("operation", RelationshipType.DERIVED, artifact.getOperation());
         } catch (Exception e) {
             error = e;
         }
@@ -318,9 +318,9 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(Operation artifact) {
         super.visit(artifact);
         try {
-            setRelationship("input", ArtificerRelationshipType.DERIVED, artifact.getInput());
-            setRelationship("output", ArtificerRelationshipType.DERIVED, artifact.getOutput());
-            setRelationships("fault", ArtificerRelationshipType.DERIVED, artifact.getFault());
+            setRelationship("input", RelationshipType.DERIVED, artifact.getInput());
+            setRelationship("output", RelationshipType.DERIVED, artifact.getOutput());
+            setRelationships("fault", RelationshipType.DERIVED, artifact.getFault());
         } catch (Exception e) {
             error = e;
         }
@@ -333,7 +333,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(OperationInput artifact) {
         super.visit(artifact);
         try {
-            setRelationship("message", ArtificerRelationshipType.DERIVED, artifact.getMessage());
+            setRelationship("message", RelationshipType.DERIVED, artifact.getMessage());
         } catch (Exception e) {
             error = e;
         }
@@ -346,7 +346,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(OperationOutput artifact) {
         super.visit(artifact);
         try {
-            setRelationship("message", ArtificerRelationshipType.DERIVED, artifact.getMessage());
+            setRelationship("message", RelationshipType.DERIVED, artifact.getMessage());
         } catch (Exception e) {
             error = e;
         }
@@ -359,7 +359,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(Fault artifact) {
         super.visit(artifact);
         try {
-            setRelationship("message", ArtificerRelationshipType.DERIVED, artifact.getMessage());
+            setRelationship("message", RelationshipType.DERIVED, artifact.getMessage());
         } catch (Exception e) {
             error = e;
         }
@@ -372,8 +372,8 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(Binding artifact) {
         super.visit(artifact);
         try {
-            setRelationships("bindingOperation", ArtificerRelationshipType.DERIVED, artifact.getBindingOperation());
-            setRelationship("portType", ArtificerRelationshipType.DERIVED, artifact.getPortType());
+            setRelationships("bindingOperation", RelationshipType.DERIVED, artifact.getBindingOperation());
+            setRelationship("portType", RelationshipType.DERIVED, artifact.getPortType());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -386,10 +386,10 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(BindingOperation artifact) {
         super.visit(artifact);
         try {
-            setRelationship("input", ArtificerRelationshipType.DERIVED, artifact.getInput());
-            setRelationship("output", ArtificerRelationshipType.DERIVED, artifact.getOutput());
-            setRelationships("fault", ArtificerRelationshipType.DERIVED, artifact.getFault());
-            setRelationship("operation", ArtificerRelationshipType.DERIVED, artifact.getOperation());
+            setRelationship("input", RelationshipType.DERIVED, artifact.getInput());
+            setRelationship("output", RelationshipType.DERIVED, artifact.getOutput());
+            setRelationships("fault", RelationshipType.DERIVED, artifact.getFault());
+            setRelationship("operation", RelationshipType.DERIVED, artifact.getOperation());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -402,7 +402,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(WsdlService artifact) {
         super.visit(artifact);
         try {
-            setRelationships("port", ArtificerRelationshipType.DERIVED, artifact.getPort());
+            setRelationships("port", RelationshipType.DERIVED, artifact.getPort());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -415,7 +415,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     public void visit(Port artifact) {
         super.visit(artifact);
         try {
-            setRelationship("binding", ArtificerRelationshipType.DERIVED, artifact.getBinding());
+            setRelationship("binding", RelationshipType.DERIVED, artifact.getBinding());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -426,7 +426,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
         super.visit(artifact);
         try {
             if (artifact.getEndpointDefinedBy() != null) {
-                setRelationship("endpointDefinedBy", ArtificerRelationshipType.MODELED, artifact.getEndpointDefinedBy());
+                setRelationship("endpointDefinedBy", RelationshipType.MODELED, artifact.getEndpointDefinedBy());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -441,13 +441,13 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (BaseArtifactTarget target : artifact.getUses()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("uses", ArtificerRelationshipType.MODELED, artifact.getUses());
+            setRelationships("uses", RelationshipType.MODELED, artifact.getUses());
 
             targetTypes = new ArrayList<String>();
             for (BaseArtifactTarget target : artifact.getDescribedBy()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("describedBy", ArtificerRelationshipType.MODELED, artifact.getDescribedBy());
+            setRelationships("describedBy", RelationshipType.MODELED, artifact.getDescribedBy());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -458,7 +458,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
         super.visit(artifact);
         try {
             if (artifact.getOperationDefinedBy() != null) {
-                setRelationship("operationDefinedBy", ArtificerRelationshipType.MODELED, artifact.getOperationDefinedBy());
+                setRelationship("operationDefinedBy", RelationshipType.MODELED, artifact.getOperationDefinedBy());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -473,7 +473,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (PolicySubjectTarget target : artifact.getAppliesTo()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("appliesTo", ArtificerRelationshipType.MODELED, artifact.getAppliesTo());
+            setRelationships("appliesTo", RelationshipType.MODELED, artifact.getAppliesTo());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -484,30 +484,30 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
         super.visit(artifact);
         try {
             if (artifact.getInterfaceDefinedBy() != null) {
-                setRelationship("interfaceDefinedBy", ArtificerRelationshipType.MODELED, artifact.getInterfaceDefinedBy());
+                setRelationship("interfaceDefinedBy", RelationshipType.MODELED, artifact.getInterfaceDefinedBy());
             }
 
             if (artifact.getHasOperation() != null) {
-                setRelationship("hasOperation", ArtificerRelationshipType.MODELED, artifact.getHasOperation());
+                setRelationship("hasOperation", RelationshipType.MODELED, artifact.getHasOperation());
             }
 
             List<String> targetTypes = new ArrayList<String>();
             for (InformationTypeTarget target : artifact.getHasOutput()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("hasOutput", ArtificerRelationshipType.MODELED, artifact.getHasOutput());
+            setRelationships("hasOutput", RelationshipType.MODELED, artifact.getHasOutput());
 
             targetTypes = new ArrayList<String>();
             for (InformationTypeTarget target : artifact.getHasInput()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("hasInput", ArtificerRelationshipType.MODELED, artifact.getHasInput());
+            setRelationships("hasInput", RelationshipType.MODELED, artifact.getHasInput());
 
             targetTypes = new ArrayList<String>();
             for (ServiceTarget target : artifact.getIsInterfaceOf()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("isInterfaceOf", ArtificerRelationshipType.MODELED, artifact.getIsInterfaceOf());
+            setRelationships("isInterfaceOf", RelationshipType.MODELED, artifact.getIsInterfaceOf());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -521,13 +521,13 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (ActorTarget target : artifact.getInvolvesParty()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("involvesParty", ArtificerRelationshipType.MODELED, artifact.getInvolvesParty());
+            setRelationships("involvesParty", RelationshipType.MODELED, artifact.getInvolvesParty());
 
             targetTypes = new ArrayList<String>();
             for (EffectTarget target : artifact.getSpecifies()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("specifies", ArtificerRelationshipType.MODELED, artifact.getSpecifies());
+            setRelationships("specifies", RelationshipType.MODELED, artifact.getSpecifies());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -541,7 +541,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (ServiceImplementationModelTarget target : artifact.getProvides()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("provides", ArtificerRelationshipType.MODELED, artifact.getProvides());
+            setRelationships("provides", RelationshipType.MODELED, artifact.getProvides());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -555,16 +555,16 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
             for (ServiceContractTarget target : artifact.getHasContract()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("hasContract", ArtificerRelationshipType.MODELED, artifact.getHasContract());
+            setRelationships("hasContract", RelationshipType.MODELED, artifact.getHasContract());
 
             targetTypes = new ArrayList<String>();
             for (ServiceInterfaceTarget target : artifact.getHasInterface()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
-            setRelationships("hasInterface", ArtificerRelationshipType.MODELED, artifact.getHasInterface());
+            setRelationships("hasInterface", RelationshipType.MODELED, artifact.getHasInterface());
 
             if (artifact.getHasInstance() != null) {
-                setRelationship("hasInstance", ArtificerRelationshipType.MODELED, artifact.getHasInstance());
+                setRelationship("hasInstance", RelationshipType.MODELED, artifact.getHasInstance());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -572,7 +572,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     }
 
     // generic, derived
-    private void setRelationship(String relationshipName, ArtificerRelationshipType relationshipType,
+    private void setRelationship(String relationshipName, RelationshipType relationshipType,
             Target target) throws Exception {
         if (target != null && StringUtils.isNotBlank(target.getValue())) {
             ArtificerRelationship artificerRelationship = createRelationship(relationshipName, relationshipType,
@@ -584,7 +584,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
         }
     }
 
-    private void setRelationships(String relationshipName, ArtificerRelationshipType relationshipType,
+    private void setRelationships(String relationshipName, RelationshipType relationshipType,
             List<? extends Target> targets, Map<QName, String> relationshipOtherAttributes) throws Exception {
         if (targets.size() > 0) {
             ArtificerRelationship artificerRelationship = createRelationship(relationshipName, relationshipType,
@@ -602,13 +602,13 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
         }
     }
 
-    private void setRelationships(String relationshipName, ArtificerRelationshipType relationshipType,
+    private void setRelationships(String relationshipName, RelationshipType relationshipType,
             List<? extends Target> targets) throws Exception {
         setRelationships(relationshipName, relationshipType, targets, Collections.EMPTY_MAP);
     }
 
     private ArtificerRelationship createRelationship(String relationshipName,
-            ArtificerRelationshipType relationshipType, Map<QName, String> relationshipOtherAttributes)
+            RelationshipType relationshipType, Map<QName, String> relationshipOtherAttributes)
             throws Exception {
         ArtificerRelationship artificerRelationship = new ArtificerRelationship();
         artificerRelationship.setName(relationshipName);

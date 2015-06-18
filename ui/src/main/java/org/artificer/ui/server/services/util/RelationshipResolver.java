@@ -16,7 +16,7 @@
 package org.artificer.ui.server.services.util;
 
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConstants;
@@ -90,10 +90,10 @@ public class RelationshipResolver {
                 String generic = (String) sourceArtifactSummary.getExtensionAttribute(
                         ArtificerConstants.ARTIFICER_RELATIONSHIP_GENERIC_QNAME);
                 bean.setRelationshipGeneric(Boolean.valueOf(generic));
-                bean.setTargetDerived(sourceArtifactSummary.getType().isDerived());
+                bean.setTargetDerived(sourceArtifactSummary.getArtifactType().isDerived());
                 bean.setTargetName(sourceArtifactSummary.getName());
                 bean.setTargetUuid(sourceArtifactSummary.getUuid());
-                bean.setTargetType(sourceArtifactSummary.getType().getType());
+                bean.setTargetType(sourceArtifactSummary.getType());
                 indexedRelationships.addReverseRelationship(bean);
             }
         } catch (Exception e) {

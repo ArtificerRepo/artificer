@@ -20,12 +20,12 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.common.ontology.ArtificerOntologyClass;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 
 import java.io.InputStream;
@@ -50,7 +50,7 @@ public class ClassificationQueryTest extends AbstractNoAuditingPersistenceTest {
 
 		// Verify that the docs are available
 		ArtificerQuery query = queryManager.createQuery("/s-ramp/core/Document");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(4, artifactSet.getTotalSize());
 
@@ -103,11 +103,11 @@ public class ClassificationQueryTest extends AbstractNoAuditingPersistenceTest {
         assertResults(artifactSet, doc, docGermany);
 	}
 
-    private void assertResults(PagedResult<BaseArtifactType> artifactSet, Document... docs) throws Exception {
+    private void assertResults(PagedResult<ArtifactSummary> artifactSet, Document... docs) throws Exception {
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(docs.length, artifactSet.getTotalSize());
-        List<BaseArtifactType> artifacts = artifactSet.getResults();
-        for (BaseArtifactType artifact : artifacts) {
+        List<ArtifactSummary> artifacts = artifactSet.getResults();
+        for (ArtifactSummary artifact : artifacts) {
             boolean found = false;
             for (Document doc : docs) {
                 if (doc.getUuid().equals(artifact.getUuid())) {

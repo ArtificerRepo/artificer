@@ -15,6 +15,9 @@
  */
 package org.artificer.integration.artifactbuilder;
 
+import org.artificer.common.query.ArtifactSummary;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,9 +25,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 
 /**
  * Provides a {@link RelationshipSource} that resolves using a simple criteria-based repository query.  Sub-classes
@@ -68,10 +68,10 @@ public abstract class CriteriaQueryRelationshipSource implements RelationshipSou
         
         Map<String, String> criteria = new HashMap<String, String>();
         addCriteria(criteria);
-        List<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
+        List<ArtifactSummary> artifacts = new ArrayList<>();
         
         for (String type : types) {
-            Collection<BaseArtifactType> results = context.findArtifacts(model, type, criteria);
+            Collection<ArtifactSummary> results = context.findArtifacts(model, type, criteria);
             artifacts.addAll(results);
         }
         
@@ -81,7 +81,7 @@ public abstract class CriteriaQueryRelationshipSource implements RelationshipSou
         Collections.sort(artifacts, new CreationDateComparator());
         
         if (!artifacts.isEmpty()) {
-            BaseArtifactType artifact = artifacts.iterator().next();
+            ArtifactSummary artifact = artifacts.iterator().next();
             target.setValue(artifact.getUuid());
         } else {
             notFound();
@@ -100,10 +100,10 @@ public abstract class CriteriaQueryRelationshipSource implements RelationshipSou
         
     }
     
-    private static class CreationDateComparator implements Comparator<BaseArtifactType> {
-        public int compare(BaseArtifactType o1, BaseArtifactType o2) {
+    private static class CreationDateComparator implements Comparator<ArtifactSummary> {
+        public int compare(ArtifactSummary o1, ArtifactSummary o2) {
             // newest first
-            return o2.getCreatedTimestamp().compare(o1.getCreatedTimestamp());
+            return o2.getCreatedTimestamp().compareTo(o1.getCreatedTimestamp());
         }
     }
 }

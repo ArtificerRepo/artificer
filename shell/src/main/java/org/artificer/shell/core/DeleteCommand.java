@@ -17,7 +17,7 @@ package org.artificer.shell.core;
 
 import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.common.ArtifactType;
 import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
@@ -64,7 +64,7 @@ public class DeleteCommand extends AbstractCommand {
 			artifactName = artifact.getName();
 		} else if (StringUtils.isNotBlank(feedIndex)) {
 			ArtifactSummary artifactSummary = artifactSummaryFromFeed(commandInvocation, feedIndex);
-			artifactType = artifactSummary.getType();
+			artifactType = artifactSummary.getArtifactType();
 			artifactUuid = artifactSummary.getUuid();
 			artifactName = artifactSummary.getName();
 		} else if (hasCurrentArtifact(commandInvocation)) {

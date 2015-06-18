@@ -33,7 +33,7 @@ import org.artificer.client.auth.AuthenticationProvider;
 import org.artificer.client.auth.BasicAuthenticationProvider;
 import org.artificer.client.i18n.Messages;
 import org.artificer.client.ontology.OntologySummary;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConstants;
@@ -256,8 +256,7 @@ public class ArtificerAtomApiClient {
             QueryResultSet uuidRS = buildQuery("/s-ramp[@uuid = ?]").parameter(artifactUuid).count(1).query();
             if (uuidRS.size() == 0)
                 throw new ArtificerClientException(Messages.i18n.format("ARTIFACT_NOT_FOUND", artifactUuid));
-            ArtifactType artifactType = uuidRS.iterator().next().getType();
-            return getArtifactMetaData(artifactType, artifactUuid);
+            return getArtifactMetaData(uuidRS.iterator().next());
         } catch (ArtificerServerException e) {
             throw e;
         } catch (Throwable e) {
@@ -274,7 +273,7 @@ public class ArtificerAtomApiClient {
      */
     public BaseArtifactType getArtifactMetaData(ArtifactSummary artifact) throws ArtificerClientException,
 			ArtificerServerException {
-        return getArtifactMetaData(artifact.getType(), artifact.getUuid());
+        return getArtifactMetaData(artifact.getArtifactType(), artifact.getUuid());
     }
 
 	/**
@@ -346,7 +345,7 @@ public class ArtificerAtomApiClient {
      * @throws ArtificerServerException
      */
     public InputStream getArtifactContent(ArtifactSummary artifact) throws ArtificerClientException, ArtificerServerException {
-        return getArtifactContent(artifact.getType(), artifact.getUuid());
+        return getArtifactContent(artifact.getArtifactType(), artifact.getUuid());
     }
 
 

@@ -16,6 +16,7 @@
 package org.artificer.repository.test;
 
 import org.artificer.common.ArtifactContent;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
@@ -50,7 +51,7 @@ public class ExtendedArtifactDeriverTest extends AbstractNoAuditingPersistenceTe
 
         // Four derived ActingCredit artifacts should have been created.
         ArtificerQuery query = queryManager.createQuery("/s-ramp/ext/ActingCredit");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertEquals(4, artifactSet.getTotalSize());
 
         // Four total derived artifacts should have been created.

@@ -18,6 +18,7 @@ package org.artificer.repository.test;
 import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
@@ -48,16 +49,15 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
 
         // Now query for it
         ArtificerQuery query = queryManager.createQuery("/s-ramp/core/XmlDocument");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
 
         Assert.assertEquals(1, artifactSet.getTotalSize());
-        BaseArtifactType found = artifactSet.getResults().get(0);
+        ArtifactSummary found = artifactSet.getResults().get(0);
         Assert.assertNotNull("Expected artifact not found in artifact set.", found);
         Assert.assertEquals(artifact.getUuid(), found.getUuid());
         Assert.assertEquals(artifact.getName(), found.getName());
         Assert.assertEquals(artifact.getDescription(), found.getDescription());
-        Assert.assertEquals(artifact.getLastModifiedBy(), found.getLastModifiedBy());
     }
 
     /**
@@ -92,7 +92,7 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
         persistenceManager.printArtifactGraph(artifact1.getUuid(), ArtifactType.XmlDocument());
         ArtificerQuery query = queryManager.createQuery("/s-ramp/core/XmlDocument[@prop1 = ?]");
         query.setString(uniquePropVal1);
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.getTotalSize());
 
@@ -186,7 +186,7 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
         persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument());
         ArtificerQuery query = queryManager.createQuery("/s-ramp/core/XmlDocument[@prop1 = ?]");
         query.setString("true");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.getTotalSize());
 
@@ -228,7 +228,7 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
         // full-text, using metadata
         ArtificerQuery query = queryManager.createQuery("/s-ramp[xp2:matches(., ?)]");
         query.setString("fizz");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(3, artifactSet.getTotalSize());
         query = queryManager.createQuery("/s-ramp[xp2:matches(., ?)]");

@@ -18,7 +18,7 @@ package org.artificer.demos.classifications;
 import org.apache.commons.io.IOUtils;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.ontology.OntologySummary;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;

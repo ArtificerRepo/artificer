@@ -15,9 +15,9 @@
  */
 package org.artificer.server.core.api;
 
-import org.artificer.common.ReverseRelationship;
+import org.artificer.common.query.ReverseRelationship;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.query.PagedResult;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
 import java.util.List;
@@ -27,11 +27,11 @@ import java.util.List;
  */
 public interface QueryService extends AbstractService {
 
-    public PagedResult<BaseArtifactType> query(String query) throws Exception;
+    public PagedResult<ArtifactSummary> query(String query) throws Exception;
 
-    public PagedResult<BaseArtifactType> query(String query, String orderBy, Boolean ascending) throws Exception;
+    public PagedResult<ArtifactSummary> query(String query, String orderBy, Boolean ascending) throws Exception;
 
-    public PagedResult<BaseArtifactType> query(String query, Integer startPage, Integer startIndex, Integer count,
+    public PagedResult<ArtifactSummary> query(String query, Integer startPage, Integer startIndex, Integer count,
             String orderBy, Boolean ascending) throws Exception;
 
     public StoredQuery createStoredQuery(StoredQuery storedQuery) throws Exception;

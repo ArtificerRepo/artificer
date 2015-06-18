@@ -15,6 +15,7 @@
  */
 package org.artificer.repository.hibernate.entity;
 
+import org.artificer.common.query.RelationshipType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
@@ -50,7 +51,7 @@ public class ArtificerRelationship implements Serializable {
 
     private String name;
 
-    private ArtificerRelationshipType type;
+    private RelationshipType type;
 
     private List<ArtificerTarget> targets = new ArrayList<>();
 
@@ -76,11 +77,11 @@ public class ArtificerRelationship implements Serializable {
         this.name = name;
     }
 
-    public ArtificerRelationshipType getType() {
+    public RelationshipType getType() {
         return type;
     }
 
-    public void setType(ArtificerRelationshipType type) {
+    public void setType(RelationshipType type) {
         this.type = type;
     }
 

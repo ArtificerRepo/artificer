@@ -17,7 +17,7 @@ package org.artificer.demos.derived;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
@@ -100,7 +100,7 @@ public class DerivedArtifactsDemo {
 		if (!(resultSet.size() == 30)) {
 			System.out.println("Didn't find the right number of derived artifacts!  " + resultSet.size());
 			for (ArtifactSummary as : resultSet) {
-				System.out.println("  - " + as.getName() + " (" + as.getType().getType() + ")");
+				System.out.println("  - " + as.getName() + " (" + as.getType() + ")");
 			}
 			System.exit(1);
 		} else {
