@@ -16,7 +16,7 @@
 package org.artificer.demos.endtoend.impactanalysis;
 
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactTypeEnum;
 import org.artificer.common.ArtificerConstants;
@@ -157,8 +157,8 @@ public class ImpactAnalysisDemo {
             String relationshipType = (String) resultSummary.getExtensionAttribute(
                     ArtificerConstants.ARTIFICER_RELATIONSHIP_TYPE_QNAME);
             System.out.println("*** Result: '" + relationshipType + "' <-- " + resultSummary.getName()
-                    + " (" + resultSummary.getType().getType() + ")");
-            if (resultSummary.getType().getArtifactType().equals(ArtifactTypeEnum.WsdlService)) {
+                    + " (" + resultSummary.getType() + ")");
+            if (resultSummary.getType().equals(ArtifactTypeEnum.WsdlService.getType())) {
                 // Found the service
                 nextUuid = resultSummary.getUuid();
             }
@@ -199,7 +199,7 @@ public class ImpactAnalysisDemo {
             String relationshipType = (String) resultSummary.getExtensionAttribute(
                     ArtificerConstants.ARTIFICER_RELATIONSHIP_TYPE_QNAME);
             System.out.println("*** Result: '" + relationshipType + "' <-- " + resultSummary.getName()
-                    + " (" + resultSummary.getType().getType() + ")");
+                    + " (" + resultSummary.getType() + ")");
             if (desiredRelationshipType != null && desiredRelationshipType.equals(relationshipType)) {
                 return resultSummary.getUuid();
             }

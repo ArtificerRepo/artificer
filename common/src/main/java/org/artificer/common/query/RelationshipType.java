@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.artificer.repository.hibernate.entity;
+package org.artificer.common.query;
 
 /**
  * @author Brett Meyer.
  */
-public enum ArtificerRelationshipType {
+public enum RelationshipType {
 
     GENERIC, MODELED, DERIVED
 }

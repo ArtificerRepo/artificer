@@ -15,16 +15,17 @@
  */
 package org.artificer.server.atom.services;
 
-import org.artificer.common.MediaType;
+import org.artificer.atom.ArtificerAtomUtils;
 import org.artificer.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ReverseRelationship;
-import org.artificer.common.visitors.ArtifactVisitorHelper;
+import org.artificer.common.MediaType;
+import org.artificer.common.query.ArtifactSummary;
+import org.artificer.common.query.RelationshipType;
+import org.artificer.common.query.ReverseRelationship;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Person;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -63,14 +64,13 @@ public class ArtificerResource extends AbstractFeedResource {
         ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, null);
         List<ReverseRelationship> relationships = queryService.reverseRelationships(uuid);
         for (ReverseRelationship relationship : relationships) {
-            BaseArtifactType artifact = relationship.getSourceArtifact();
-            ArtifactVisitorHelper.visitArtifact(visitor, artifact);
-            Entry entry = visitor.getAtomEntry();
+            ArtifactSummary artifact = relationship.getSourceArtifact();
+            Entry entry = ArtificerAtomUtils.wrapArtifactSummary(artifact);
             // Set the relationship metadata
             entry.getExtensionAttributes().put(ArtificerConstants.ARTIFICER_RELATIONSHIP_TYPE_QNAME,
-                    String.valueOf(relationship.getRelationshipType()));
+                    relationship.getName());
             entry.getExtensionAttributes().put(ArtificerConstants.ARTIFICER_RELATIONSHIP_GENERIC_QNAME,
-                    String.valueOf(relationship.isGeneric()));
+                    String.valueOf(relationship.getType().equals(RelationshipType.GENERIC)));
             feed.getEntries().add(entry);
             visitor.reset();
         }

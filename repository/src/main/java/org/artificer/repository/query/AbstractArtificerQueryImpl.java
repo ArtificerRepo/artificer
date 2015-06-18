@@ -17,12 +17,12 @@ package org.artificer.repository.query;
 
 import org.artificer.common.ArtificerException;
 import org.artificer.common.error.ArtificerUserException;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.common.query.xpath.XPathParser;
 import org.artificer.common.query.xpath.ast.Query;
 import org.artificer.repository.i18n.Messages;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 	}
 
 	@Override
-	public final PagedResult<BaseArtifactType> executeQuery() throws ArtificerException {
+	public final PagedResult<ArtifactSummary> executeQuery() throws ArtificerException {
 		String xpath = formatQuery(xpathTemplate, this.replacementParams);
 		Query queryModel = parseXPath(xpath);
 		validateQuery(queryModel);
@@ -162,5 +162,5 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 	 * @return a set of s-ramp artifacts
 	 * @throws org.artificer.common.ArtificerException
 	 */
-	protected abstract PagedResult<BaseArtifactType> executeQuery(Query queryModel) throws ArtificerException;
+	protected abstract PagedResult<ArtifactSummary> executeQuery(Query queryModel) throws ArtificerException;
 }

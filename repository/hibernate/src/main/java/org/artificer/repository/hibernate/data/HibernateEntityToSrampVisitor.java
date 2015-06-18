@@ -25,7 +25,7 @@ import org.artificer.repository.hibernate.entity.ArtificerComment;
 import org.artificer.repository.hibernate.entity.ArtificerDocumentArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerProperty;
 import org.artificer.repository.hibernate.entity.ArtificerRelationship;
-import org.artificer.repository.hibernate.entity.ArtificerRelationshipType;
+import org.artificer.common.query.RelationshipType;
 import org.artificer.repository.hibernate.entity.ArtificerTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
@@ -199,7 +199,7 @@ public class HibernateEntityToSrampVisitor extends HierarchicalArtifactVisitor {
 
     private void visitGenericRelationships(BaseArtifactType srampArtifact) throws Exception {
         for (ArtificerRelationship artificerRelationship : artificerArtifact.getRelationships()) {
-            if (artificerRelationship.getType() == ArtificerRelationshipType.GENERIC) {
+            if (artificerRelationship.getType() == RelationshipType.GENERIC) {
                 Relationship srampRelationship = new Relationship();
                 srampRelationship.setRelationshipType(artificerRelationship.getName());
                 for (ArtificerTarget artificerTarget : artificerRelationship.getTargets()) {

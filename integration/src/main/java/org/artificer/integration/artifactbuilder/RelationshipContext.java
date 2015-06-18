@@ -15,7 +15,7 @@
  */
 package org.artificer.integration.artifactbuilder;
 
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.artificer.common.query.ArtifactSummary;
 
 import java.util.Collection;
 import java.util.Map;
@@ -32,7 +32,7 @@ public interface RelationshipContext {
      * @param type
      * @param criteria
      */
-    public Collection<BaseArtifactType> findArtifacts(String model, String type, Map<String, String> criteria)
+    public Collection<ArtifactSummary> findArtifacts(String model, String type, Map<String, String> criteria)
             throws Exception;
 
 }

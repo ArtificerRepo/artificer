@@ -15,12 +15,12 @@
  */
 package org.artificer.server;
 
-import org.artificer.common.ReverseRelationship;
+import org.artificer.common.query.ReverseRelationship;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.ArtificerQueryArgs;
 import org.artificer.repository.query.PagedResult;
 import org.artificer.server.core.api.QueryService;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
 import javax.ejb.Remote;
@@ -39,12 +39,12 @@ import java.util.List;
 public class QueryServiceImpl extends AbstractServiceImpl implements QueryService {
 
     @Override
-    public PagedResult<BaseArtifactType> query(String query) throws Exception {
+    public PagedResult<ArtifactSummary> query(String query) throws Exception {
         return query(query, "name", true);
     }
 
     @Override
-    public PagedResult<BaseArtifactType> query(String query, String orderBy, Boolean ascending) throws Exception { // Add on the "/s-ramp/" if it's missing
+    public PagedResult<ArtifactSummary> query(String query, String orderBy, Boolean ascending) throws Exception { // Add on the "/s-ramp/" if it's missing
         String xpath = query;
         if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
             if (query.startsWith("/")) //$NON-NLS-1$
@@ -59,7 +59,7 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
     }
 
     @Override
-    public PagedResult<BaseArtifactType> query(String query, Integer startPage, Integer startIndex, Integer count,
+    public PagedResult<ArtifactSummary> query(String query, Integer startPage, Integer startIndex, Integer count,
             String orderBy, Boolean ascending) throws Exception {
         // Add on the "/s-ramp/" if it's missing
         String xpath = query;

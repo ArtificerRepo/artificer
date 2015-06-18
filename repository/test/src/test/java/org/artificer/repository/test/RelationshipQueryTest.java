@@ -19,7 +19,8 @@ import org.apache.commons.io.IOUtils;
 import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
-import org.artificer.common.ReverseRelationship;
+import org.artificer.common.query.ArtifactSummary;
+import org.artificer.common.query.ReverseRelationship;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
@@ -54,7 +55,7 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
 
         // Get all the element style WSDL message parts
         ArtificerQuery query = queryManager.createQuery("/s-ramp/wsdl/Part[element]");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(3, artifactSet.getTotalSize());
 
@@ -135,7 +136,7 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
 
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy]");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.getTotalSize());
 
@@ -182,7 +183,7 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         wsdlDoc1 = (WsdlDocument) persistenceManager.updateArtifact(wsdlDoc1, ArtifactType.WsdlDocument());
 
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey')]]");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.getTotalSize());
 
@@ -275,7 +276,7 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         wsdlDoc1 = (WsdlDocument) persistenceManager.updateArtifact(wsdlDoc1, ArtifactType.WsdlDocument());
 
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey')]]");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.getTotalSize());
 
@@ -346,8 +347,9 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         WsdlDocument wsdlDoc = addWsdlDoc();
         // Get one of the Parts
         ArtificerQuery query = queryManager.createQuery("/s-ramp/wsdl/Part");
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
-        BaseArtifactType part = artifactSet.getResults().get(0);
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
+        ArtifactSummary partSummary = artifactSet.getResults().get(0);
+        BaseArtifactType part = persistenceManager.getArtifact(partSummary.getUuid(), partSummary.getArtifactType());
 
         // Set one generic relationship, *from* the part
         ArtificerModelUtils.addGenericRelationship(part, "fooRel", wsdlDoc.getUuid());
@@ -399,7 +401,7 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
     private boolean hasRelationship(List<ReverseRelationship> reverseRelationships, String sourceUuid, String relType) {
         for (ReverseRelationship reverseRelationship : reverseRelationships) {
             if (reverseRelationship.getSourceArtifact().getUuid().equals(sourceUuid)
-                    && reverseRelationship.getRelationshipType().equals(relType)) {
+                    && reverseRelationship.getName().equals(relType)) {
                 return true;
             }
         }

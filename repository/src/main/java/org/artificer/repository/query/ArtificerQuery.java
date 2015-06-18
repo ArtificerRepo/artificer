@@ -16,8 +16,8 @@
 package org.artificer.repository.query;
 
 import org.artificer.common.ArtificerException;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.QueryManager;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -101,6 +101,6 @@ public interface ArtificerQuery {
 	 * and return a set of s-ramp artifacts.
 	 * @return a set of s-ramp artifacts
 	 */
-	public PagedResult<BaseArtifactType> executeQuery() throws ArtificerException;
+	public PagedResult<ArtifactSummary> executeQuery() throws ArtificerException;
 
 }

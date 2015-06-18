@@ -16,7 +16,7 @@
 package org.artificer.repository;
 
 import org.artificer.common.ArtificerException;
-import org.artificer.common.ReverseRelationship;
+import org.artificer.common.query.ReverseRelationship;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.ArtificerQueryArgs;
 

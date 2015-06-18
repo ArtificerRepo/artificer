@@ -28,7 +28,7 @@ import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.client.ClientRequest;
 import org.artificer.client.ontology.OntologySummary;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.error.ArtificerServerException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -70,7 +70,7 @@ public abstract class AbstractIntegrationTest {
             for (ArtifactSummary summary : results) {
                 String uuid = summary.getUuid().replace("urn:uuid:", "");
                 if (!summary.isDerived()) {
-                    client.deleteArtifact(uuid, summary.getType(), true);
+                    client.deleteArtifact(uuid, summary.getArtifactType(), true);
                 }
             }
         } catch (Exception e) {

@@ -18,7 +18,7 @@ package org.artificer.ui.server.services;
 import org.apache.commons.lang3.StringUtils;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.client.ArtificerClientQuery;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.error.ArtificerServerException;
@@ -71,7 +71,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
             ArrayList<ArtifactSummaryBean> artifacts = new ArrayList<ArtifactSummaryBean>();
             for (ArtifactSummary artifactSummary : resultSet) {
                 ArtifactSummaryBean bean = new ArtifactSummaryBean();
-                ArtifactType artifactType = artifactSummary.getType();
+                ArtifactType artifactType = artifactSummary.getArtifactType();
                 bean.setModel(artifactType.getArtifactType().getModel());
                 bean.setType(artifactType.getType());
                 bean.setRawType(artifactType.getArtifactType().getType());
@@ -79,8 +79,8 @@ public class ArtifactSearchService implements IArtifactSearchService {
                 bean.setName(artifactSummary.getName());
                 bean.setDescription(artifactSummary.getDescription());
                 bean.setCreatedBy(artifactSummary.getCreatedBy());
-                bean.setCreatedOn(artifactSummary.getCreatedTimestamp());
-                bean.setUpdatedOn(artifactSummary.getLastModifiedTimestamp());
+                bean.setCreatedOn(artifactSummary.getCreatedTimestamp().getTime());
+                bean.setUpdatedOn(artifactSummary.getLastModifiedTimestamp().getTime());
                 bean.setDerived(artifactType.isDerived());
                 artifacts.add(bean);
             }

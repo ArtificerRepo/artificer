@@ -15,6 +15,7 @@
  */
 package org.artificer.repository.hibernate;
 
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.integration.artifactbuilder.RelationshipContext;
 import org.artificer.repository.hibernate.query.HibernateQuery;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -33,7 +34,7 @@ public class HibernateRelationshipContext implements RelationshipContext {
      * @see org.artificer.integration.artifactbuilder.RelationshipContext#findArtifacts(String, String, java.util.Map)
      */
     @Override
-    public Collection<BaseArtifactType> findArtifacts(String model, String type,
+    public Collection<ArtifactSummary> findArtifacts(String model, String type,
             Map<String, String> criteria) throws Exception {
         StringBuilder builder = new StringBuilder("/s-ramp/" + model + "/" + type + "[");
         boolean first = true;

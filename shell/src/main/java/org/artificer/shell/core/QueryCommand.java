@@ -18,7 +18,7 @@ package org.artificer.shell.core;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtifactTypeEnum;
@@ -79,7 +79,7 @@ public class QueryCommand extends AbstractCommand {
 			commandInvocation.getShell().out().println("  Idx, UUID, Type, Name");
 			commandInvocation.getShell().out().println("  ---------------------");
     		for (ArtifactSummary summary : rset) {
-    			ArtifactType type = summary.getType();
+    			ArtifactType type = summary.getArtifactType();
     			String displayType = type.getArtifactType().getType().toString();
     			if (type.isExtendedType() && type.getExtendedType() != null) {
     			    displayType = type.getExtendedType();

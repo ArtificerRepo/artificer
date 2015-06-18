@@ -19,6 +19,7 @@ import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.MediaType;
 import org.artificer.common.ontology.ArtificerOntology;
+import org.artificer.common.query.ArtifactSummary;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Content;
@@ -53,6 +54,7 @@ import java.util.List;
  * Some useful static utils for users of the s-ramp client.
  *
  * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 public final class ArtificerAtomUtils {
 
@@ -165,6 +167,33 @@ public final class ArtificerAtomUtils {
 
 		return entry;
 	}
+
+    public static Entry wrapArtifactSummary(ArtifactSummary artifact) throws URISyntaxException,
+            IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException,
+            NoSuchMethodException {
+        Entry entry = new Entry();
+        if (artifact.getUuid() != null)
+            entry.setId(new URI("urn:uuid:" + artifact.getUuid())); //$NON-NLS-1$
+        if (artifact.getLastModifiedTimestamp() != null)
+            entry.setUpdated(artifact.getLastModifiedTimestamp().getTime());
+        if (artifact.getName() != null)
+            entry.setTitle(artifact.getName());
+        if (artifact.getCreatedTimestamp() != null)
+            entry.setPublished(artifact.getCreatedTimestamp().getTime());
+        if (artifact.getCreatedBy() != null)
+            entry.getAuthors().add(new Person(artifact.getCreatedBy()));
+        if (artifact.getDescription() != null)
+            entry.setSummary(artifact.getDescription());
+
+        Category category = new Category();
+        category.setScheme(ArtificerAtomConstants.X_S_RAMP_TYPE_URN);
+        category.setTerm(artifact.getType());
+        entry.getCategories().add(category);
+
+        entry.getExtensionAttributes().put(ArtificerConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifact.isDerived()));
+
+        return entry;
+    }
     
     public static Entry wrapStoredQuery(StoredQuery storedQuery) throws Exception {
         Entry entry = new Entry();
@@ -229,11 +258,12 @@ public final class ArtificerAtomUtils {
 	 */
 	public static ArtifactType getArtifactType(Entry entry) {
 		ArtifactType type = getArtifactTypeFromEntry(entry);
+        // TODO: This whole if block seems wrong.  'type' will already have the extended type set from getArtifactTypeFromEntry...
 		if (type.isExtendedType()) {
             boolean derived = "true".equals(entry.getExtensionAttributes().get(ArtificerConstants.SRAMP_DERIVED_QNAME)); //$NON-NLS-1$
-            String extendedType = (String) entry.getExtensionAttributes().get(ArtificerConstants.SRAMP_EXTENDED_TYPE_QNAME);
+//            String extendedType = (String) entry.getExtensionAttributes().get(ArtificerConstants.SRAMP_EXTENDED_TYPE_QNAME);
             type.setExtendedDerivedType(derived);
-            type.setExtendedType(extendedType);
+//            type.setExtendedType(extendedType);
 		}
         return type;
 	}

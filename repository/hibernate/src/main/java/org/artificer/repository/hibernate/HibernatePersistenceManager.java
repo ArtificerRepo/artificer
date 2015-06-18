@@ -41,15 +41,13 @@ import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerComment;
 import org.artificer.repository.hibernate.entity.ArtificerDocumentArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerRelationship;
-import org.artificer.repository.hibernate.entity.ArtificerRelationshipType;
+import org.artificer.common.query.RelationshipType;
 import org.artificer.repository.hibernate.entity.ArtificerStoredQuery;
 import org.artificer.repository.hibernate.file.FileManagerFactory;
-import org.hibernate.Hibernate;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -295,8 +293,8 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
                     Query query = entityManager.createQuery(
                             "SELECT r FROM ArtificerRelationship r INNER JOIN r.owner o INNER JOIN r.targets ts INNER JOIN ts.target t WHERE o.trashed = false AND t.id IN :targetedArtifacts AND (r.type=:type1 OR r.type=:type2)");
                     query.setParameter("targetedArtifacts", targetedArtifacts);
-                    query.setParameter("type1", ArtificerRelationshipType.GENERIC);
-                    query.setParameter("type2", ArtificerRelationshipType.MODELED);
+                    query.setParameter("type1", RelationshipType.GENERIC);
+                    query.setParameter("type2", RelationshipType.MODELED);
                     if (query.getResultList().size() > 0) {
                         throw ArtificerConflictException.relationshipConstraint(uuid);
                     }

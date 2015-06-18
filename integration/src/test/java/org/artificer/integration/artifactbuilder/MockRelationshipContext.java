@@ -15,9 +15,7 @@
  */
 package org.artificer.integration.artifactbuilder;
 
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.artificer.common.query.ArtifactSummary;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -30,10 +28,11 @@ import java.util.UUID;
 public class MockRelationshipContext implements RelationshipContext {
     
     @Override
-    public Collection<BaseArtifactType> findArtifacts(String model, String type, Map<String, String> criteria)
+    public Collection<ArtifactSummary> findArtifacts(String model, String type, Map<String, String> criteria)
             throws Exception {
-        BaseArtifactType doc = new Document();
-        doc.setArtifactType(BaseArtifactEnum.DOCUMENT);
+        ArtifactSummary doc = new ArtifactSummary();
+        doc.setType("Document");
+        doc.setModel("core");
         doc.setName("Mock Artifact"); //$NON-NLS-1$
         doc.setUuid(UUID.randomUUID().toString());
         return Collections.singletonList(doc);

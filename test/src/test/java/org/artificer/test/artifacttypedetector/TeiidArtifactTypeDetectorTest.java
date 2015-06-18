@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.integration.teiid.model.TeiidArtifactType;
 import org.artificer.integration.teiid.model.Vdb;

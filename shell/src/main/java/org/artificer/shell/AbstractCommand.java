@@ -16,7 +16,7 @@ package org.artificer.shell;/*
 
 import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.console.AeshConsoleBufferBuilder;
@@ -102,7 +102,7 @@ public abstract class AbstractCommand implements Command<CommandInvocation> {
     protected BaseArtifactType artifactFromFeed(CommandInvocation commandInvocation, String feedIndex) throws Exception {
         ArtifactSummary summary = artifactSummaryFromFeed(commandInvocation, feedIndex);
         String artifactUUID = summary.getUuid();
-        return client(commandInvocation).getArtifactMetaData(summary.getType(), artifactUUID);
+        return client(commandInvocation).getArtifactMetaData(summary.getArtifactType(), artifactUUID);
     }
 
     protected boolean hasCurrentArtifact(CommandInvocation commandInvocation) throws ArtificerShellException {

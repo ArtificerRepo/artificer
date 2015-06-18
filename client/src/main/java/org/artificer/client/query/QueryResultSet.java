@@ -15,11 +15,15 @@
  */
 package org.artificer.client.query;
 
-import java.util.Iterator;
-
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.query.ArtifactSummary;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.artificer.common.ArtificerConstants;
+
+import java.util.Calendar;
+import java.util.Iterator;
 
 /**
  * An instance of this class is returned by the Atom API client when consumers
@@ -102,7 +106,7 @@ public class QueryResultSet implements Iterable<ArtifactSummary> {
 		if (index >= currentFeed.getEntries().size()) {
 			return null;
 		} else {
-			return new ArtifactSummary(currentFeed.getEntries().get(index));
+			return summary(currentFeed.getEntries().get(index));
 		}
 	}
 
@@ -146,10 +150,10 @@ public class QueryResultSet implements Iterable<ArtifactSummary> {
 		 */
 		@Override
 		public ArtifactSummary next() {
-			return new ArtifactSummary(delegate.next());
-		}
+			return summary(delegate.next());
+        }
 
-		/**
+        /**
 		 * @see java.util.Iterator#remove()
 		 */
 		@Override
@@ -157,4 +161,24 @@ public class QueryResultSet implements Iterable<ArtifactSummary> {
 			throw new UnsupportedOperationException();
 		}
 	}
+
+    private static ArtifactSummary summary(Entry entry) {
+        ArtifactSummary summary = new ArtifactSummary();
+        summary.setUuid(entry.getId().toString().replace("urn:uuid:", ""));
+        summary.setName(entry.getTitle());
+        summary.setDescription(entry.getSummary());
+        ArtifactType artifactType = ArtificerAtomUtils.getArtifactType(entry);
+        summary.setModel(artifactType.getModel());
+        summary.setType(artifactType.getType());
+        summary.setDerived(artifactType.isDerived());
+        summary.setExtensionAttributes(entry.getExtensionAttributes());
+        Calendar published = Calendar.getInstance();
+        published.setTime(entry.getPublished());
+        summary.setCreatedTimestamp(published);
+        summary.setCreatedBy(entry.getAuthors().get(0).getName());
+        Calendar updated = Calendar.getInstance();
+        published.setTime(entry.getUpdated());
+        summary.setLastModifiedTimestamp(updated);
+        return summary;
+    }
 }
