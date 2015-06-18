@@ -20,6 +20,7 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtifactTypeEnum;
 import org.artificer.common.ArtificerConstants;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.AuditManager;
 import org.artificer.repository.PersistenceManager;
 import org.artificer.repository.QueryManager;
@@ -191,9 +192,9 @@ public abstract class AbstractPersistenceTest {
         String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType()); //$NON-NLS-1$
         ArtificerQuery query = queryManager.createQuery(q);
         query.setString(name);
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertEquals(1, artifactSet.getTotalSize());
-        BaseArtifactType arty = artifactSet.getResults().get(0);
+        ArtifactSummary arty = artifactSet.getResults().get(0);
         Assert.assertEquals(name, arty.getName());
 
         return initArtifactAssociations(arty);
@@ -214,7 +215,7 @@ public abstract class AbstractPersistenceTest {
     protected BaseArtifactType getArtifactByUUID(String uuid) throws Exception {
         ArtificerQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]"); //$NON-NLS-1$
         query.setString(uuid);
-        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertEquals(1, artifactSet.getTotalSize());
 
         return initArtifactAssociations(artifactSet.getResults().get(0));
@@ -230,10 +231,10 @@ public abstract class AbstractPersistenceTest {
         return getArtifactByUUID(target.getValue());
     }
 
-    protected BaseArtifactType initArtifactAssociations(BaseArtifactType artifact) throws Exception {
+    protected BaseArtifactType initArtifactAssociations(ArtifactSummary artifact) throws Exception {
         // When a query is used, Hibernate does not fetch the associations (on purpose -- performance optimization).
         // When they're needed, the test must call this method to full init everything by calling getArtifact.
-        return persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.valueOf(artifact));
+        return persistenceManager.getArtifact(artifact.getUuid(), artifact.getArtifactType());
     }
 
     public enum TestType {

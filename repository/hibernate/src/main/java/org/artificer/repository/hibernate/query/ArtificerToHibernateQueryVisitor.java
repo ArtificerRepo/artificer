@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ArtificerException;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.common.query.xpath.ast.AndExpr;
 import org.artificer.common.query.xpath.ast.Argument;
 import org.artificer.common.query.xpath.ast.EqualityExpr;
@@ -143,7 +144,7 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
      * @return List<ArtificerArtifact>
      * @throws ArtificerException
      */
-    public List<ArtificerArtifact> query(ArtificerQueryArgs args) throws ArtificerException {
+    public List<ArtifactSummary> query(ArtificerQueryArgs args) throws ArtificerException {
         if (this.error != null) {
             throw this.error;
         }
@@ -157,8 +158,10 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
         query.select(criteriaBuilder.count(from)).distinct(true);
         totalSize = (Long) entityManager.createQuery(query).getSingleResult();
 
-        // Now, return the actual results
-        query.select(from).distinct(true);
+        // Setup the select.  Note that we're only grabbing the fields we need for the summary.
+        query.multiselect(from.get("uuid"), from.get("name"), from.get("description"), from.get("model"), from.get("type"), from.get("derived"),
+                from.get("createdBy").get("lastActionTime"), from.get("createdBy").get("username"), from.get("modifiedBy").get("lastActionTime"))
+                .distinct(true);
 
         if (args.getOrderBy() != null) {
             String propName = orderByMap.get(args.getOrderBy());
@@ -188,7 +191,7 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
     public void visit(Query node) {
         this.error = null;
 
-        query = criteriaBuilder.createQuery(ArtificerArtifact.class);
+        query = criteriaBuilder.createQuery(ArtifactSummary.class);
         from = query.from(ArtificerArtifact.class);
 
         node.getArtifactSet().accept(this);
@@ -254,7 +257,7 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            query = criteriaBuilder.createQuery(artifact.getClass());
+            query = criteriaBuilder.createQuery(ArtifactSummary.class);
             from = query.from(artifact.getClass());
 
             eq("type", node.getArtifactType());

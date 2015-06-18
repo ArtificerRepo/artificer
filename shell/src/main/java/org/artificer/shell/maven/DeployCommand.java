@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.client.ArtificerClientQuery;
-import org.artificer.client.query.ArtifactSummary;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
@@ -263,7 +263,7 @@ public class DeployCommand extends AbstractCommand {
         if (rset.size() > 0) {
             for (ArtifactSummary summary : rset) {
                 String uuid = summary.getUuid();
-                ArtifactType artifactType = summary.getType();
+                ArtifactType artifactType = summary.getArtifactType();
                 BaseArtifactType arty = client.getArtifactMetaData(artifactType, uuid);
                 return arty;
 

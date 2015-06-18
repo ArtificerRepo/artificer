@@ -19,6 +19,7 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerConflictException;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.query.PagedResult;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
@@ -124,7 +125,7 @@ public class ConstraintTest extends AbstractNoAuditingPersistenceTest {
         persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd), false);
 
         // Verify the XSD derived artifacts were deleted (just check one)
-        PagedResult<BaseArtifactType> derived = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery();
+        PagedResult<ArtifactSummary> derived = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery();
         assertEquals(0, derived.getTotalSize());
     }
 
@@ -141,7 +142,7 @@ public class ConstraintTest extends AbstractNoAuditingPersistenceTest {
         persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd), true);
 
         // Verify the XSD derived artifacts were deleted (just check one)
-        PagedResult<BaseArtifactType> derived = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery();
+        PagedResult<ArtifactSummary> derived = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery();
         assertEquals(0, derived.getTotalSize());
     }
 
@@ -164,7 +165,7 @@ public class ConstraintTest extends AbstractNoAuditingPersistenceTest {
     }
 
     private BaseArtifactType addWithGenericRelationship() throws Exception {
-        BaseArtifactType complexType = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery().getResults().get(0);
+        ArtifactSummary complexType = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery().getResults().get(0);
         BaseArtifactType fooArtifact = ArtifactType.ExtendedArtifactType("FooType", false).newArtifactInstance();
         ArtificerModelUtils.addGenericRelationship(fooArtifact, "fooRelationship", complexType.getUuid());
         return persistenceManager.persistArtifact(fooArtifact, null);

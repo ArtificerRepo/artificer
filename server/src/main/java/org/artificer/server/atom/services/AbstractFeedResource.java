@@ -15,19 +15,18 @@
  */
 package org.artificer.server.atom.services;
 
-import org.artificer.server.QueryServiceImpl;
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.atom.err.ArtificerAtomException;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.MediaType;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.repository.query.PagedResult;
+import org.artificer.server.QueryServiceImpl;
 import org.artificer.server.i18n.Messages;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.artificer.common.MediaType;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +64,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
             throw new ArtificerAtomException(Messages.i18n.format("MISSING_QUERY_PARAM")); //$NON-NLS-1$
 
 		try {
-            PagedResult<BaseArtifactType> artifactSet = queryService.query(
+            PagedResult<ArtifactSummary> artifactSet = queryService.query(
                     query, startPage, startIndex, count, orderBy, ascending);
             Feed feed = createFeed(artifactSet, propNames, baseUrl);
 			addPaginationLinks(feed, artifactSet, baseUrl);
@@ -94,7 +93,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-    private Feed createFeed(PagedResult<BaseArtifactType> pagedResult, Set<String> propNames, String baseUrl) throws Exception {
+    private Feed createFeed(PagedResult<ArtifactSummary> pagedResult, Set<String> propNames, String baseUrl) throws Exception {
 		Feed feed = new Feed();
 		feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_PROVIDER_QNAME, "Artificer"); //$NON-NLS-1$
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf(pagedResult.getPageSize()));
@@ -106,12 +105,9 @@ public abstract class AbstractFeedResource extends AbstractResource {
 		feed.setUpdated(new Date());
 		feed.getAuthors().add(new Person("anonymous")); //$NON-NLS-1$
 
-		ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, propNames);
-       for (BaseArtifactType artifact : pagedResult.getResults()) {
-			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
-			Entry entry = visitor.getAtomEntry();
+        for (ArtifactSummary artifact : pagedResult.getResults()) {
+			Entry entry = ArtificerAtomUtils.wrapArtifactSummary(artifact);
 			feed.getEntries().add(entry);
-			visitor.reset();
 		}
 
 		return feed;
@@ -125,7 +121,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 * @param baseUrl
 	 * @throws UnsupportedEncodingException
 	 */
-	private void addPaginationLinks(Feed feed, PagedResult<BaseArtifactType> pagedResult, String baseUrl)
+	private void addPaginationLinks(Feed feed, PagedResult<ArtifactSummary> pagedResult, String baseUrl)
             throws UnsupportedEncodingException {
         long pageSize = pagedResult.getPageSize();
         int startIndex = pagedResult.getStartIndex();

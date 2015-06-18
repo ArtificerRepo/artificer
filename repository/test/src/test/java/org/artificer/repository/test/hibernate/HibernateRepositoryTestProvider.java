@@ -46,6 +46,7 @@ public class HibernateRepositoryTestProvider implements RepositoryTestProvider {
         System.setProperty("hibernate.cache.use_second_level_cache", "false");
         System.setProperty("hibernate.cache.use_query_cache", "false");
         System.setProperty("hibernate.search.default.directory_provider", "ram");
+//        System.setProperty("hibernate.show_sql", "true");
         if (extraProperties != null) {
             for (String key : extraProperties.keySet()) {
                 String value = extraProperties.get(key);
