@@ -183,7 +183,7 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-marshalling</artifactId>
-      <scope>provided</scope>
+      <!-- Must be included in the WAR!  Client APIs are needed to prevent CNFEs through Weld. -->
     </dependency>
 
     <!-- GWT -->
