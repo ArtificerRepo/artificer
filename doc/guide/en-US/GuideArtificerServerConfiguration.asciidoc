@@ -53,8 +53,8 @@ Although JDBC Blobs are the default (purely because they're convenient), most da
 limits.  Even more importantly, there are many vertical and horizontal performance considerations when dealing with
 larger files.  For most use cases, we'd actually recommend using the filesystem.
 
-Advanced Hibernate Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hibernate Configuration
+~~~~~~~~~~~~~~~~~~~~~~~
 
 For detailed information of what's possible, please see the Hibernate docs themselves.  However, a few things to highlight:
 
@@ -62,7 +62,10 @@ For detailed information of what's possible, please see the Hibernate docs thems
 on large-scale queries, this caching can actually be a bit of a hindrance.  However, if you work repeatedly with
 single artifacts, this may be beneficial in some contexts.  See the 'hibernate.cache.*' properties in artificer.properties.
 * By default, we use Lucene filesystem indexes with Hibernate Search.  This is also highly configurable and can use
-any number of backends.  See the 'hibernate.search.*' properties in artificer.properties.
+any number of backends.  See the 'hibernate.search.*' properties in artificer.properties.  Note one property in
+particular: 'hibernate.search.default.indexBase'.  By default, we use a relative path: 'lucene/indexes'.  However,
+that's completely dependent on the location from which you start the application server.  Most users will probably
+need to change this path to something more permanent (and one which you have adequate permissions).
 * Also with Hibernate Search, many usages could benefit from hibernate-search-infinispan, which introduces in-memory
 index caching (clusterable, etc.).  This is also disabled by default, but can be set with the correct properties
 and including the hibernate-search-infinispan JAR.
