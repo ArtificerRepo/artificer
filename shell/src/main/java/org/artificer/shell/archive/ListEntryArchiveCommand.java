@@ -23,7 +23,6 @@ import org.artificer.shell.i18n.Messages;
 import org.artificer.shell.util.PrintArtifactMetaDataVisitor;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -43,10 +42,6 @@ public class ListEntryArchiveCommand extends AbstractArchiveCommand {
     @Arguments(description = "<entry path>")
     private List<String> arguments;
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected String getName() {
         return "archive listEntry";
@@ -54,9 +49,6 @@ public class ListEntryArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
         if (CollectionUtils.isEmpty(arguments)) {
             return doHelp(commandInvocation);
         }

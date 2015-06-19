@@ -20,7 +20,6 @@ import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
@@ -36,10 +35,6 @@ import java.util.List;
         description = "The \"listStoredQueries\" command retrieves all stored queries from the repository.\n")
 public class ListStoredQueriesCommand extends AbstractCommand {
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected String getName() {
         return "storedQuery list";
@@ -47,10 +42,6 @@ public class ListStoredQueriesCommand extends AbstractCommand {
 
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
-
         ArtificerAtomApiClient client = client(commandInvocation);
 
         try {

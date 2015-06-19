@@ -22,7 +22,6 @@ import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -42,15 +41,8 @@ public class AddCommentCommand extends AbstractCommand {
 	@Arguments(description = "<comment text>")
 	private List<String> arguments;
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
 		if (CollectionUtils.isEmpty(arguments) || arguments.size() < 1) {
 			return doHelp(commandInvocation);
 		}

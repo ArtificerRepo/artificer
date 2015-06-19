@@ -162,6 +162,7 @@ public class ArtificerShell {
         settingsBuilder.readInputrc(false);
         settingsBuilder.logging(true);
         settingsBuilder.aeshContext(new ArtificerContext());
+        settingsBuilder.enableMan(false);
 
         // map Ctrl+C to a 'clear' action, rather than 'exit'
         settingsBuilder.interruptHook(new InterruptHook() {

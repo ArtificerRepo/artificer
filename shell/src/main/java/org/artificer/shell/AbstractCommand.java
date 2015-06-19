@@ -16,9 +16,10 @@ package org.artificer.shell;/*
 
 import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.shell.i18n.Messages;
+import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.AeshConsoleBufferBuilder;
 import org.jboss.aesh.console.AeshInputProcessorBuilder;
 import org.jboss.aesh.console.ConsoleBuffer;
@@ -37,16 +38,16 @@ import java.util.List;
  */
 public abstract class AbstractCommand implements Command<CommandInvocation> {
 
-//    @Option(shortName = 'h', name = "help", hasValue = false, required = false,
-//            description = "Display help")
-//    private boolean help;
+    @Option(shortName = 'h', name = "help", hasValue = false, required = false,
+            description = "Display help")
+    private boolean help;
 
     @Override
     public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
         try {
-//            if (help) {
-//                return doHelp(commandInvocation);
-//            }
+            if (help) {
+                return doHelp(commandInvocation);
+            }
 
             return doExecute(commandInvocation);
         } catch (Exception e) {

@@ -43,10 +43,6 @@ public class ShowAuditTrailCommand extends AbstractCommand {
             description = "Feed index")
     private String feedIndex;
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected String getName() {
         return "audit showAuditTrail";
@@ -54,10 +50,6 @@ public class ShowAuditTrailCommand extends AbstractCommand {
 
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
-
         if (StringUtils.isNotBlank(feedIndex)) {
             artifactUuid = artifactSummaryFromFeed(commandInvocation, feedIndex).getUuid();
         } else if (StringUtils.isBlank(artifactUuid)) {

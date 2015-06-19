@@ -58,10 +58,6 @@ public class AddEntryArchiveCommand extends AbstractArchiveCommand {
             description = "Artifact type")
     private String type;
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected String getName() {
         return "archive addEntry";
@@ -69,9 +65,6 @@ public class AddEntryArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
         if (CollectionUtils.isEmpty(arguments)) {
             return doHelp(commandInvocation);
         }

@@ -63,10 +63,6 @@ public class UpdateEntryArchiveCommand extends AbstractArchiveCommand {
 			description = "Entry path")
 	private String entryPath;
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected String getName() {
 		return "archive updateEntry";
@@ -74,9 +70,6 @@ public class UpdateEntryArchiveCommand extends AbstractArchiveCommand {
 
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
 		if (CollectionUtils.isEmpty(arguments)) {
 			return doHelp(commandInvocation);
 		}

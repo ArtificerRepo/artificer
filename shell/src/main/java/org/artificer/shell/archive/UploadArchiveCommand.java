@@ -18,7 +18,6 @@ package org.artificer.shell.archive;
 import org.artificer.atom.archive.ArtificerArchive;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 
@@ -32,10 +31,6 @@ import org.jboss.aesh.console.command.invocation.CommandInvocation;
         description = "The \"upload\" command uploads the currently active Artificer archive to the Artificer repository (closing the archive if it is open).\n")
 public class UploadArchiveCommand extends AbstractArchiveCommand {
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected String getName() {
         return "archive upload";
@@ -43,10 +38,6 @@ public class UploadArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
-
 		try {
 	        client(commandInvocation).uploadBatch(currentArchive(commandInvocation));
 	        // Success!  Close the archive.
