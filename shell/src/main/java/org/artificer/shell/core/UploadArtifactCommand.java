@@ -67,15 +67,8 @@ public class UploadArtifactCommand extends AbstractCommand {
             description = "Artifact description")
     private String description;
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
         if (CollectionUtils.isEmpty(arguments)) {
             return doHelp(commandInvocation);
         }

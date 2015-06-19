@@ -22,7 +22,6 @@ import org.artificer.shell.ArtificerContext;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.cl.completer.OptionCompleter;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.completer.CompleterInvocation;
@@ -55,15 +54,8 @@ public class ClassificationCommand extends AbstractCommand {
 	@Arguments(description = "add|remove|clear [<classification>]", completer = Completer.class)
 	private List<String> arguments;
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
 		if (CollectionUtils.isEmpty(arguments)) {
 			return doHelp(commandInvocation);
 		}

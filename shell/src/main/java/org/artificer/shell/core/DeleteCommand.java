@@ -44,16 +44,8 @@ public class DeleteCommand extends AbstractCommand {
 			description = "Feed index")
 	private String feedIndex;
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		ArtificerAtomApiClient client = client(commandInvocation);
 
 		ArtifactType artifactType;

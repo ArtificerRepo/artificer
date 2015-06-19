@@ -42,10 +42,6 @@ public class DeleteOntologyCommand extends AbstractOntologyCommand {
 			description = "Feed index")
 	private String feedIndex;
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected String getName() {
 		return "ontology delete";
@@ -53,10 +49,6 @@ public class DeleteOntologyCommand extends AbstractOntologyCommand {
 
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		ArtificerAtomApiClient client = client(commandInvocation);
 
 		if (StringUtils.isNotBlank(feedIndex)) {

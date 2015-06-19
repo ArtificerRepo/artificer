@@ -56,16 +56,8 @@ public class GetContentCommand extends AbstractCommand {
 			description = "Output file path")
 	private String outputFilePath;
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		BaseArtifactType artifact = null;
 		if (StringUtils.isNotBlank(artifactUuid)) {
 			artifact = artifact(commandInvocation, artifactUuid);

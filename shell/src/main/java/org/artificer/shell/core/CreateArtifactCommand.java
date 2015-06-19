@@ -51,15 +51,7 @@ public class CreateArtifactCommand extends AbstractCommand {
             description = "Artifact description")
     private String description;
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
-
         ArtificerAtomApiClient client = client(commandInvocation);
 
         ArtifactType artifactType = ArtifactType.valueOf(type);

@@ -54,10 +54,6 @@ public class GetOntologyCommand extends AbstractOntologyCommand {
 			description = "Output file path")
 	private String outputFilePath;
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected String getName() {
 		return "ontology get";
@@ -65,10 +61,6 @@ public class GetOntologyCommand extends AbstractOntologyCommand {
 
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		ArtificerAtomApiClient client = client(commandInvocation);
 
 		if (StringUtils.isNotBlank(feedIndex)) {

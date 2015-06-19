@@ -21,7 +21,6 @@ import org.artificer.client.ontology.OntologySummary;
 import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 
@@ -34,10 +33,6 @@ import java.util.List;
 		description = "The \"status\" command displays the current Artificer Ontology status.\n")
 public class OntologyStatusCommand extends AbstractCommand {
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
     @Override
     protected String getName() {
         return "ontology status";
@@ -45,10 +40,6 @@ public class OntologyStatusCommand extends AbstractCommand {
 
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		ArtificerAtomApiClient client = client(commandInvocation);
 		List<OntologySummary> ontologies = context(commandInvocation).getCurrentOntologyFeed();
 

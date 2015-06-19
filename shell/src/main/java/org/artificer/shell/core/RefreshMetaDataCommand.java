@@ -22,7 +22,6 @@ import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.artificer.shell.util.PrintArtifactMetaDataVisitor;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -37,16 +36,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 		description = "The \"refreshMetaData\" command downloads the latest meta-data for a single artifact from the Artificer repository.  The artifact in question is the currently active artifact in the session.  If no artifact is currently active, then this command will fail.  This essentially re-downloads the meta-data for the current artifact and replaces any changes that may have existed there.\n")
 public class RefreshMetaDataCommand extends AbstractCommand {
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		ArtificerAtomApiClient client = client(commandInvocation);
 		BaseArtifactType artifact = currentArtifact(commandInvocation);
 
