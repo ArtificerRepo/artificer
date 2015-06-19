@@ -20,7 +20,6 @@ import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.artificer.shell.util.PrintArtifactMetaDataVisitor;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -35,16 +34,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 		description = "The \"showMetaData\" command prints out the meta-data for the artifact currently active in the session.\n")
 public class ShowMetaDataCommand extends AbstractCommand {
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		BaseArtifactType artifact = currentArtifact(commandInvocation);
 
 		// Print out the meta-data information

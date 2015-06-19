@@ -49,10 +49,6 @@ public class CreateStoredQueryCommand extends AbstractCommand {
             description = "Required property names")
     private String propertyNames;
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected String getName() {
         return "storedQuery create";
@@ -60,9 +56,6 @@ public class CreateStoredQueryCommand extends AbstractCommand {
 
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
         if (CollectionUtils.isEmpty(arguments)) {
             return doHelp(commandInvocation);
         }

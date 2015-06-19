@@ -95,10 +95,6 @@ public class DeployCommand extends AbstractCommand {
             description = "Artifact type")
     private String type;
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-            description = "Display help")
-    private boolean help;
-
     @Override
     protected String getName() {
         return "maven deploy";
@@ -106,9 +102,6 @@ public class DeployCommand extends AbstractCommand {
 
     @Override
     protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (help) {
-            return doHelp(commandInvocation);
-        }
         if (CollectionUtils.isEmpty(arguments)) {
             return doHelp(commandInvocation);
         }

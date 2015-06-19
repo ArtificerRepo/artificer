@@ -18,7 +18,6 @@ package org.artificer.shell.core;
 import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 
@@ -31,16 +30,8 @@ import org.jboss.aesh.console.command.invocation.CommandInvocation;
 		description = "The \"disconnect\" command disconnects from the currently active Artificer repository.\n")
 public class DisconnectCommand extends AbstractCommand {
 
-	@Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
-			description = "Display help")
-	private boolean help;
-
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (help) {
-			return doHelp(commandInvocation);
-		}
-
 		context(commandInvocation).setClient(null);
 		commandInvocation.getShell().out().println(Messages.i18n.format("Disconnect.Success")); //$NON-NLS-1$
         return CommandResult.SUCCESS;
