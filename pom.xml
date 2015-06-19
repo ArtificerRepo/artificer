@@ -717,11 +717,6 @@
         <artifactId>plexus-utils</artifactId>
         <version>${version.org.codehaus.plexus}</version>
       </dependency>
-      <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils-core</artifactId>
-        <version>1.8.3</version>
-      </dependency>
 
       <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
       <dependency>
