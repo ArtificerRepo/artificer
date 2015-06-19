@@ -204,8 +204,8 @@ public class HibernateUtil {
     }
 
     public static ArtificerArtifact getArtifact(String uuid, EntityManager entityManager, boolean fullFetch) throws ArtificerException {
-        Query q = entityManager.createQuery("FROM ArtificerArtifact a WHERE a.trashed = false AND a.uuid = ?");
-        q.setParameter(1, uuid);
+        Query q = entityManager.createQuery("FROM ArtificerArtifact a WHERE a.trashed = false AND a.uuid = :uuid");
+        q.setParameter("uuid", uuid);
         ArtificerArtifact artifact;
         try {
             artifact = (ArtificerArtifact) q.getSingleResult();
@@ -224,8 +224,8 @@ public class HibernateUtil {
     }
 
     public static ArtificerOntology getOntology(String uuid, EntityManager entityManager) throws ArtificerException {
-        Query q = entityManager.createQuery("FROM ArtificerOntology a WHERE a.uuid = ?");
-        q.setParameter(1, uuid);
+        Query q = entityManager.createQuery("FROM ArtificerOntology a WHERE a.uuid = :uuid");
+        q.setParameter("uuid", uuid);
         ArtificerOntology ontology;
         try {
             ontology = (ArtificerOntology) q.getSingleResult();
