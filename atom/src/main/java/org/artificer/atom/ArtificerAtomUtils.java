@@ -140,7 +140,7 @@ public final class ArtificerAtomUtils {
 		// TODO leverage the artifact->entry visitors here
 		Entry entry = new Entry();
 		if (artifact.getUuid() != null)
-			entry.setId(new URI("urn:uuid:" + artifact.getUuid())); //$NON-NLS-1$
+			entry.setId(new URI("urn:uuid:" + artifact.getUuid()));
 		if (artifact.getLastModifiedTimestamp() != null)
 			entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 		if (artifact.getName() != null)
@@ -161,7 +161,7 @@ public final class ArtificerAtomUtils {
         }
 
 		Artifact srampArty = new Artifact();
-		Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass()); //$NON-NLS-1$
+		Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
 		method.invoke(srampArty, artifact);
 		entry.setAnyOtherJAXBObject(srampArty);
 
@@ -173,7 +173,7 @@ public final class ArtificerAtomUtils {
             NoSuchMethodException {
         Entry entry = new Entry();
         if (artifact.getUuid() != null)
-            entry.setId(new URI("urn:uuid:" + artifact.getUuid())); //$NON-NLS-1$
+            entry.setId(new URI("urn:uuid:" + artifact.getUuid()));
         if (artifact.getLastModifiedTimestamp() != null)
             entry.setUpdated(artifact.getLastModifiedTimestamp().getTime());
         if (artifact.getName() != null)
@@ -197,8 +197,8 @@ public final class ArtificerAtomUtils {
     
     public static Entry wrapStoredQuery(StoredQuery storedQuery) throws Exception {
         Entry entry = new Entry();
-        entry.setId(new URI("urn:uuid:" + storedQuery.getQueryName())); //$NON-NLS-1$
-        entry.setTitle("Stored Query: " + storedQuery.getQueryName()); //$NON-NLS-1$
+        entry.setId(new URI("urn:uuid:" + storedQuery.getQueryName()));
+        entry.setTitle("Stored Query: " + storedQuery.getQueryName());
         
         // TODO: This is really stupid.  Going to push back on this w/ the TC.  The Atom binding spec should simply
         // reuse the core model's StoredQuery.
@@ -209,12 +209,12 @@ public final class ArtificerAtomUtils {
         entry.setAnyOtherJAXBObject(data);
         
         Content content = new Content();
-        content.setText("Stored Query Entry"); //$NON-NLS-1$
+        content.setText("Stored Query Entry");
         entry.setContent(content);
         
         Category category = new Category();
-        category.setTerm("query"); //$NON-NLS-1$
-        category.setLabel("Stored Query Entry"); //$NON-NLS-1$
+        category.setTerm("query");
+        category.setLabel("Stored Query Entry");
         category.setScheme(ArtificerAtomConstants.X_S_RAMP_TYPE_URN);
         entry.getCategories().add(category);
         
@@ -223,7 +223,7 @@ public final class ArtificerAtomUtils {
     
     public static Entry wrapOntology(ArtificerOntology ontology, RDF rdf) throws Exception {
         Entry entry = new Entry();
-        entry.setId(new URI("urn:uuid:" + ontology.getUuid())); //$NON-NLS-1$
+        entry.setId(new URI("urn:uuid:" + ontology.getUuid()));
         entry.setPublished(ontology.getCreatedOn());
         entry.setUpdated(ontology.getLastModifiedOn());
         entry.getAuthors().add(new Person(ontology.getCreatedBy()));
@@ -239,12 +239,12 @@ public final class ArtificerAtomUtils {
         }
         
         Content content = new Content();
-        content.setText("Classification Entry"); //$NON-NLS-1$
+        content.setText("Classification Entry");
         entry.setContent(content);
         
         Category category = new Category();
-        category.setTerm("classification"); //$NON-NLS-1$
-        category.setLabel("Classification Entry"); //$NON-NLS-1$
+        category.setTerm("classification");
+        category.setLabel("Classification Entry");
         category.setScheme(ArtificerAtomConstants.X_S_RAMP_TYPE_URN);
         entry.getCategories().add(category);
         
@@ -260,7 +260,7 @@ public final class ArtificerAtomUtils {
 		ArtifactType type = getArtifactTypeFromEntry(entry);
         // TODO: This whole if block seems wrong.  'type' will already have the extended type set from getArtifactTypeFromEntry...
 		if (type.isExtendedType()) {
-            boolean derived = "true".equals(entry.getExtensionAttributes().get(ArtificerConstants.SRAMP_DERIVED_QNAME)); //$NON-NLS-1$
+            boolean derived = "true".equals(entry.getExtensionAttributes().get(ArtificerConstants.SRAMP_DERIVED_QNAME));
 //            String extendedType = (String) entry.getExtensionAttributes().get(ArtificerConstants.SRAMP_EXTENDED_TYPE_QNAME);
             type.setExtendedDerivedType(derived);
 //            type.setExtendedType(extendedType);
@@ -307,11 +307,11 @@ public final class ArtificerAtomUtils {
 		}
 
 		// Check the 'self' link
-		Link link = entry.getLinkByRel("self"); //$NON-NLS-1$
+		Link link = entry.getLinkByRel("self");
 		if (link != null) {
 			URI href = link.getHref();
 			String path = href.getPath();
-			String [] split = path.split("/"); //$NON-NLS-1$
+			String [] split = path.split("/");
 			String atype = split[split.length - 2];
 			//String amodel = split[split.length - 3];
 			ArtifactType artifactType = ArtifactType.valueOf(atype);
@@ -322,7 +322,7 @@ public final class ArtificerAtomUtils {
 		}
 
 		// If all else fails!
-		return ArtifactType.valueOf("Document"); //$NON-NLS-1$
+		return ArtifactType.valueOf("Document");
     }
 
     /**
@@ -385,7 +385,7 @@ public final class ArtificerAtomUtils {
         // Eat any exception we might encounter - if this fails it'll just revert to creating
         // a new JAXBContext each time.  This is slow but works.
         try {
-            Method method = entry.getClass().getDeclaredMethod("setFinder", JAXBContextFinder.class); //$NON-NLS-1$
+            Method method = entry.getClass().getDeclaredMethod("setFinder", JAXBContextFinder.class);
             method.setAccessible(true);
             method.invoke(entry, finder);
         } catch (SecurityException e) {

@@ -113,7 +113,7 @@ public class DeployCommand extends AbstractCommand {
         // Validate the file
         File file = new File(filePathArg);
         if (!file.isFile()) {
-            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.FileNotFound", filePathArg)); //$NON-NLS-1$
+            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.FileNotFound", filePathArg));
             return CommandResult.FAILURE;
         }
 
@@ -129,18 +129,18 @@ public class DeployCommand extends AbstractCommand {
             // Process GAV and other meta-data, then update the artifact
             MavenGavInfo mavenGavInfo = MavenGavInfo.fromCommandLine(gav, file);
             if (mavenGavInfo.getType() == null) {
-                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.TypeNotSet", file.getName())); //$NON-NLS-1$
+                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.TypeNotSet", file.getName()));
                 IOUtils.closeQuietly(content);
                 return CommandResult.FAILURE;
             }
             if (!ALLOW_SNAPSHOT && mavenGavInfo.isSnapshot()) {
-                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.SnapshotNotAllowed", gav)); //$NON-NLS-1$
+                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.SnapshotNotAllowed", gav));
                 IOUtils.closeQuietly(content);
                 return CommandResult.FAILURE;
             }
             BaseArtifactType artifact = findExistingArtifactByGAV(client, mavenGavInfo);
             if (artifact != null) {
-                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Failure.ReleaseArtifact.Exist", gav)); //$NON-NLS-1$
+                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Failure.ReleaseArtifact.Exist", gav));
                 IOUtils.closeQuietly(content);
                 return CommandResult.FAILURE;
             } else {
@@ -151,7 +151,7 @@ public class DeployCommand extends AbstractCommand {
 
             // Process GAV and other meta-data, then update the artifact
             String artifactName = mavenGavInfo.getArtifactId() + '-' + mavenGavInfo.getVersion();
-            String pomName = mavenGavInfo.getArtifactId() + '-' + mavenGavInfo.getVersion() + ".pom"; //$NON-NLS-1$
+            String pomName = mavenGavInfo.getArtifactId() + '-' + mavenGavInfo.getVersion() + ".pom";
             ArtificerModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_GROUP_ID, mavenGavInfo.getGroupId());
             ArtificerModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_ARTIFACT_ID, mavenGavInfo.getArtifactId());
             ArtificerModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_VERSION, mavenGavInfo.getVersion());
@@ -163,11 +163,11 @@ public class DeployCommand extends AbstractCommand {
                 ArtificerModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_SNAPSHOT_ID, generateSnapshotTimestamp());
             }
             if (mavenGavInfo.getClassifier() != null) {
-                ArtificerModelUtils.setCustomProperty(artifact, "maven.classifier", mavenGavInfo.getClassifier()); //$NON-NLS-1$
+                ArtificerModelUtils.setCustomProperty(artifact, "maven.classifier", mavenGavInfo.getClassifier());
                 artifactName += '-' + mavenGavInfo.getClassifier();
             }
             if (mavenGavInfo.getType() != null) {
-                ArtificerModelUtils.setCustomProperty(artifact, "maven.type", mavenGavInfo.getType()); //$NON-NLS-1$
+                ArtificerModelUtils.setCustomProperty(artifact, "maven.type", mavenGavInfo.getType());
                 artifactName += '.' + mavenGavInfo.getType();
             }
             artifact.setName(artifactName);
@@ -175,10 +175,10 @@ public class DeployCommand extends AbstractCommand {
 
             // Generate and add a POM for the artifact
             String pom = generatePom(mavenGavInfo);
-            InputStream pomContent = new ByteArrayInputStream(pom.getBytes("UTF-8")); //$NON-NLS-1$
+            InputStream pomContent = new ByteArrayInputStream(pom.getBytes("UTF-8"));
             BaseArtifactType pomArtifact = ArtifactType.ExtendedDocument(JavaModel.TYPE_MAVEN_POM_XML).newArtifactInstance();
             pomArtifact.setName(pomName);
-            ArtificerModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_TYPE, "pom"); //$NON-NLS-1$
+            ArtificerModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_TYPE, "pom");
             ArtificerModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_MD5, DigestUtils.md5Hex(pom));
             ArtificerModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_SHA1, DigestUtils.shaHex(pom));
 
@@ -186,12 +186,12 @@ public class DeployCommand extends AbstractCommand {
 
             // Put the artifact in the session as the active artifact
             context(commandInvocation).setCurrentArtifact(artifact);
-            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Success")); //$NON-NLS-1$
+            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Success"));
             PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor(commandInvocation);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
         } catch (Exception e) {
-            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Failure")); //$NON-NLS-1$
-            commandInvocation.getShell().out().println("\t" + e.getMessage()); //$NON-NLS-1$
+            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Failure"));
+            commandInvocation.getShell().out().println("\t" + e.getMessage());
             IOUtils.closeQuietly(content);
             return CommandResult.FAILURE;
         }
@@ -206,19 +206,19 @@ public class DeployCommand extends AbstractCommand {
      */
     private String generatePom(MavenGavInfo mavenGavInfo) {
         StringBuilder builder = new StringBuilder();
-        builder.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"); //$NON-NLS-1$
-        builder.append("  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n"); //$NON-NLS-1$
-        builder.append("  <modelVersion>4.0.0</modelVersion>\r\n"); //$NON-NLS-1$
-        builder.append("  <groupId>" + mavenGavInfo.getGroupId() + "</groupId>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        builder.append("  <artifactId>" + mavenGavInfo.getArtifactId() + "</artifactId>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        builder.append("  <version>" + mavenGavInfo.getVersion() + "</version>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n");
+        builder.append("  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n");
+        builder.append("  <modelVersion>4.0.0</modelVersion>\r\n");
+        builder.append("  <groupId>" + mavenGavInfo.getGroupId() + "</groupId>\r\n");
+        builder.append("  <artifactId>" + mavenGavInfo.getArtifactId() + "</artifactId>\r\n");
+        builder.append("  <version>" + mavenGavInfo.getVersion() + "</version>\r\n");
         if (mavenGavInfo.getType() != null) {
-            builder.append("  <packaging>" + mavenGavInfo.getType() + "</packaging>\r\n");  //$NON-NLS-1$ //$NON-NLS-2$
+            builder.append("  <packaging>" + mavenGavInfo.getType() + "</packaging>\r\n");
         }
         if (mavenGavInfo.getClassifier() != null) {
-            builder.append("  <classifier>" + mavenGavInfo.getClassifier() + "</classifier>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
+            builder.append("  <classifier>" + mavenGavInfo.getClassifier() + "</classifier>\r\n");
         }
-        builder.append("</project>"); //$NON-NLS-1$
+        builder.append("</project>");
         return builder.toString();
     }
 
@@ -272,12 +272,12 @@ public class DeployCommand extends AbstractCommand {
      * @return the string
      */
     private String generateSnapshotTimestamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.hhmmss"); //$NON-NLS-1$
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.hhmmss");
         String timestamp = sdf.format(new Date());
         StringBuilder builder = new StringBuilder();
         // It is added at the end the maven counter. By default it is set to
         // "1". The maven format for the timestamp is yyyyMMdd.hhmmss-counter
-        builder.append(timestamp).append("-1"); //$NON-NLS-1$
+        builder.append(timestamp).append("-1");
         return builder.toString();
     }
 

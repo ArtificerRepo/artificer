@@ -81,14 +81,14 @@ public class CharacterStream {
 	 * a numeric.
 	 */
 	public boolean isNextNumericStart() {
-		return isNext("0123456789"); //$NON-NLS-1$
+		return isNext("0123456789");
 	}
 
 	/**
 	 * Returns true if the next character in the stream is a valid numeric character.
 	 */
 	public boolean isNextNumeric() {
-		return isNext("0123456789.-+eE"); //$NON-NLS-1$
+		return isNext("0123456789.-+eE");
 	}
 
 	/**

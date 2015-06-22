@@ -63,7 +63,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 		}
 
 		// Do a query using GET with query params
-		ClientRequest request = clientRequest("/s-ramp?query=xsd/XsdDocument"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp?query=xsd/XsdDocument");
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		int uuidsFound = 0;
@@ -75,9 +75,9 @@ public class QueryResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(numEntries, uuidsFound);
 
 		// Do it again with POST (multipart form data)
-		request = clientRequest("/s-ramp"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp");
 		MultipartFormDataOutput formData = new MultipartFormDataOutput();
-		formData.addFormData("query", "xsd/XsdDocument", MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$ //$NON-NLS-2$
+		formData.addFormData("query", "xsd/XsdDocument", MediaType.TEXT_PLAIN_TYPE);
 		request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
 		response = request.post(Feed.class);
 		feed = response.getEntity();
@@ -93,28 +93,28 @@ public class QueryResourceTest extends AbstractResourceTest {
 		String stampVal = UUID.randomUUID().toString();
 		Set<String> allTidxVals = new HashSet<String>();
 		for (int i=0; i<5; i++) {
-			String propname = "tidx"; //$NON-NLS-1$
+			String propname = "tidx";
 			String propval = String.valueOf(i);
-			doAddXsd("foo", "bar", "stamp", stampVal, propname, propval); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			doAddXsd("foo", "bar", "stamp", stampVal, propname, propval);
 			allTidxVals.add(propval);
 		}
 		// Verify that 5 documents can be found
-		String query = String.format("xsd/XsdDocument[@stamp%%3D'%1$s']", stampVal); //$NON-NLS-1$
-		request = clientRequest("/s-ramp?query=" + query); //$NON-NLS-1$
+		String query = String.format("xsd/XsdDocument[@stamp%%3D'%1$s']", stampVal);
+		request = clientRequest("/s-ramp?query=" + query);
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Assert.assertEquals(5, feed.getEntries().size());
 		// Verify that we can choose to return only 2 of them
-		query = String.format("xsd/XsdDocument[@stamp%%3D'%1$s']", stampVal); //$NON-NLS-1$
-		request = clientRequest("/s-ramp?startIndex=0&count=2&query=" + query); //$NON-NLS-1$
+		query = String.format("xsd/XsdDocument[@stamp%%3D'%1$s']", stampVal);
+		request = clientRequest("/s-ramp?startIndex=0&count=2&query=" + query);
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Assert.assertEquals(2, feed.getEntries().size());
         // TODO: The use of CQRS and ArtificerSummary broke this ability.  S-RAMP support will probably be removed
         // in ARTIF-674, so just commenting-out for now.
 		// Verify that we can return all and bring back the two custom properties
-//		query = String.format("xsd/XsdDocument[@stamp%%3D'%1$s']", stampVal); //$NON-NLS-1$
-//		request = clientRequest("/s-ramp?propertyName=tidx&propertyName=stamp&query=" + query); //$NON-NLS-1$
+//		query = String.format("xsd/XsdDocument[@stamp%%3D'%1$s']", stampVal);
+//		request = clientRequest("/s-ramp?propertyName=tidx&propertyName=stamp&query=" + query);
 //		response = request.get(Feed.class);
 //		feed = response.getEntity();
 //		Assert.assertEquals(5, feed.getEntries().size());
@@ -125,7 +125,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 //				XsdDocument xsdDoc = arty.getXsdDocument();
 //				List<Property> properties = xsdDoc.getProperty();
 //				for (Property prop : properties) {
-//					if ("tidx".equals(prop.getPropertyName())) { //$NON-NLS-1$
+//					if ("tidx".equals(prop.getPropertyName())) {
 //						actualTidxVals.add(prop.getPropertyValue());
 //					}
 //				}
@@ -142,19 +142,19 @@ public class QueryResourceTest extends AbstractResourceTest {
         
         int numEntries = 20;
         for (int i = 0; i < numEntries; i++) {
-            addJpegDocument("photo" + i + ".jpg"); //$NON-NLS-1$ //$NON-NLS-2$
+            addJpegDocument("photo" + i + ".jpg");
         }
 
         // Default query
-        ClientRequest request = clientRequest("/s-ramp?query=ext"); //$NON-NLS-1$
+        ClientRequest request = clientRequest("/s-ramp?query=ext");
         ClientResponse<Feed> response = request.get(Feed.class);
         Feed feed = response.getEntity();
         Object startIndexAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_START_INDEX_QNAME);
         Object itemsPerPageAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_ITEMS_PER_PAGE_QNAME);
         Object totalResultsAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_TOTAL_RESULTS_QNAME);
-        Assert.assertNotNull("The startIndex attribute wasn't returned!", startIndexAttr); //$NON-NLS-1$
-        Assert.assertNotNull("The itemsPerPage attribute wasn't returned!", itemsPerPageAttr); //$NON-NLS-1$
-        Assert.assertNotNull("The totalResults attribute wasn't returned!", totalResultsAttr); //$NON-NLS-1$
+        Assert.assertNotNull("The startIndex attribute wasn't returned!", startIndexAttr);
+        Assert.assertNotNull("The itemsPerPage attribute wasn't returned!", itemsPerPageAttr);
+        Assert.assertNotNull("The totalResults attribute wasn't returned!", totalResultsAttr);
         int startIndex = Integer.parseInt(String.valueOf(startIndexAttr));
         int itemsPerPage = Integer.parseInt(String.valueOf(itemsPerPageAttr));
         int totalResults = Integer.parseInt(String.valueOf(totalResultsAttr));
@@ -163,15 +163,15 @@ public class QueryResourceTest extends AbstractResourceTest {
         Assert.assertEquals(20, totalResults);
 
         // Query with some params
-        request = clientRequest("/s-ramp?query=ext&startIndex=5&count=2"); //$NON-NLS-1$
+        request = clientRequest("/s-ramp?query=ext&startIndex=5&count=2");
         response = request.get(Feed.class);
         feed = response.getEntity();
         startIndexAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_START_INDEX_QNAME);
         itemsPerPageAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_ITEMS_PER_PAGE_QNAME);
         totalResultsAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_TOTAL_RESULTS_QNAME);
-        Assert.assertNotNull("The startIndex attribute wasn't returned!", startIndexAttr); //$NON-NLS-1$
-        Assert.assertNotNull("The itemsPerPage attribute wasn't returned!", itemsPerPageAttr); //$NON-NLS-1$
-        Assert.assertNotNull("The totalResults attribute wasn't returned!", totalResultsAttr); //$NON-NLS-1$
+        Assert.assertNotNull("The startIndex attribute wasn't returned!", startIndexAttr);
+        Assert.assertNotNull("The itemsPerPage attribute wasn't returned!", itemsPerPageAttr);
+        Assert.assertNotNull("The totalResults attribute wasn't returned!", totalResultsAttr);
         startIndex = Integer.parseInt(String.valueOf(startIndexAttr));
         itemsPerPage = Integer.parseInt(String.valueOf(itemsPerPageAttr));
         totalResults = Integer.parseInt(String.valueOf(totalResultsAttr));
@@ -186,15 +186,15 @@ public class QueryResourceTest extends AbstractResourceTest {
 	private Entry doAddXsd(String ... properties) throws Exception {
 		// Making a client call to the actual XsdDocument implementation running in
 		// an embedded container.
-		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument");
 
 		// read the XsdDocument from file
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xsd";
+		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		String xmltext = TestUtils.convertStreamToString(POXsd);
 		POXsd.close();
 
-		request.header("Slug", artifactFileName); //$NON-NLS-1$
+		request.header("Slug", artifactFileName);
 		request.body(MediaType.APPLICATION_XML, xmltext);
 
 		ClientResponse<Entry> response = request.post(Entry.class);
@@ -213,7 +213,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 			}
 			String uuid = xsdDocument.getUuid();
 			entry.setAnyOtherJAXBObject(srampArtifactWrapper);
-			request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid); //$NON-NLS-1$
+			request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid);
 			request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry);
 			request.put(Void.class);
 		}
@@ -226,17 +226,17 @@ public class QueryResourceTest extends AbstractResourceTest {
 	 */
 	@Test
 	public void testQueriesExtended() throws Exception {	    
-		addJpegDocument("photo1.jpg"); //$NON-NLS-1$
-		addJpegDocument("photo2.jpg"); //$NON-NLS-1$
+		addJpegDocument("photo1.jpg");
+		addJpegDocument("photo2.jpg");
 
-		ClientRequest request = clientRequest("/s-ramp?query=ext/JpgDocument"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp?query=ext/JpgDocument");
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		Object totalResultsAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_TOTAL_RESULTS_QNAME);
         int total = Integer.parseInt(String.valueOf(totalResultsAttr));
 		Assert.assertEquals(2, total);
 
-		request = clientRequest("/s-ramp/ext/JpgDocument"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/ext/JpgDocument");
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		totalResultsAttr = feed.getExtensionAttributes().get(ArtificerConstants.SRAMP_TOTAL_RESULTS_QNAME);
@@ -251,12 +251,12 @@ public class QueryResourceTest extends AbstractResourceTest {
 	 */
 	public void addJpegDocument(String fname) throws Exception {
 		// Add the jpg to the repository
-		String artifactFileName = "photo.jpg"; //$NON-NLS-1$
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "photo.jpg";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
 		try {
-			ClientRequest request = clientRequest("/s-ramp/ext/JpgDocument"); //$NON-NLS-1$
-			request.header("Slug", fname); //$NON-NLS-1$
-			request.body("application/octet-stream", contentStream); //$NON-NLS-1$
+			ClientRequest request = clientRequest("/s-ramp/ext/JpgDocument");
+			request.header("Slug", fname);
+			request.body("application/octet-stream", contentStream);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -266,9 +266,9 @@ public class QueryResourceTest extends AbstractResourceTest {
 			Assert.assertTrue(arty instanceof ExtendedDocument);
 			ExtendedDocument doc = (ExtendedDocument) arty;
 			Assert.assertEquals(fname, doc.getName());
-			Assert.assertEquals("JpgDocument", doc.getExtendedType()); //$NON-NLS-1$
+			Assert.assertEquals("JpgDocument", doc.getExtendedType());
 			Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(ArtificerConstants.SRAMP_CONTENT_SIZE_QNAME)));
-			Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(ArtificerConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
+			Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(ArtificerConstants.SRAMP_CONTENT_TYPE_QNAME));
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}

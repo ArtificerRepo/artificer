@@ -88,7 +88,7 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
         title.setText(ontology.getLabel());
         body.clear();
         LoadingOntology w = loading.get();
-        w.getElement().removeClassName("hide"); //$NON-NLS-1$
+        w.getElement().removeClassName("hide");
         body.add(w);
         ontologyServiceCaller.get(ontology.getUuid(), false, new IServiceInvocationHandler<OntologyBean>() {
             @Override
@@ -99,8 +99,8 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
             }
             @Override
             public void onError(Throwable error) {
-                String errorTitle = i18n.format("classifier-filter-sel-dialog.error.title"); //$NON-NLS-1$
-                String errorMsg = i18n.format("classifier-filter-sel-dialog.error.msg", ontology.getLabel()); //$NON-NLS-1$
+                String errorTitle = i18n.format("classifier-filter-sel-dialog.error.title");
+                String errorMsg = i18n.format("classifier-filter-sel-dialog.error.msg", ontology.getLabel());
                 if (error instanceof ArtificerUiException) {
                     notificationService.sendErrorNotification(errorTitle, errorMsg, (ArtificerUiException) error);
                 } else {

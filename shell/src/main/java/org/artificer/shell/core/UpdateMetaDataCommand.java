@@ -41,10 +41,10 @@ public class UpdateMetaDataCommand extends AbstractCommand {
 
 		try {
 			client.updateArtifactMetaData(artifact);
-			commandInvocation.getShell().out().println(Messages.i18n.format("UpdateMetaData.Success", artifact.getName())); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("UpdateMetaData.Success", artifact.getName()));
 		} catch (Exception e) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("UpdateMetaData.Failure")); //$NON-NLS-1$
-			commandInvocation.getShell().out().println("\t" + e.getMessage()); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("UpdateMetaData.Failure"));
+			commandInvocation.getShell().out().println("\t" + e.getMessage());
 			return CommandResult.FAILURE;
 		}
         return CommandResult.SUCCESS;

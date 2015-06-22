@@ -82,9 +82,9 @@ public class AddEntryArchiveCommand extends AbstractArchiveCommand {
 			BaseArtifactType artifact = artifactType.newArtifactInstance();
 			artifact.setName(name);
 			currentArchive(commandInvocation).addEntry(entryPath, artifact, contentStream);
-            commandInvocation.getShell().out().println(Messages.i18n.format("AddEntry.Added", entryPath)); //$NON-NLS-1$
+            commandInvocation.getShell().out().println(Messages.i18n.format("AddEntry.Added", entryPath));
         } catch (ArtificerArchiveException e) {
-            commandInvocation.getShell().out().println(Messages.i18n.format("AddEntry.ArtificerArchiveException", e.getLocalizedMessage())); //$NON-NLS-1$
+            commandInvocation.getShell().out().println(Messages.i18n.format("AddEntry.ArtificerArchiveException", e.getLocalizedMessage()));
         } finally {
 			IOUtils.closeQuietly(contentStream);
 		}

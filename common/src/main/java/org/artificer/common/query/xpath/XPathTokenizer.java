@@ -100,7 +100,7 @@ public class XPathTokenizer {
                         }
                     }
                     if (!foundClosingQuote) {
-                    	throw new ParseException(Messages.i18n.format("XPATH_TOK_MISSING_QUOTE"), stream.index()); //$NON-NLS-1$
+                    	throw new ParseException(Messages.i18n.format("XPATH_TOK_MISSING_QUOTE"), stream.index());
                     }
                     endIndex = stream.index() + 1; // beyond last character read
                     tokens.addToken(stream.get(startIndex, endIndex), TokenType.quotedString);

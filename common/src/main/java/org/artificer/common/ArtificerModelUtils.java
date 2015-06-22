@@ -164,7 +164,7 @@ public class ArtificerModelUtils {
 	    if (ct == null)
 	        return false;
 	    ct = ct.toLowerCase();
-	    return ct.contains("text/") || ct.contains("application/xml"); //$NON-NLS-1$ //$NON-NLS-2$
+	    return ct.contains("text/") || ct.contains("application/xml");
 	}
 
     /**

@@ -114,7 +114,7 @@ public class NotificationWidget extends Composite implements MouseInEvent.HasMou
         } else if (notificationType == NotificationType.error) {
             this.body.add(msg);
         } else if (notificationType == NotificationType.progress) {
-            msg.addStyleName("spinner"); //$NON-NLS-1$
+            msg.addStyleName("spinner");
             this.body.add(msg);
         }
     }
@@ -188,7 +188,7 @@ public class NotificationWidget extends Composite implements MouseInEvent.HasMou
     private boolean isMouseInMe(int clientX, int clientY) {
         try {
             String bottomStyle = getElement().getStyle().getBottom();
-            int bottom = new Integer(bottomStyle.split("px")[0]).intValue(); //$NON-NLS-1$
+            int bottom = new Integer(bottomStyle.split("px")[0]).intValue();
             bottom = Window.getClientHeight() - bottom;
 
             int top = bottom - getOffsetHeight();
@@ -205,7 +205,7 @@ public class NotificationWidget extends Composite implements MouseInEvent.HasMou
      * Called when the mouse enters the dialog.
      */
     protected void onMouseIn() {
-        addStyleName("growl-dialog-hover"); //$NON-NLS-1$
+        addStyleName("growl-dialog-hover");
         MouseInEvent.fire(this);
     }
 
@@ -213,7 +213,7 @@ public class NotificationWidget extends Composite implements MouseInEvent.HasMou
      * Called when the mouse leaves the dialog.
      */
     protected void onMouseOut() {
-        removeStyleName("growl-dialog-hover"); //$NON-NLS-1$
+        removeStyleName("growl-dialog-hover");
         MouseOutEvent.fire(this);
     }
 

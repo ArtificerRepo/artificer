@@ -84,7 +84,7 @@ public class ClassifierFilter extends Composite implements HasClickHandlers, Has
      * @param outOf
      */
     public void setNumSelected(int selected) {
-        this.numSelected.setText(i18n.format("classifier-filter.num-selected", String.valueOf(selected))); //$NON-NLS-1$
+        this.numSelected.setText(i18n.format("classifier-filter.num-selected", String.valueOf(selected)));
     }
 
     /**

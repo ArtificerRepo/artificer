@@ -79,7 +79,7 @@ public class QueryResource extends AbstractFeedResource {
 			String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
 			return createArtifactFeed(query, startPage, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -96,14 +96,14 @@ public class QueryResource extends AbstractFeedResource {
 		String query = null;
 		try {
 			String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
-			query = input.getFormDataPart("query", new GenericType<String>() { }); //$NON-NLS-1$
-			Integer startPage = input.getFormDataPart("startPage", new GenericType<Integer>() { }); //$NON-NLS-1$
-			Integer startIndex = input.getFormDataPart("startIndex", new GenericType<Integer>() { }); //$NON-NLS-1$
-			Integer count = input.getFormDataPart("count", new GenericType<Integer>() { }); //$NON-NLS-1$
-			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { }); //$NON-NLS-1$
-			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { }); //$NON-NLS-1$
+			query = input.getFormDataPart("query", new GenericType<String>() { });
+			Integer startPage = input.getFormDataPart("startPage", new GenericType<Integer>() { });
+			Integer startIndex = input.getFormDataPart("startIndex", new GenericType<Integer>() { });
+			Integer count = input.getFormDataPart("count", new GenericType<Integer>() { });
+			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
+			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
             Set<String> propNames = new HashSet<String>();
-			List<InputPart> list = input.getFormDataMap().get("propertyName"); //$NON-NLS-1$
+			List<InputPart> list = input.getFormDataMap().get("propertyName");
 			if (list != null) {
     			for (InputPart inputPart : list) {
     			    propNames.add(inputPart.getBodyAsString());
@@ -114,7 +114,7 @@ public class QueryResource extends AbstractFeedResource {
 		} catch (ArtificerServerException e) {
 			throw e;
 		} catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e);
 			throw new ArtificerAtomException(e);
 		}
 	}

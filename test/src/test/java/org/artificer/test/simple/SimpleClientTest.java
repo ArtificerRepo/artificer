@@ -42,15 +42,15 @@ public class SimpleClientTest extends AbstractIntegrationTest {
             ArtificerAtomApiClient client = client();
             ExtendedArtifactType artifact = new ExtendedArtifactType();
             artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-            artifact.setExtendedType("FooArtifactType"); //$NON-NLS-1$
-            artifact.setName("Foo"); //$NON-NLS-1$
-            artifact.setDescription("I'm a Foo"); //$NON-NLS-1$
+            artifact.setExtendedType("FooArtifactType");
+            artifact.setName("Foo");
+            artifact.setDescription("I'm a Foo");
             BaseArtifactType createdArtifact = client.createArtifact(artifact);
             
             assertNotNull(createdArtifact);
             assertEquals(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE, createdArtifact.getArtifactType());
-            assertEquals("Foo", createdArtifact.getName()); //$NON-NLS-1$
-            assertEquals("I'm a Foo", createdArtifact.getDescription()); //$NON-NLS-1$
+            assertEquals("Foo", createdArtifact.getName());
+            assertEquals("I'm a Foo", createdArtifact.getDescription());
             assertNotNull(createdArtifact.getUuid());
             assertTrue(createdArtifact.getUuid().length() > 0);
             
@@ -58,19 +58,19 @@ public class SimpleClientTest extends AbstractIntegrationTest {
             
             assertNotNull(queriedArtifact);
             assertEquals(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE, queriedArtifact.getArtifactType());
-            assertEquals("Foo", queriedArtifact.getName()); //$NON-NLS-1$
-            assertEquals("I'm a Foo", queriedArtifact.getDescription()); //$NON-NLS-1$
+            assertEquals("Foo", queriedArtifact.getName());
+            assertEquals("I'm a Foo", queriedArtifact.getDescription());
             assertEquals(createdArtifact.getUuid(), queriedArtifact.getUuid());
             
-            QueryResultSet results = client.buildQuery("/s-ramp/ext/FooArtifactType[@name = ?]") //$NON-NLS-1$
-                    .parameter("Foo") //$NON-NLS-1$
+            QueryResultSet results = client.buildQuery("/s-ramp/ext/FooArtifactType[@name = ?]")
+                    .parameter("Foo")
                     .query();
             assertEquals(1, results.size());
             ArtifactSummary summary = results.get(0);
             
             assertNotNull(summary);
-            assertEquals("Foo", summary.getName()); //$NON-NLS-1$
-            assertEquals("I'm a Foo", summary.getDescription()); //$NON-NLS-1$
+            assertEquals("Foo", summary.getName());
+            assertEquals("I'm a Foo", summary.getDescription());
             assertEquals(createdArtifact.getUuid(), summary.getUuid());
         } catch (Exception e) {
             fail(e.getMessage());

@@ -15,6 +15,14 @@
  */
 package org.artificer.atom.archive;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.artificer.atom.test.AtomTestUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -23,15 +31,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-
-import org.artificer.atom.test.AtomTestUtils;
 
 /**
  * JUnit test for the {@link ArtificerArchive} class.
@@ -48,8 +47,8 @@ public class ArtificerArchiveTest {
 		ArtificerArchive archive = null;
 
 		try {
-			resourceAsStream = ArtificerArchiveTest.class.getResourceAsStream("simple-sramp-archive.zip"); //$NON-NLS-1$
-			tempFile = File.createTempFile("sramp_test", "ar"); //$NON-NLS-1$ //$NON-NLS-2$
+			resourceAsStream = ArtificerArchiveTest.class.getResourceAsStream("simple-sramp-archive.zip");
+			tempFile = File.createTempFile("sramp_test", "ar");
 			tempFileStream = new FileOutputStream(tempFile);
 			IOUtils.copy(resourceAsStream, tempFileStream);
 		} finally {
@@ -63,14 +62,14 @@ public class ArtificerArchiveTest {
 			File workDir = AtomTestUtils.getArchiveWorkDir(archive);
 			Assert.assertNotNull(workDir);
 			Assert.assertTrue(workDir.isDirectory());
-			Collection<File> files = FileUtils.listFiles(workDir, new String[] {"xsd", "atom"}, true); //$NON-NLS-1$ //$NON-NLS-2$
+			Collection<File> files = FileUtils.listFiles(workDir, new String[] {"xsd", "atom"}, true);
 			Assert.assertEquals(2, files.size());
 			Set<String> fnames = new HashSet<String>();
 			for (File f : files) {
 				fnames.add(f.getName());
 			}
-			Assert.assertTrue(fnames.contains("sample.xsd")); //$NON-NLS-1$
-			Assert.assertTrue(fnames.contains("sample.xsd.atom")); //$NON-NLS-1$
+			Assert.assertTrue(fnames.contains("sample.xsd"));
+			Assert.assertTrue(fnames.contains("sample.xsd.atom"));
 		} finally {
 			FileUtils.deleteQuietly(tempFile);
 			ArtificerArchive.closeQuietly(archive);
@@ -85,8 +84,8 @@ public class ArtificerArchiveTest {
 		ArtificerArchive archive = null;
 
 		try {
-			resourceAsStream = ArtificerArchiveTest.class.getResourceAsStream("simple-sramp-archive.zip"); //$NON-NLS-1$
-			tempFile = File.createTempFile("sramp_test", "ar"); //$NON-NLS-1$ //$NON-NLS-2$
+			resourceAsStream = ArtificerArchiveTest.class.getResourceAsStream("simple-sramp-archive.zip");
+			tempFile = File.createTempFile("sramp_test", "ar");
 			tempFileStream = new FileOutputStream(tempFile);
 			IOUtils.copy(resourceAsStream, tempFileStream);
 		} finally {
@@ -99,11 +98,11 @@ public class ArtificerArchiveTest {
 			Collection<ArtificerArchiveEntry> entries = archive.getEntries();
 			Assert.assertEquals(1, entries.size());
 			ArtificerArchiveEntry entry = entries.iterator().next();
-			Assert.assertEquals("simple-sramp-archive/sample.xsd", entry.getPath()); //$NON-NLS-1$
+			Assert.assertEquals("simple-sramp-archive/sample.xsd", entry.getPath());
 			Assert.assertNotNull(entry.getMetaData());
-			Assert.assertEquals("d658b181-975c-42c5-ad5c-dc65cb9aa4a1", entry.getMetaData().getUuid()); //$NON-NLS-1$
-			Assert.assertEquals("sample.xsd", entry.getMetaData().getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.0", entry.getMetaData().getVersion()); //$NON-NLS-1$
+			Assert.assertEquals("d658b181-975c-42c5-ad5c-dc65cb9aa4a1", entry.getMetaData().getUuid());
+			Assert.assertEquals("sample.xsd", entry.getMetaData().getName());
+			Assert.assertEquals("1.0", entry.getMetaData().getVersion());
 		} finally {
 			FileUtils.deleteQuietly(tempFile);
 			ArtificerArchive.closeQuietly(archive);
@@ -112,26 +111,26 @@ public class ArtificerArchiveTest {
 
 	@Test
 	public void testAddEntry() throws Exception {
-		InputStream artifactContentStream = ArtificerArchiveTest.class.getResourceAsStream("sample.xsd"); //$NON-NLS-1$
+		InputStream artifactContentStream = ArtificerArchiveTest.class.getResourceAsStream("sample.xsd");
 		XsdDocument artifactMetaData = new XsdDocument();
-		setMetaData(artifactMetaData, "sample.xsd", "1.0.3", "Just a sample XML Schema."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		setMetaData(artifactMetaData, "sample.xsd", "1.0.3", "Just a sample XML Schema.");
 
 		ArtificerArchive archive = null;
 		try {
 			archive = new ArtificerArchive();
-			archive.addEntry("sample.xsd", artifactMetaData, artifactContentStream); //$NON-NLS-1$
+			archive.addEntry("sample.xsd", artifactMetaData, artifactContentStream);
 
 			File workDir = AtomTestUtils.getArchiveWorkDir(archive);
 			Assert.assertNotNull(workDir);
 			Assert.assertTrue(workDir.isDirectory());
-			Collection<File> files = FileUtils.listFiles(workDir, new String[] {"xsd", "atom"}, true); //$NON-NLS-1$ //$NON-NLS-2$
+			Collection<File> files = FileUtils.listFiles(workDir, new String[] {"xsd", "atom"}, true);
 			Assert.assertEquals(2, files.size());
 			Set<String> fnames = new HashSet<String>();
 			for (File f : files) {
 				fnames.add(f.getName());
 			}
-			Assert.assertTrue(fnames.contains("sample.xsd")); //$NON-NLS-1$
-			Assert.assertTrue(fnames.contains("sample.xsd.atom")); //$NON-NLS-1$
+			Assert.assertTrue(fnames.contains("sample.xsd"));
+			Assert.assertTrue(fnames.contains("sample.xsd.atom"));
 		} finally {
 			ArtificerArchive.closeQuietly(archive);
 		}
@@ -148,25 +147,25 @@ public class ArtificerArchiveTest {
 		ArtificerArchive archive = null;
 		File archiveFile = null;
 		try {
-			InputStream artifact1ContentStream = ArtificerArchiveTest.class.getResourceAsStream("sample.xsd"); //$NON-NLS-1$
-			InputStream artifact2ContentStream = ArtificerArchiveTest.class.getResourceAsStream("PO.xsd"); //$NON-NLS-1$
-			InputStream artifact3ContentStream = ArtificerArchiveTest.class.getResourceAsStream("coremodel.xsd"); //$NON-NLS-1$
-			InputStream artifact4ContentStream = ArtificerArchiveTest.class.getResourceAsStream("xlink.xsd"); //$NON-NLS-1$
+			InputStream artifact1ContentStream = ArtificerArchiveTest.class.getResourceAsStream("sample.xsd");
+			InputStream artifact2ContentStream = ArtificerArchiveTest.class.getResourceAsStream("PO.xsd");
+			InputStream artifact3ContentStream = ArtificerArchiveTest.class.getResourceAsStream("coremodel.xsd");
+			InputStream artifact4ContentStream = ArtificerArchiveTest.class.getResourceAsStream("xlink.xsd");
 
-			String path1 = "sample/sample.xsd"; //$NON-NLS-1$
-			String path2 = "sample/PO.xsd"; //$NON-NLS-1$
-			String path3 = "s-ramp/coremodel.xsd"; //$NON-NLS-1$
-			String path4 = "s-ramp/xlink.xsd"; //$NON-NLS-1$
+			String path1 = "sample/sample.xsd";
+			String path2 = "sample/PO.xsd";
+			String path3 = "s-ramp/coremodel.xsd";
+			String path4 = "s-ramp/xlink.xsd";
 
 			XsdDocument artifact1MetaData = new XsdDocument();
 			XsdDocument artifact2MetaData = new XsdDocument();
 			XsdDocument artifact3MetaData = new XsdDocument();
 			XsdDocument artifact4MetaData = new XsdDocument();
 
-			setMetaData(artifact1MetaData, "sample.xsd", "1.0.3", "Just a sample XML Schema."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			setMetaData(artifact2MetaData, "PO.xsd", "2.1.4", "The Purchase Order schema."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			setMetaData(artifact3MetaData, "coremodel.xsd", "1.6.1", "S-RAMP core schema."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			setMetaData(artifact4MetaData, "xlink.xsd", "1.6.1", "X-LINK schema."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			setMetaData(artifact1MetaData, "sample.xsd", "1.0.3", "Just a sample XML Schema.");
+			setMetaData(artifact2MetaData, "PO.xsd", "2.1.4", "The Purchase Order schema.");
+			setMetaData(artifact3MetaData, "coremodel.xsd", "1.6.1", "S-RAMP core schema.");
+			setMetaData(artifact4MetaData, "xlink.xsd", "1.6.1", "X-LINK schema.");
 
 			archive = new ArtificerArchive();
 			archive.addEntry(path1, artifact1MetaData, artifact1ContentStream);
@@ -189,29 +188,29 @@ public class ArtificerArchiveTest {
 				entryMap.put(entry.getPath(), entry);
 
 			// Assertions for sample.xsd
-			XsdDocument sampleXsdMetaData = (XsdDocument) entryMap.get("sample/sample.xsd").getMetaData(); //$NON-NLS-1$
+			XsdDocument sampleXsdMetaData = (XsdDocument) entryMap.get("sample/sample.xsd").getMetaData();
 			Assert.assertNotNull(sampleXsdMetaData);
-			Assert.assertEquals("sample.xsd", sampleXsdMetaData.getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.0.3", sampleXsdMetaData.getVersion()); //$NON-NLS-1$
-			Assert.assertEquals("Just a sample XML Schema.", sampleXsdMetaData.getDescription()); //$NON-NLS-1$
+			Assert.assertEquals("sample.xsd", sampleXsdMetaData.getName());
+			Assert.assertEquals("1.0.3", sampleXsdMetaData.getVersion());
+			Assert.assertEquals("Just a sample XML Schema.", sampleXsdMetaData.getDescription());
 			// Assertions for PO.xsd
-			XsdDocument poXsdMetaData = (XsdDocument) entryMap.get("sample/PO.xsd").getMetaData(); //$NON-NLS-1$
+			XsdDocument poXsdMetaData = (XsdDocument) entryMap.get("sample/PO.xsd").getMetaData();
 			Assert.assertNotNull(poXsdMetaData);
-			Assert.assertEquals("PO.xsd", poXsdMetaData.getName()); //$NON-NLS-1$
-			Assert.assertEquals("2.1.4", poXsdMetaData.getVersion()); //$NON-NLS-1$
-			Assert.assertEquals("The Purchase Order schema.", poXsdMetaData.getDescription()); //$NON-NLS-1$
+			Assert.assertEquals("PO.xsd", poXsdMetaData.getName());
+			Assert.assertEquals("2.1.4", poXsdMetaData.getVersion());
+			Assert.assertEquals("The Purchase Order schema.", poXsdMetaData.getDescription());
 			// Assertions for coremodel.xsd
-			XsdDocument coremodelXsdMetaData = (XsdDocument) entryMap.get("s-ramp/coremodel.xsd").getMetaData(); //$NON-NLS-1$
+			XsdDocument coremodelXsdMetaData = (XsdDocument) entryMap.get("s-ramp/coremodel.xsd").getMetaData();
 			Assert.assertNotNull(coremodelXsdMetaData);
-			Assert.assertEquals("coremodel.xsd", coremodelXsdMetaData.getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.6.1", coremodelXsdMetaData.getVersion()); //$NON-NLS-1$
-			Assert.assertEquals("S-RAMP core schema.", coremodelXsdMetaData.getDescription()); //$NON-NLS-1$
+			Assert.assertEquals("coremodel.xsd", coremodelXsdMetaData.getName());
+			Assert.assertEquals("1.6.1", coremodelXsdMetaData.getVersion());
+			Assert.assertEquals("S-RAMP core schema.", coremodelXsdMetaData.getDescription());
 			// Assertions for xlink.xsd
-			XsdDocument xlinkXsdMetaData = (XsdDocument) entryMap.get("s-ramp/xlink.xsd").getMetaData(); //$NON-NLS-1$
+			XsdDocument xlinkXsdMetaData = (XsdDocument) entryMap.get("s-ramp/xlink.xsd").getMetaData();
 			Assert.assertNotNull(xlinkXsdMetaData);
-			Assert.assertEquals("xlink.xsd", xlinkXsdMetaData.getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.6.1", xlinkXsdMetaData.getVersion()); //$NON-NLS-1$
-			Assert.assertEquals("X-LINK schema.", xlinkXsdMetaData.getDescription()); //$NON-NLS-1$
+			Assert.assertEquals("xlink.xsd", xlinkXsdMetaData.getName());
+			Assert.assertEquals("1.6.1", xlinkXsdMetaData.getVersion());
+			Assert.assertEquals("X-LINK schema.", xlinkXsdMetaData.getDescription());
 		} finally {
 			ArtificerArchive.closeQuietly(archive);
 			FileUtils.deleteQuietly(archiveFile);

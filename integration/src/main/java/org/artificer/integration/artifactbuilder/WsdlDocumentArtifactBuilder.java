@@ -42,13 +42,13 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
         super.configureNamespaceMappings(namespaceContext);
 
-        namespaceContext.addMapping("wsdl", "http://schemas.xmlsoap.org/wsdl/"); //$NON-NLS-1$ //$NON-NLS-2$
-        namespaceContext.addMapping("soap", "http://schemas.xmlsoap.org/wsdl/soap/"); //$NON-NLS-1$ //$NON-NLS-2$
+        namespaceContext.addMapping("wsdl", "http://schemas.xmlsoap.org/wsdl/");
+        namespaceContext.addMapping("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
     }
     
     @Override
     protected void derive() throws IOException {
-        targetNS = rootElement.getAttribute("targetNamespace"); //$NON-NLS-1$
+        targetNS = rootElement.getAttribute("targetNamespace");
         
         if (getPrimaryArtifact() instanceof WsdlDocument) {
             ((WsdlDocument) getPrimaryArtifact()).setTargetNamespace(targetNS);
@@ -56,7 +56,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
         
         try {
             // Get derived content from all of the schemas embedded in this WSDL
-            NodeList schemas = (NodeList) this.query(rootElement, "./wsdl:types/xsd:schema", XPathConstants.NODESET); //$NON-NLS-1$
+            NodeList schemas = (NodeList) this.query(rootElement, "./wsdl:types/xsd:schema", XPathConstants.NODESET);
             for (int idx = 0; idx < schemas.getLength(); idx++) {
                 Element schema = (Element) schemas.item(idx);
                 
@@ -80,11 +80,11 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
 
     private void processMessages() throws XPathExpressionException {
         // Get all the WSDL messages and add them (and their parts) to the list
-        NodeList messages = (NodeList) this.query(rootElement, "./wsdl:message", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList messages = (NodeList) this.query(rootElement, "./wsdl:message", XPathConstants.NODESET);
         for (int idx = 0; idx < messages.getLength(); idx++) {
             Element messageElem = (Element) messages.item(idx);
-            if (messageElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = messageElem.getAttribute("name"); //$NON-NLS-1$
+            if (messageElem.hasAttribute("name")) {
+                String name = messageElem.getAttribute("name");
                 Message message = new Message();
                 message.setUuid(UUID.randomUUID().toString());
                 message.setArtifactType(BaseArtifactEnum.MESSAGE);
@@ -108,11 +108,11 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
         Collection<Part> rval = new LinkedList<Part>();
 
         // Get all the parts and add them to the list
-        NodeList parts = (NodeList) this.query(messageElem, "./wsdl:part", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList parts = (NodeList) this.query(messageElem, "./wsdl:part", XPathConstants.NODESET);
         for (int idx = 0; idx < parts.getLength(); idx++) {
             Element partElem = (Element) parts.item(idx);
-            if (partElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = partElem.getAttribute("name"); //$NON-NLS-1$
+            if (partElem.hasAttribute("name")) {
+                String name = partElem.getAttribute("name");
                 Part part = new Part();
                 part.setUuid(UUID.randomUUID().toString());
                 part.setArtifactType(BaseArtifactEnum.PART);
@@ -122,8 +122,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                 derivedArtifacts.add(part);
                 rval.add(part);
 
-                if (partElem.hasAttribute("element")) { //$NON-NLS-1$
-                    String encodedQName = partElem.getAttribute("element"); //$NON-NLS-1$
+                if (partElem.hasAttribute("element")) {
+                    String encodedQName = partElem.getAttribute("element");
                     QName qname = resolveQName(partElem, targetNS, encodedQName);
                     ElementDeclaration elementRef = derivedArtifacts.lookupElement(qname);
                     ElementDeclarationTarget elementTarget = new ElementDeclarationTarget();
@@ -135,8 +135,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                                 ArtifactTypeEnum.ElementDeclaration.getModel(), ArtifactTypeEnum.ElementDeclaration.getType()));
                     }
                     part.setElement(elementTarget);
-                } else if (partElem.hasAttribute("type")) { //$NON-NLS-1$
-                    String encodedQName = partElem.getAttribute("type"); //$NON-NLS-1$
+                } else if (partElem.hasAttribute("type")) {
+                    String encodedQName = partElem.getAttribute("type");
                     QName qname = resolveQName(partElem, targetNS, encodedQName);
                     XsdType typeRef = derivedArtifacts.lookupType(qname);
                     XsdTypeTarget typeTarget = new XsdTypeTarget();
@@ -157,11 +157,11 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
 
     private void processPortTypes() throws XPathExpressionException {
         // Get all the port types and add them to the list
-        NodeList portTypes = (NodeList) this.query(rootElement, "./wsdl:portType", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList portTypes = (NodeList) this.query(rootElement, "./wsdl:portType", XPathConstants.NODESET);
         for (int idx = 0; idx < portTypes.getLength(); idx++) {
             Element portTypeElem = (Element) portTypes.item(idx);
-            if (portTypeElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = portTypeElem.getAttribute("name"); //$NON-NLS-1$
+            if (portTypeElem.hasAttribute("name")) {
+                String name = portTypeElem.getAttribute("name");
                 PortType portType = new PortType();
                 portType.setUuid(UUID.randomUUID().toString());
                 portType.setArtifactType(BaseArtifactEnum.PORT_TYPE);
@@ -185,11 +185,11 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
         Collection<Operation> rval = new LinkedList<Operation>();
 
         // Get all the operations and add them to the list
-        NodeList operations = (NodeList) this.query(portTypeElem, "./wsdl:operation", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList operations = (NodeList) this.query(portTypeElem, "./wsdl:operation", XPathConstants.NODESET);
         for (int idx = 0; idx < operations.getLength(); idx++) {
             Element operationElem = (Element) operations.item(idx);
-            if (operationElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = operationElem.getAttribute("name"); //$NON-NLS-1$
+            if (operationElem.hasAttribute("name")) {
+                String name = operationElem.getAttribute("name");
                 Operation operation = new Operation();
                 operation.setUuid(UUID.randomUUID().toString());
                 operation.setArtifactType(BaseArtifactEnum.OPERATION);
@@ -231,7 +231,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     private OperationInput processOperationInput(Element operationElem) throws XPathExpressionException {
         OperationInput rval = null;
 
-        Element inputElem = (Element) this.query(operationElem, "./wsdl:input", XPathConstants.NODE); //$NON-NLS-1$
+        Element inputElem = (Element) this.query(operationElem, "./wsdl:input", XPathConstants.NODE);
         if (inputElem != null) {
             OperationInput input = new OperationInput();
             input.setUuid(UUID.randomUUID().toString());
@@ -239,8 +239,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
             String name = null;
             derivedArtifacts.add(input);
 
-            if (inputElem.hasAttribute("message")) { //$NON-NLS-1$
-                String encodedMsgQname = inputElem.getAttribute("message"); //$NON-NLS-1$
+            if (inputElem.hasAttribute("message")) {
+                String encodedMsgQname = inputElem.getAttribute("message");
                 QName msgQname = resolveQName(inputElem, targetNS, encodedMsgQname);
                 name = msgQname.getLocalPart();
                 Message message = derivedArtifacts.lookupMessage(msgQname);
@@ -254,8 +254,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                 }
                 input.setMessage(target);
             }
-            if (inputElem.hasAttribute("name")) { //$NON-NLS-1$
-                name = inputElem.getAttribute("name"); //$NON-NLS-1$
+            if (inputElem.hasAttribute("name")) {
+                name = inputElem.getAttribute("name");
                 input.setNCName(name);
             }
 
@@ -270,7 +270,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     private OperationOutput processOperationOutput(Element operationElem) throws XPathExpressionException {
         OperationOutput rval = null;
 
-        Element outputElem = (Element) this.query(operationElem, "./wsdl:output", XPathConstants.NODE); //$NON-NLS-1$
+        Element outputElem = (Element) this.query(operationElem, "./wsdl:output", XPathConstants.NODE);
         if (outputElem != null) {
             OperationOutput output = new OperationOutput();
             output.setUuid(UUID.randomUUID().toString());
@@ -278,8 +278,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
             String name = null;
             derivedArtifacts.add(output);
 
-            if (outputElem.hasAttribute("message")) { //$NON-NLS-1$
-                String encodedMsgQname = outputElem.getAttribute("message"); //$NON-NLS-1$
+            if (outputElem.hasAttribute("message")) {
+                String encodedMsgQname = outputElem.getAttribute("message");
                 QName msgQname = resolveQName(outputElem, targetNS, encodedMsgQname);
                 name = msgQname.getLocalPart();
                 Message message = derivedArtifacts.lookupMessage(msgQname);
@@ -293,8 +293,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                 }
                 output.setMessage(target);
             }
-            if (outputElem.hasAttribute("name")) { //$NON-NLS-1$
-                name = outputElem.getAttribute("name"); //$NON-NLS-1$
+            if (outputElem.hasAttribute("name")) {
+                name = outputElem.getAttribute("name");
                 output.setNCName(name);
             }
 
@@ -309,7 +309,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     private Collection<Fault> processOperationFaults(Element operationElem) throws XPathExpressionException {
         Collection<Fault> rval = new LinkedList<Fault>();
 
-        NodeList faults = (NodeList) this.query(operationElem, "./wsdl:fault", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList faults = (NodeList) this.query(operationElem, "./wsdl:fault", XPathConstants.NODESET);
         for (int idx = 0; idx < faults.getLength(); idx++) {
             Element faultElem = (Element) faults.item(idx);
             Fault fault = new Fault();
@@ -320,8 +320,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
             derivedArtifacts.add(fault);
             rval.add(fault);
 
-            if (faultElem.hasAttribute("message")) { //$NON-NLS-1$
-                String encodedMsgQname = faultElem.getAttribute("message"); //$NON-NLS-1$
+            if (faultElem.hasAttribute("message")) {
+                String encodedMsgQname = faultElem.getAttribute("message");
                 QName msgQname = resolveQName(faultElem, targetNS, encodedMsgQname);
                 name = msgQname.getLocalPart();
                 Message message = derivedArtifacts.lookupMessage(msgQname);
@@ -335,8 +335,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                 }
                 fault.setMessage(target);
             }
-            if (faultElem.hasAttribute("name")) { //$NON-NLS-1$
-                name = faultElem.getAttribute("name"); //$NON-NLS-1$
+            if (faultElem.hasAttribute("name")) {
+                name = faultElem.getAttribute("name");
                 fault.setNCName(name);
             }
 
@@ -348,11 +348,11 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
 
     private void processBindings() throws XPathExpressionException {
         // Get all the bindings and add them to the list
-        NodeList bindings = (NodeList) this.query(rootElement, "./wsdl:binding", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList bindings = (NodeList) this.query(rootElement, "./wsdl:binding", XPathConstants.NODESET);
         for (int idx = 0; idx < bindings.getLength(); idx++) {
             Element bindingElem = (Element) bindings.item(idx);
-            if (bindingElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = bindingElem.getAttribute("name"); //$NON-NLS-1$
+            if (bindingElem.hasAttribute("name")) {
+                String name = bindingElem.getAttribute("name");
                 Binding binding = new Binding();
                 binding.setUuid(UUID.randomUUID().toString());
                 binding.setArtifactType(BaseArtifactEnum.BINDING);
@@ -363,8 +363,8 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
 
                 // Resolve the referenced port type and create a relationship to it.
                 PortType portType = null;
-                if (bindingElem.hasAttribute("type")) { //$NON-NLS-1$
-                    String portTypeEncodedQName = bindingElem.getAttribute("type"); //$NON-NLS-1$
+                if (bindingElem.hasAttribute("type")) {
+                    String portTypeEncodedQName = bindingElem.getAttribute("type");
                     QName portTypeQName = resolveQName(bindingElem, targetNS, portTypeEncodedQName);
                     portType = derivedArtifacts.lookupPortType(portTypeQName);
                     PortTypeTarget target = new PortTypeTarget();
@@ -388,7 +388,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                 }
 
                 // Process soap extensions
-                NodeList soapBindings = (NodeList) this.query(bindingElem, "./soap:binding", XPathConstants.NODESET); //$NON-NLS-1$
+                NodeList soapBindings = (NodeList) this.query(bindingElem, "./soap:binding", XPathConstants.NODESET);
                 for (int jdx = 0; jdx < bindings.getLength(); jdx++) {
                     Element soapBindingElem = (Element) soapBindings.item(jdx);
                     // Note: I ran into a case where the xpath returned some nodes but calls to item()
@@ -399,11 +399,11 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                     SoapBinding soapBinding = new SoapBinding();
                     soapBinding.setUuid(UUID.randomUUID().toString());
                     soapBinding.setArtifactType(BaseArtifactEnum.SOAP_BINDING);
-                    soapBinding.setName("soap:binding"); //$NON-NLS-1$
+                    soapBinding.setName("soap:binding");
                     soapBinding.setNamespace(soapBindingElem.getNamespaceURI());
                     soapBinding.setNCName(soapBindingElem.getLocalName());
-                    soapBinding.setStyle(soapBindingElem.getAttribute("style")); //$NON-NLS-1$
-                    soapBinding.setTransport(soapBindingElem.getAttribute("transport")); //$NON-NLS-1$
+                    soapBinding.setStyle(soapBindingElem.getAttribute("style"));
+                    soapBinding.setTransport(soapBindingElem.getAttribute("transport"));
                     derivedArtifacts.add(soapBinding);
 
                     WsdlExtensionTarget target = new WsdlExtensionTarget();
@@ -419,11 +419,11 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
         Collection<BindingOperation> rval = new LinkedList<BindingOperation>();
 
         // Get all the binding operations and add them to the list
-        NodeList bindingOperations = (NodeList) this.query(bindingElem, "./wsdl:operation", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList bindingOperations = (NodeList) this.query(bindingElem, "./wsdl:operation", XPathConstants.NODESET);
         for (int idx = 0; idx < bindingOperations.getLength(); idx++) {
             Element bindingOperationElem = (Element) bindingOperations.item(idx);
-            if (bindingOperationElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = bindingOperationElem.getAttribute("name"); //$NON-NLS-1$
+            if (bindingOperationElem.hasAttribute("name")) {
+                String name = bindingOperationElem.getAttribute("name");
                 BindingOperation bindingOperation = new BindingOperation();
                 bindingOperation.setUuid(UUID.randomUUID().toString());
                 bindingOperation.setArtifactType(BaseArtifactEnum.BINDING_OPERATION);
@@ -472,14 +472,14 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     private BindingOperationInput processBindingOperationInput(Element operationElem) throws XPathExpressionException {
         BindingOperationInput rval = null;
 
-        Element inputElem = (Element) this.query(operationElem, "./wsdl:input", XPathConstants.NODE); //$NON-NLS-1$
+        Element inputElem = (Element) this.query(operationElem, "./wsdl:input", XPathConstants.NODE);
         if (inputElem != null) {
             BindingOperationInput bindingOperationInput = new BindingOperationInput();
             bindingOperationInput.setUuid(UUID.randomUUID().toString());
             bindingOperationInput.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_INPUT);
-            String name = "wsdl:input"; //$NON-NLS-1$
-            if (inputElem.hasAttribute("name")) { //$NON-NLS-1$
-                name = inputElem.getAttribute("name"); //$NON-NLS-1$
+            String name = "wsdl:input";
+            if (inputElem.hasAttribute("name")) {
+                name = inputElem.getAttribute("name");
                 bindingOperationInput.setNCName(name);
             }
             bindingOperationInput.setName(name);
@@ -494,14 +494,14 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     private BindingOperationOutput processBindingOperationOutput(Element operationElem) throws XPathExpressionException {
         BindingOperationOutput rval = null;
 
-        Element outputElem = (Element) this.query(operationElem, "./wsdl:output", XPathConstants.NODE); //$NON-NLS-1$
+        Element outputElem = (Element) this.query(operationElem, "./wsdl:output", XPathConstants.NODE);
         if (outputElem != null) {
             BindingOperationOutput bindingOperationOutput = new BindingOperationOutput();
             bindingOperationOutput.setUuid(UUID.randomUUID().toString());
             bindingOperationOutput.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_OUTPUT);
-            String name = "wsdl:output"; //$NON-NLS-1$
-            if (outputElem.hasAttribute("name")) { //$NON-NLS-1$
-                name = outputElem.getAttribute("name"); //$NON-NLS-1$
+            String name = "wsdl:output";
+            if (outputElem.hasAttribute("name")) {
+                name = outputElem.getAttribute("name");
                 bindingOperationOutput.setNCName(name);
             }
             bindingOperationOutput.setName(name);
@@ -516,16 +516,16 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     private Collection<BindingOperationFault> processBindingOperationFaults(Element operationElem) throws XPathExpressionException {
         Collection<BindingOperationFault> rval = new LinkedList<BindingOperationFault>();
 
-        NodeList faults = (NodeList) this.query(operationElem, "./wsdl:fault", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList faults = (NodeList) this.query(operationElem, "./wsdl:fault", XPathConstants.NODESET);
         for (int idx = 0; idx < faults.getLength(); idx++) {
             Element faultElem = (Element) faults.item(idx);
             BindingOperationFault bindingOperationFault = new BindingOperationFault();
             bindingOperationFault.setUuid(UUID.randomUUID().toString());
             bindingOperationFault.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_FAULT);
 
-            String name = "wsdl:fault"; //$NON-NLS-1$
-            if (faultElem.hasAttribute("name")) { //$NON-NLS-1$
-                name = faultElem.getAttribute("name"); //$NON-NLS-1$
+            String name = "wsdl:fault";
+            if (faultElem.hasAttribute("name")) {
+                name = faultElem.getAttribute("name");
                 bindingOperationFault.setNCName(name);
             }
 
@@ -539,19 +539,19 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
 
     private void processServices() throws XPathExpressionException {
         // Get all the bindings and add them to the list
-        NodeList services = (NodeList) this.query(rootElement, "./wsdl:service", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList services = (NodeList) this.query(rootElement, "./wsdl:service", XPathConstants.NODESET);
         for (int idx = 0; idx < services.getLength(); idx++) {
             Element serviceElem = (Element) services.item(idx);
             WsdlService service = new WsdlService();
             service.setUuid(UUID.randomUUID().toString());
             service.setArtifactType(BaseArtifactEnum.WSDL_SERVICE);
             service.setNamespace(targetNS);
-            if (serviceElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = serviceElem.getAttribute("name"); //$NON-NLS-1$
+            if (serviceElem.hasAttribute("name")) {
+                String name = serviceElem.getAttribute("name");
                 service.setName(name);
                 service.setNCName(name);
             } else {
-                service.setName("wsdl:service"); //$NON-NLS-1$
+                service.setName("wsdl:service");
             }
             derivedArtifacts.add(service);
 
@@ -576,7 +576,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
     private Collection<Port> processPorts(Element serviceElem) throws XPathExpressionException {
         Collection<Port> rval = new LinkedList<Port>();
 
-        NodeList ports = (NodeList) this.query(serviceElem, "./wsdl:port", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList ports = (NodeList) this.query(serviceElem, "./wsdl:port", XPathConstants.NODESET);
         for (int idx = 0; idx < ports.getLength(); idx++) {
             Element portElem = (Element) ports.item(idx);
             Port port = new Port();
@@ -584,16 +584,16 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
             port.setArtifactType(BaseArtifactEnum.PORT);
             port.setNamespace(targetNS);
 
-            if (portElem.hasAttribute("name")) { //$NON-NLS-1$
-                String name = portElem.getAttribute("name"); //$NON-NLS-1$
+            if (portElem.hasAttribute("name")) {
+                String name = portElem.getAttribute("name");
                 port.setNCName(name);
                 port.setName(name);
             } else {
-                port.setName("wsdl:port"); //$NON-NLS-1$
+                port.setName("wsdl:port");
             }
 
-            if (portElem.hasAttribute("binding")) { //$NON-NLS-1$
-                String bindingEncodedQName = portElem.getAttribute("binding"); //$NON-NLS-1$
+            if (portElem.hasAttribute("binding")) {
+                String bindingEncodedQName = portElem.getAttribute("binding");
                 QName bindingQName = resolveQName(portElem, targetNS, bindingEncodedQName);
                 Binding binding = derivedArtifacts.lookupBinding(bindingQName);
                 BindingTarget target = new BindingTarget();
@@ -610,16 +610,16 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
             derivedArtifacts.add(port);
             rval.add(port);
 
-            NodeList soapAddresses = (NodeList) this.query(portElem, "./soap:address", XPathConstants.NODESET); //$NON-NLS-1$
+            NodeList soapAddresses = (NodeList) this.query(portElem, "./soap:address", XPathConstants.NODESET);
             for (int jdx = 0; jdx < soapAddresses.getLength(); jdx++) {
                 Element soapAddressElem = (Element) soapAddresses.item(jdx);
                 SoapAddress soapAddress = new SoapAddress();
                 soapAddress.setUuid(UUID.randomUUID().toString());
                 soapAddress.setArtifactType(BaseArtifactEnum.SOAP_ADDRESS);
-                soapAddress.setName("soap:address"); //$NON-NLS-1$
+                soapAddress.setName("soap:address");
                 soapAddress.setNCName(soapAddressElem.getLocalName());
                 soapAddress.setNamespace(soapAddressElem.getNamespaceURI());
-                soapAddress.setSoapLocation(soapAddressElem.getAttribute("location")); //$NON-NLS-1$
+                soapAddress.setSoapLocation(soapAddressElem.getAttribute("location"));
                 derivedArtifacts.add(soapAddress);
 
                 WsdlExtensionTarget target = new WsdlExtensionTarget();
@@ -639,10 +639,10 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
             return;
         }
         
-        NodeList nodes = (NodeList) this.query(rootElement, ".//wsdl:import", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) this.query(rootElement, ".//wsdl:import", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("namespace")) { //$NON-NLS-1$
+            if (node.hasAttribute("namespace")) {
                 String namespace = node.getAttribute("namespace");
                 String location = node.getAttribute("location");
                 stripPath(location);
@@ -668,7 +668,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
      * @param encodedQName
      */
     private QName resolveQName(Element context, String defaultNamespace, String encodedQName) {
-        int idx = encodedQName.indexOf(":"); //$NON-NLS-1$
+        int idx = encodedQName.indexOf(":");
         if (idx == -1) {
             return new QName(defaultNamespace, encodedQName);
         }
@@ -689,7 +689,7 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
      * @param prefix
      */
     private String resolveNamespaceByPrefix(Element context, String prefix) {
-        String nsDecl = "xmlns:" + prefix; //$NON-NLS-1$
+        String nsDecl = "xmlns:" + prefix;
         Element elem = context;
         String ns = null;
         while (elem != null) {

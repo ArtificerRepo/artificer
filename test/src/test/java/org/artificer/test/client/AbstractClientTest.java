@@ -43,8 +43,8 @@ public abstract class AbstractClientTest extends AbstractIntegrationTest {
      * @throws Exception
      */
     protected BaseArtifactType addXmlDoc() throws Exception {
-        String artifactFileName = "PO.xml"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
+        String artifactFileName = "PO.xml";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
         try {
             ArtificerAtomApiClient client = client();
             return client.uploadArtifact(ArtifactType.XmlDocument(), is, artifactFileName);

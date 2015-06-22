@@ -40,7 +40,7 @@ public class ArtificerConfig {
             refreshDelay = new Long(refreshDelayStr);
         }
 
-        configuration = ConfigurationFactory.createConfig(configFile, "artificer.properties", refreshDelay, null, null); //$NON-NLS-1$
+        configuration = ConfigurationFactory.createConfig(configFile, "artificer.properties", refreshDelay, null, null);
     }
 
     /**
@@ -53,15 +53,15 @@ public class ArtificerConfig {
         String baseUrl = null;
         //Try grabbing it from the call
         if (requestUrl!=null) {
-            int index = requestUrl.lastIndexOf("/s-ramp/"); //$NON-NLS-1$
-            if (index < 0) index = requestUrl.lastIndexOf("/s-ramp"); //$NON-NLS-1$
+            int index = requestUrl.lastIndexOf("/s-ramp/");
+            if (index < 0) index = requestUrl.lastIndexOf("/s-ramp");
             if (index > 0) {
                 baseUrl = requestUrl.substring(0, index);
             }
         }
         //If that failed, try constructing it from the JBoss system parameters
         if (baseUrl==null){
-            baseUrl = JBossServer.getBaseUrl() + "/artificer-server" ; //$NON-NLS-1$
+            baseUrl = JBossServer.getBaseUrl() + "/artificer-server" ;
         }
         return configuration.getString(ArtificerConstants.ARTIFICER_CONFIG_BASEURL, baseUrl);
     }
@@ -120,7 +120,7 @@ public class ArtificerConfig {
     }
     
     public static String getMavenReadOnlyUsername() {
-        return getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_MAVEN_READONLY_USERNAME, "mavenuser"); //$NON-NLS-1$
+        return getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_MAVEN_READONLY_USERNAME, "mavenuser");
     }
 
     private static String getVersion() {
@@ -142,6 +142,6 @@ public class ArtificerConfig {
 
     private static boolean isSnapshot() {
         String version = getVersion();
-        return StringUtils.isNotBlank(version) && version.contains("SNAPSHOT"); //$NON-NLS-1$
+        return StringUtils.isNotBlank(version) && version.contains("SNAPSHOT");
     }
 }

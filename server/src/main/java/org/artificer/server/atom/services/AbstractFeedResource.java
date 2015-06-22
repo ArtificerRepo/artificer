@@ -61,7 +61,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	protected Feed createArtifactFeed(String query, Integer startPage, Integer startIndex, Integer count, String orderBy,
 			Boolean ascending, Set<String> propNames, String baseUrl) throws ArtificerAtomException {
 	    if (query == null)
-            throw new ArtificerAtomException(Messages.i18n.format("MISSING_QUERY_PARAM")); //$NON-NLS-1$
+            throw new ArtificerAtomException(Messages.i18n.format("MISSING_QUERY_PARAM"));
 
 		try {
             PagedResult<ArtifactSummary> artifactSet = queryService.query(
@@ -70,7 +70,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 			addPaginationLinks(feed, artifactSet, baseUrl);
 			return feed;
 		} catch (Throwable e) {
-			logError(logger, Messages.i18n.format("Error trying to create an Artifact Feed."), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("Error trying to create an Artifact Feed."), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -95,15 +95,15 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	@SuppressWarnings("unchecked")
     private Feed createFeed(PagedResult<ArtifactSummary> pagedResult, Set<String> propNames, String baseUrl) throws Exception {
 		Feed feed = new Feed();
-		feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_PROVIDER_QNAME, "Artificer"); //$NON-NLS-1$
+		feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_PROVIDER_QNAME, "Artificer");
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf(pagedResult.getPageSize()));
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_START_INDEX_QNAME, String.valueOf(pagedResult.getStartIndex()));
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(pagedResult.getTotalSize()));
-		feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString())); //$NON-NLS-1$
-		feed.setTitle("S-RAMP Feed"); //$NON-NLS-1$
-		feed.setSubtitle("Ad Hoc query feed"); //$NON-NLS-1$
+		feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString()));
+		feed.setTitle("S-RAMP Feed");
+		feed.setSubtitle("Ad Hoc query feed");
 		feed.setUpdated(new Date());
-		feed.getAuthors().add(new Person("anonymous")); //$NON-NLS-1$
+		feed.getAuthors().add(new Person("anonymous"));
 
         for (ArtifactSummary artifact : pagedResult.getResults()) {
 			Entry entry = ArtificerAtomUtils.wrapArtifactSummary(artifact);
@@ -127,8 +127,8 @@ public abstract class AbstractFeedResource extends AbstractResource {
         int startIndex = pagedResult.getStartIndex();
         String orderBy = pagedResult.getOrderBy();
         boolean ascending = pagedResult.isAscending();
-        String hrefPattern = "%1$s?query=%2$s&startIndex=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s"; //$NON-NLS-1$
-		String encodedQuery = URLEncoder.encode(pagedResult.getQuery(), "UTF-8"); //$NON-NLS-1$
+        String hrefPattern = "%1$s?query=%2$s&startIndex=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s";
+		String encodedQuery = URLEncoder.encode(pagedResult.getQuery(), "UTF-8");
 		String firstHref = String.format(hrefPattern, baseUrl, encodedQuery, 0, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
 		long prevIndex = Math.max(0,  startIndex - pageSize);
@@ -137,9 +137,9 @@ public abstract class AbstractFeedResource extends AbstractResource {
 		String nextHref = String.format(hrefPattern, baseUrl, encodedQuery, startIndex + pageSize, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
 
-		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE); //$NON-NLS-1$
-		Link prev = new Link("prev", prevHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE); //$NON-NLS-1$
-		Link next = new Link("next", nextHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE); //$NON-NLS-1$
+		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
+		Link prev = new Link("prev", prevHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
+		Link next = new Link("next", nextHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
 
 		if (startIndex > 0) {
 			feed.getLinks().add(first);

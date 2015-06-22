@@ -39,8 +39,8 @@ public class ShowMetaDataCommand extends AbstractCommand {
 		BaseArtifactType artifact = currentArtifact(commandInvocation);
 
 		// Print out the meta-data information
-		commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.MetaDataFor", artifact.getUuid())); //$NON-NLS-1$
-		commandInvocation.getShell().out().println("--------------"); //$NON-NLS-1$
+		commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.MetaDataFor", artifact.getUuid()));
+		commandInvocation.getShell().out().println("--------------");
 		PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor(commandInvocation);
 		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
         return CommandResult.SUCCESS;

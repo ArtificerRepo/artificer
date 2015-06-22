@@ -38,8 +38,8 @@ public class JavaClassArtifactBuilderTest {
         JavaClassArtifactBuilder builder = new JavaClassArtifactBuilder();
         ExtendedDocument artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setName("MyClass.class"); //$NON-NLS-1$
-        InputStream is = getClass().getResourceAsStream("MyClass.class"); //$NON-NLS-1$
+        artifact.setName("MyClass.class");
+        InputStream is = getClass().getResourceAsStream("MyClass.class");
 
         // Derive
         Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent("MyClass.class", is))
@@ -48,16 +48,16 @@ public class JavaClassArtifactBuilderTest {
         // Assert
         Assert.assertNotNull(derivedArtifacts);
         Assert.assertEquals(0, derivedArtifacts.size());
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyClass", artifact.getName()); //$NON-NLS-1$
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME)); //$NON-NLS-1$
-        Assert.assertEquals("MyClass", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME)); //$NON-NLS-1$
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyClass", artifact.getName());
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME));
+        Assert.assertEquals("MyClass", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME));
         Assert.assertEquals(JavaModel.TYPE_JAVA_CLASS, artifact.getExtendedType());
 
 
         artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setName("MyInterface.class"); //$NON-NLS-1$
-        is = getClass().getResourceAsStream("MyInterface.class"); //$NON-NLS-1$
+        artifact.setName("MyInterface.class");
+        is = getClass().getResourceAsStream("MyInterface.class");
 
         // Derive
         derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent("MyInterface.class", is)).getDerivedArtifacts();
@@ -65,9 +65,9 @@ public class JavaClassArtifactBuilderTest {
         // Assert
         Assert.assertNotNull(derivedArtifacts);
         Assert.assertEquals(0, derivedArtifacts.size());
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyInterface", artifact.getName()); //$NON-NLS-1$
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME)); //$NON-NLS-1$
-        Assert.assertEquals("MyInterface", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME)); //$NON-NLS-1$
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyInterface", artifact.getName());
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME));
+        Assert.assertEquals("MyInterface", ArtificerModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME));
         Assert.assertEquals(JavaModel.TYPE_JAVA_INTERFACE, artifact.getExtendedType());
     }
 

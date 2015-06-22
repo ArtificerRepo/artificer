@@ -53,7 +53,7 @@ public class SwitchYardClientTest extends AbstractClientTest {
 
         // Upload the order consumer jar
         // This requires proper maven profile to be active as maven handles generation of this jar file
-        InputStream orderConsumerIS = new FileInputStream("target/sample-files/switchyard/order-consumer.jar"); //$NON-NLS-1$
+        InputStream orderConsumerIS = new FileInputStream("target/sample-files/switchyard/order-consumer.jar");
         try {
             client.uploadArtifact(orderConsumerIS, "order-consumer.jar");
         } finally {
@@ -64,7 +64,7 @@ public class SwitchYardClientTest extends AbstractClientTest {
 
         // Upload the order service jar
         // This requires proper maven profile to be active as maven handles generation of this jar file
-        InputStream orderServiceIS = new FileInputStream("target/sample-files/switchyard/order-service.jar"); //$NON-NLS-1$
+        InputStream orderServiceIS = new FileInputStream("target/sample-files/switchyard/order-service.jar");
         try {
             client.uploadArtifact(orderServiceIS, "order-service.jar");
         } finally {
@@ -82,31 +82,31 @@ public class SwitchYardClientTest extends AbstractClientTest {
      * @throws org.artificer.client.ArtificerClientException
      */
     private void doArtifactsJarAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerServerException {
-        QueryResultSet result = client.buildQuery("/s-ramp/wsdl/WsdlDocument[@name = ?]").parameter("OrderService.wsdl").query(); //$NON-NLS-1$ //$NON-NLS-2$
+        QueryResultSet result = client.buildQuery("/s-ramp/wsdl/WsdlDocument[@name = ?]").parameter("OrderService.wsdl").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/wsdl/WsdlDocument[@name = ?]").parameter("OrderService.wsdl").query(); //$NON-NLS-1$ //$NON-NLS-2$
+        result = client.buildQuery("/s-ramp/wsdl/WsdlDocument[@name = ?]").parameter("OrderService.wsdl").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/xsd/XsdDocument[@name = ?]").parameter("orderTypes.xsd").query(); //$NON-NLS-1$ //$NON-NLS-2$
+        result = client.buildQuery("/s-ramp/xsd/XsdDocument[@name = ?]").parameter("orderTypes.xsd").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/JavaClass[@packageName = ? and @className = ?]") //$NON-NLS-1$
-                .parameter("org.switchyard.quickstarts.demo.multiapp") //$NON-NLS-1$
-                .parameter("Order") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/JavaClass[@packageName = ? and @className = ?]")
+                .parameter("org.switchyard.quickstarts.demo.multiapp")
+                .parameter("Order")
                 .query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/JavaInterface[@packageName = ? and @className = ?]") //$NON-NLS-1$
-                .parameter("org.switchyard.quickstarts.demo.multiapp") //$NON-NLS-1$
-                .parameter("InventoryService") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/JavaInterface[@packageName = ? and @className = ?]")
+                .parameter("org.switchyard.quickstarts.demo.multiapp")
+                .parameter("InventoryService")
                 .query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/xsd/ElementDeclaration[@namespace = ? and @ncName = ?]") //$NON-NLS-1$
-                .parameter("urn:switchyard-quickstart-demo:multiapp:1.0") //$NON-NLS-1$
-                .parameter("submitOrder") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/xsd/ElementDeclaration[@namespace = ? and @ncName = ?]")
+                .parameter("urn:switchyard-quickstart-demo:multiapp:1.0")
+                .parameter("submitOrder")
                 .query();
         Assert.assertEquals(1, result.size());
-//        result = client.buildQuery("/s-ramp/wsdl/Part[@name = ? and element[@namespace = ? and @ncName = ?]]") //$NON-NLS-1$
-//                .parameter("parameters") //$NON-NLS-1$
-//                .parameter("urn:switchyard-quickstart-demo:multiapp:1.0") //$NON-NLS-1$
-//                .parameter("submitOrder") //$NON-NLS-1$
+//        result = client.buildQuery("/s-ramp/wsdl/Part[@name = ? and element[@namespace = ? and @ncName = ?]]")
+//                .parameter("parameters")
+//                .parameter("urn:switchyard-quickstart-demo:multiapp:1.0")
+//                .parameter("submitOrder")
 //                .query();
 //        Assert.assertEquals(1, result.size());
     }
@@ -120,14 +120,14 @@ public class SwitchYardClientTest extends AbstractClientTest {
      * @throws org.artificer.client.ArtificerClientException
      */
     private void doOrderConsumerAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerServerException {
-        QueryResultSet result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument").query(); //$NON-NLS-1$
+        QueryResultSet result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardService").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardService").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent").query();
         Assert.assertEquals(1, result.size());
         // TODO: Since we no longer allow no-target relationships, this fails.  Step through SwitchYardXmlArtifactBuilder#processComponents and make sure the relationship source logic is correct.
-//        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[references]").query(); //$NON-NLS-1$
+//        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[references]").query();
 //        Assert.assertEquals(1, result.size());
     }
 
@@ -140,49 +140,49 @@ public class SwitchYardClientTest extends AbstractClientTest {
      * @throws org.artificer.client.ArtificerClientException
      */
     private void doOrderServiceAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerServerException {
-        QueryResultSet result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument").query(); //$NON-NLS-1$
+        QueryResultSet result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument").query();
         Assert.assertEquals(2, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument[@name = ?]").parameter("orders").query(); //$NON-NLS-1$ //$NON-NLS-2$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument[@name = ?]").parameter("orders").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer").query();
         Assert.assertEquals(2, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsFrom[@name = ?]]") //$NON-NLS-1$
-                .parameter("org.switchyard.quickstarts.demo.multiapp.OrderAck") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsFrom[@name = ?]]")
+                .parameter("org.switchyard.quickstarts.demo.multiapp.OrderAck")
                 .query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsTo[@ncName = ?]]") //$NON-NLS-1$
-                .parameter("submitOrderResponse") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsTo[@ncName = ?]]")
+                .parameter("submitOrderResponse")
                 .query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsFrom[@ncName = ?]]") //$NON-NLS-1$
-                .parameter("submitOrder") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsFrom[@ncName = ?]]")
+                .parameter("submitOrder")
                 .query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsTo[@name = ?]]") //$NON-NLS-1$
-                .parameter("org.switchyard.quickstarts.demo.multiapp.Order") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[transformsTo[@name = ?]]")
+                .parameter("org.switchyard.quickstarts.demo.multiapp.Order")
                 .query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[implementedBy[@name = ?]]") //$NON-NLS-1$
-                .parameter("org.switchyard.quickstarts.demo.multiapp.service.Transformers") //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer[implementedBy[@name = ?]]")
+                .parameter("org.switchyard.quickstarts.demo.multiapp.service.Transformers")
                 .query();
         Assert.assertEquals(2, result.size());
 
-        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent").query();
         Assert.assertEquals(3, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[@name = ?]").parameter("OrderService").query(); //$NON-NLS-1$ //$NON-NLS-2$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[@name = ?]").parameter("OrderService").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[@name = ?]/implementedBy") //$NON-NLS-1$
-                .parameter("OrderService").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[@name = ?]/implementedBy")
+                .parameter("OrderService").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent/implementedBy").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent/implementedBy").query();
         Assert.assertEquals(2, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[implementedBy[@name = ?]]") //$NON-NLS-1$
-                .parameter("org.switchyard.quickstarts.demo.multiapp.service.InventoryServiceBean").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[implementedBy[@name = ?]]")
+                .parameter("org.switchyard.quickstarts.demo.multiapp.service.InventoryServiceBean").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[@name = ?]/references") //$NON-NLS-1$
-                .parameter("OrderService").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardComponent[@name = ?]/references")
+                .parameter("OrderService").query();
         Assert.assertEquals(1, result.size());
-        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer/transformsFrom").query(); //$NON-NLS-1$
+        result = client.buildQuery("/s-ramp/ext/SwitchYardTransformer/transformsFrom").query();
         Assert.assertEquals(2, result.size());
     }
 }

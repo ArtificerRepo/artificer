@@ -47,14 +47,14 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
     protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
         super.configureNamespaceMappings(namespaceContext);
 
-        namespaceContext.addMapping("xs", "http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$ //$NON-NLS-2$
-        namespaceContext.addMapping("xsd", "http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$ //$NON-NLS-2$
+        namespaceContext.addMapping("xs", "http://www.w3.org/2001/XMLSchema");
+        namespaceContext.addMapping("xsd", "http://www.w3.org/2001/XMLSchema");
     }
 
     @Override
     protected void derive() throws IOException {
         try {
-            String targetNS = rootElement.getAttribute("targetNamespace"); //$NON-NLS-1$
+            String targetNS = rootElement.getAttribute("targetNamespace");
             
             if (getPrimaryArtifact() instanceof XsdDocument) {
                 ((XsdDocument) getPrimaryArtifact()).setTargetNamespace(targetNS);
@@ -70,7 +70,7 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
     }
     
     protected void deriveXsd(Element schema) throws XPathExpressionException {
-        String targetNS = schema.getAttribute("targetNamespace"); //$NON-NLS-1$
+        String targetNS = schema.getAttribute("targetNamespace");
 
         processElementDeclarations(schema, targetNS);
         processAttributeDeclarations(schema, targetNS);
@@ -80,11 +80,11 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
 
     private void processElementDeclarations(Element schema, String targetNS) throws XPathExpressionException {
         // xpath expression to find all global element decls
-        NodeList nodes = (NodeList) query(schema, "./xsd:element", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) query(schema, "./xsd:element", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("name")) { //$NON-NLS-1$
-                String nsName = node.getAttribute("name"); //$NON-NLS-1$
+            if (node.hasAttribute("name")) {
+                String nsName = node.getAttribute("name");
                 ElementDeclaration elementDecl = new ElementDeclaration();
                 elementDecl.setArtifactType(BaseArtifactEnum.ELEMENT_DECLARATION);
                 elementDecl.setName(nsName);
@@ -97,11 +97,11 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
 
     private void processAttributeDeclarations(Element schema, String targetNS) throws XPathExpressionException {
         // xpath expression to find all global attribute decls
-        NodeList nodes = (NodeList) query(schema, "./xsd:attribute", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) query(schema, "./xsd:attribute", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("name")) { //$NON-NLS-1$
-                String nsName = node.getAttribute("name"); //$NON-NLS-1$
+            if (node.hasAttribute("name")) {
+                String nsName = node.getAttribute("name");
                 AttributeDeclaration attributeDecl = new AttributeDeclaration();
                 attributeDecl.setArtifactType(BaseArtifactEnum.ATTRIBUTE_DECLARATION);
                 attributeDecl.setName(nsName);
@@ -114,11 +114,11 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
 
     private void processSimpleTypeDeclarations(Element schema, String targetNS) throws XPathExpressionException {
         // xpath expression to find all global simple type decls
-        NodeList nodes = (NodeList) query(schema, "./xsd:simpleType", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) query(schema, "./xsd:simpleType", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("name")) { //$NON-NLS-1$
-                String nsName = node.getAttribute("name"); //$NON-NLS-1$
+            if (node.hasAttribute("name")) {
+                String nsName = node.getAttribute("name");
                 SimpleTypeDeclaration simpleTypeDecl = new SimpleTypeDeclaration();
                 simpleTypeDecl.setArtifactType(BaseArtifactEnum.SIMPLE_TYPE_DECLARATION);
                 simpleTypeDecl.setName(nsName);
@@ -131,11 +131,11 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
 
     private void processComplexTypeDeclarations(Element schema, String targetNS) throws XPathExpressionException {
         // xpath expression to find all global complex type decls
-        NodeList nodes = (NodeList) query(schema, "./xsd:complexType", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) query(schema, "./xsd:complexType", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("name")) { //$NON-NLS-1$
-                String nsName = node.getAttribute("name"); //$NON-NLS-1$
+            if (node.hasAttribute("name")) {
+                String nsName = node.getAttribute("name");
                 ComplexTypeDeclaration complexTypeDecl = new ComplexTypeDeclaration();
                 complexTypeDecl.setArtifactType(BaseArtifactEnum.COMPLEX_TYPE_DECLARATION);
                 complexTypeDecl.setName(nsName);
@@ -153,10 +153,10 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
     }
     
     protected void processImportedXsds(List<XsdDocumentTarget> targetCollection, Element schema, String targetNS) throws XPathExpressionException {
-        NodeList nodes = (NodeList) query(schema, "./xsd:import", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) query(schema, "./xsd:import", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("namespace") && node.hasAttribute("schemaLocation")) { //$NON-NLS-1$
+            if (node.hasAttribute("namespace") && node.hasAttribute("schemaLocation")) {
                 String namespace = node.getAttribute("namespace");
                 String schemaLocation = node.getAttribute("schemaLocation");
                 stripPath(schemaLocation);
@@ -182,10 +182,10 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
     }
     
     protected void processIncludedXsds(List<XsdDocumentTarget> targetCollection, Element schema, String targetNS) throws XPathExpressionException {
-        NodeList nodes = (NodeList) query(schema, "./xsd:include", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) query(schema, "./xsd:include", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("schemaLocation")) { //$NON-NLS-1$
+            if (node.hasAttribute("schemaLocation")) {
                 String schemaLocation = node.getAttribute("schemaLocation");
                 stripPath(schemaLocation);
                 XsdDocument xsdDocumentRef = derivedArtifacts.lookupXsdDocument(targetNS, schemaLocation);
@@ -209,10 +209,10 @@ public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
     }
     
     protected void processRedefinedXsds(List<XsdDocumentTarget> targetCollection, Element schema, String targetNS) throws XPathExpressionException {
-        NodeList nodes = (NodeList) query(schema, "./xsd:redefine", XPathConstants.NODESET); //$NON-NLS-1$
+        NodeList nodes = (NodeList) query(schema, "./xsd:redefine", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("schemaLocation")) { //$NON-NLS-1$
+            if (node.hasAttribute("schemaLocation")) {
                 String schemaLocation = node.getAttribute("schemaLocation");
                 stripPath(schemaLocation);
                 XsdDocument xsdDocumentRef = derivedArtifacts.lookupXsdDocument(targetNS, schemaLocation);

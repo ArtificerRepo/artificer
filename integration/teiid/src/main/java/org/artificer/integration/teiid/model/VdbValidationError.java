@@ -31,12 +31,12 @@ public final class VdbValidationError {
         /**
          * The path attribue identifier.
          */
-        String PATH = "path"; //$NON-NLS-1$
+        String PATH = "path";
 
         /**
          * The severity attribute identifier.
          */
-        String SEVERITY = "severity"; //$NON-NLS-1$
+        String SEVERITY = "severity";
 
     }
 
@@ -48,12 +48,12 @@ public final class VdbValidationError {
         /**
          * The validation error message property.
          */
-        String MESSAGE = "message"; //$NON-NLS-1$
+        String MESSAGE = "message";
 
         /**
          * The validation error severity property.
          */
-        String SEVERITY = "severity"; //$NON-NLS-1$
+        String SEVERITY = "severity";
 
     }
 
@@ -65,7 +65,7 @@ public final class VdbValidationError {
     /**
      * The path used when no path is specified. Value is {@value} .
      */
-    public static final String ROOT_PATH = "/"; //$NON-NLS-1$
+    public static final String ROOT_PATH = "/";
 
     /**
      * A relationship between a validation error artifact and its source artifact.

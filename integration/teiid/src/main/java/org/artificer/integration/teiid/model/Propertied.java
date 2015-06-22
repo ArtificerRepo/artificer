@@ -28,7 +28,7 @@ public interface Propertied {
         /**
          * The artifact property identifier.
          */
-        String PROPERTY = "property"; //$NON-NLS-1$
+        String PROPERTY = "property";
 
     }
 
@@ -40,17 +40,17 @@ public interface Propertied {
         /**
          * The property name attribute identifier.
          */
-        String NAME = "name"; //$NON-NLS-1$
+        String NAME = "name";
 
         /**
          * The property element identifier.
          */
-        String PROPERTY = "property"; //$NON-NLS-1$
+        String PROPERTY = "property";
 
         /**
          * The property value attribute identifier.
          */
-        String VALUE = "value"; //$NON-NLS-1$
+        String VALUE = "value";
 
     }
 

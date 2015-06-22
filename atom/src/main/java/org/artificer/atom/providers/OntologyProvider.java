@@ -102,12 +102,12 @@ public class OntologyProvider implements MessageBodyReader<RDF>, MessageBodyWrit
 			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException {
 		if (rdfContext == null)
-			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), //$NON-NLS-1$
-			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_ONT_JAXBCTX"))); //$NON-NLS-1$
+			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType),
+			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_ONT_JAXBCTX")));
 		try {
 			rdfContext.createMarshaller().marshal(t, entityStream);
 		} catch (JAXBException e) {
-			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), e); //$NON-NLS-1$
+			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), e);
 		}
 	}
 
@@ -121,13 +121,13 @@ public class OntologyProvider implements MessageBodyReader<RDF>, MessageBodyWrit
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException,
 			WebApplicationException {
 		if (rdfContext == null)
-			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), //$NON-NLS-1$
-			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_ONT_JAXBCTX"))); //$NON-NLS-1$
+			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType),
+			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_ONT_JAXBCTX")));
 		try {
 			RDF entry = (RDF) rdfContext.createUnmarshaller().unmarshal(entityStream);
 			return entry;
 		} catch (JAXBException e) {
-			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL")); //$NON-NLS-1$
+			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL"));
 		}
 	}
 

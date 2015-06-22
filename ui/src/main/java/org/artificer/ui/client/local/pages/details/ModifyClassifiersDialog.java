@@ -141,7 +141,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
             OntologySelectorWithToolbar selector = entry.getValue();
             Set<String> selection = selector.getSelection();
             for (String id : selection) {
-                String uri = base + "#" + id; //$NON-NLS-1$
+                String uri = base + "#" + id;
                 newValue.add(uri);
             }
         }
@@ -216,7 +216,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
      */
     @Override
     public void onError(Throwable error) {
-        notificationService.sendErrorNotification(i18n.format("modify-classifiers-dialog.error"), error); //$NON-NLS-1$
+        notificationService.sendErrorNotification(i18n.format("modify-classifiers-dialog.error"), error);
     }
 
     /**
@@ -226,7 +226,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
     private Set<String> getValueFor(OntologyBean ontologyBean) {
         Set<String> items = new HashSet<String>();
         for (String classifier : this.value) {
-            if (classifier.startsWith(ontologyBean.getBase() + "#")) { //$NON-NLS-1$
+            if (classifier.startsWith(ontologyBean.getBase() + "#")) {
                 items.add(classifier.substring(ontologyBean.getBase().length() + 1));
             }
         }

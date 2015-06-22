@@ -47,17 +47,17 @@ public class MoveAnimation extends AbstractAnimation {
 		int distance = getTo() - getFrom();
 		int delta = (int) ((distance) * progress);
 		int newPos = getFrom() + delta;
-		getTargetWidget().getElement().getStyle().setProperty(getProperty(), newPos + "px"); //$NON-NLS-1$
+		getTargetWidget().getElement().getStyle().setProperty(getProperty(), newPos + "px");
 	}
 
 	@Override
 	protected void doOnCancel() {
-		getTargetWidget().getElement().getStyle().setProperty(getProperty(), getFrom() + "px"); //$NON-NLS-1$
+		getTargetWidget().getElement().getStyle().setProperty(getProperty(), getFrom() + "px");
 	}
 
 	@Override
 	protected void doOnComplete() {
-		getTargetWidget().getElement().getStyle().setProperty(getProperty(), getTo() + "px"); //$NON-NLS-1$
+		getTargetWidget().getElement().getStyle().setProperty(getProperty(), getTo() + "px");
 	}
 
 	/**

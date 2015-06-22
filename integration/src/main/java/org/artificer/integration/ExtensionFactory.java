@@ -89,7 +89,7 @@ public class ExtensionFactory {
             File directory = new File(customDirPath);
             if (directory.isDirectory()) {
                 List<URL> jarURLs = new ArrayList<URL>();
-                Collection<File> jarFiles = FileUtils.listFiles(directory, new String[]{"jar"}, false); //$NON-NLS-1$
+                Collection<File> jarFiles = FileUtils.listFiles(directory, new String[]{"jar"}, false);
                 for (File jarFile : jarFiles) {
                     try {
                         URL jarUrl = jarFile.toURI().toURL();

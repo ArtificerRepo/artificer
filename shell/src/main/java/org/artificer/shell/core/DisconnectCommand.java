@@ -33,7 +33,7 @@ public class DisconnectCommand extends AbstractCommand {
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
 		context(commandInvocation).setClient(null);
-		commandInvocation.getShell().out().println(Messages.i18n.format("Disconnect.Success")); //$NON-NLS-1$
+		commandInvocation.getShell().out().println(Messages.i18n.format("Disconnect.Success"));
         return CommandResult.SUCCESS;
 	}
 

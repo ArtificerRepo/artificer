@@ -61,14 +61,14 @@ public class RdfToOntologyMapper {
 	 * @throws Exception
 	 */
 	public void map(RDF rdf, ArtificerOntology ontology) throws Exception {
-        String uuid = rdf.getOtherAttributes().get(new QName(ArtificerConstants.SRAMP_NS, "uuid")); //$NON-NLS-1$
+        String uuid = rdf.getOtherAttributes().get(new QName(ArtificerConstants.SRAMP_NS, "uuid"));
         if (uuid != null && uuid.trim().length() > 0) {
             ontology.setUuid(uuid);
         }
 
         Ontology rdfOntology = rdf.getOntology();
 
-		String base = rdf.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base")); //$NON-NLS-1$ //$NON-NLS-2$
+		String base = rdf.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base"));
 		ontology.setBase(base);
 		ontology.setId(rdfOntology.getID());
 		ontology.setLabel(rdfOntology.getLabel());
@@ -83,7 +83,7 @@ public class RdfToOntologyMapper {
 			oclass.setId(rdfClass.getID());
 			oclass.setLabel(rdfClass.getLabel());
 			oclass.setComment(rdfClass.getComment());
-			String uri = base + "#" + rdfClass.getID(); //$NON-NLS-1$
+			String uri = base + "#" + rdfClass.getID();
 			oclass.setUri(uri);
 			Object[] classData = new Object[] {
 					oclass, rdfClass.getSubClassOf() != null ? rdfClass.getSubClassOf().getResource() : null
@@ -105,7 +105,7 @@ public class RdfToOntologyMapper {
 					parent = uriIndex.get(resourceRef);
 				}
 				if (parent == null) {
-					throw new Exception(Messages.i18n.format("FAILED_TO_RESOLVE_PARENT", resourceRef)); //$NON-NLS-1$
+					throw new Exception(Messages.i18n.format("FAILED_TO_RESOLVE_PARENT", resourceRef));
 				}
 				parent.getChildren().add(oclass);
 				oclass.setParent(parent);

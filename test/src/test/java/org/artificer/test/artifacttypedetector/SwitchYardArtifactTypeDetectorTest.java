@@ -39,7 +39,7 @@ public class SwitchYardArtifactTypeDetectorTest extends AbstractClientTest {
 
 	@Test
 	public void testSwitchYardIntegration() throws Exception {
-	    InputStream stream = getClass().getResourceAsStream("switchyard-quickstart-bean-service.jar"); //$NON-NLS-1$
+	    InputStream stream = getClass().getResourceAsStream("switchyard-quickstart-bean-service.jar");
         ArtificerAtomApiClient client = client();
 	    try {
             BaseArtifactType artifact = client.uploadArtifact(stream, "switchyard-quickstart-bean-service.jar");

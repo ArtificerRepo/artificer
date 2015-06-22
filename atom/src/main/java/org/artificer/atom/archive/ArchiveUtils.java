@@ -51,7 +51,7 @@ public class ArchiveUtils {
 				File outFile = new File(toDir, entryName);
 				if (!outFile.getParentFile().exists()) {
 					if (!outFile.getParentFile().mkdirs()) {
-						throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_PARENT_DIR", outFile.getParentFile().getCanonicalPath())); //$NON-NLS-1$
+						throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_PARENT_DIR", outFile.getParentFile().getCanonicalPath()));
 					}
 				}
 
@@ -59,9 +59,9 @@ public class ArchiveUtils {
 				    if (outFile.isDirectory()) {
 				        // Do nothing - already created.
 				    } else if (outFile.isFile()) {
-                        throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_DIR", outFile.getCanonicalPath())); //$NON-NLS-1$
+                        throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_DIR", outFile.getCanonicalPath()));
 				    } else if (!outFile.mkdir()) {
-						throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_DIR", outFile.getCanonicalPath())); //$NON-NLS-1$
+						throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_DIR", outFile.getCanonicalPath()));
 					}
 				} else {
 					InputStream zipStream = null;

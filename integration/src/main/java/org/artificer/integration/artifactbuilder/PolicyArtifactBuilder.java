@@ -34,6 +34,6 @@ public class PolicyArtifactBuilder extends XmlArtifactBuilder {
 	@Override
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
 		super.configureNamespaceMappings(namespaceContext);
-		namespaceContext.addMapping("wsp", "http://www.w3.org/ns/ws-policy"); //$NON-NLS-1$ //$NON-NLS-2$
+		namespaceContext.addMapping("wsp", "http://www.w3.org/ns/ws-policy");
 	}
 }

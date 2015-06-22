@@ -21,8 +21,8 @@ package org.artificer.common.audit;
  */
 public final class AuditEntryTypes {
 
-    public static final String ARTIFACT_ADD = "artifact:add"; //$NON-NLS-1$
-    public static final String ARTIFACT_UPDATE = "artifact:update"; //$NON-NLS-1$
-    public static final String ARTIFACT_DELETE = "artifact:delete"; //$NON-NLS-1$
+    public static final String ARTIFACT_ADD = "artifact:add";
+    public static final String ARTIFACT_UPDATE = "artifact:update";
+    public static final String ARTIFACT_DELETE = "artifact:delete";
 
 }

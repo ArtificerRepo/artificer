@@ -111,21 +111,21 @@ public class HttpResponseProvider implements MessageBodyReader<HttpResponseBean>
 		if (size > -1) {
 			t.setHeader(HttpHeaderNames.CONTENT_LENGTH, Integer.toString((int) size));
 		}
-		t.setHeader("Content-Classname", entityType.getName()); //$NON-NLS-1$
+		t.setHeader("Content-Classname", entityType.getName());
 
 		PrintWriter writer = new PrintWriter(entityStream);
-		writer.print("HTTP/1.1 "); //$NON-NLS-1$
+		writer.print("HTTP/1.1 ");
 		writer.print(t.getCode());
-		writer.print(" "); //$NON-NLS-1$
+		writer.print(" ");
 		writer.println(t.getStatus());
 		for (Entry<String, String> entry : t.getHeaders().entrySet()) {
 			String name = entry.getKey();
 			String value = entry.getValue();
 			writer.print(name);
-			writer.print(": "); //$NON-NLS-1$
+			writer.print(": ");
 			writer.println(value);
 		}
-		writer.println(""); //$NON-NLS-1$
+		writer.println("");
 		writer.flush();
 
 		entityWriter.writeTo(entity, entityType, null, null, t.getBodyType(), null, entityStream);
@@ -146,8 +146,8 @@ public class HttpResponseProvider implements MessageBodyReader<HttpResponseBean>
 
 		// Read the prolog: "HTTP/1.1 201 Created"
 		String line1 = reader.readLine();
-		if (!line1.startsWith("HTTP/1.1")) { //$NON-NLS-1$
-			throw new IOException(Messages.i18n.format("MISSING_HTTP_PROLOG")); //$NON-NLS-1$
+		if (!line1.startsWith("HTTP/1.1")) {
+			throw new IOException(Messages.i18n.format("MISSING_HTTP_PROLOG"));
 		}
 		int idx1 = line1.indexOf(' ');
 		int idx2 = line1.indexOf(' ', idx1 + 1);
@@ -158,7 +158,7 @@ public class HttpResponseProvider implements MessageBodyReader<HttpResponseBean>
 
 		// Now read the headers.
 		String line = reader.readLine();
-		while (line != null && !"".equals(line)) { //$NON-NLS-1$
+		while (line != null && !"".equals(line)) {
 			int idx = line.indexOf(':');
 			String key = line.substring(0, idx).trim();
 			String val = line.substring(idx + 1).trim();
@@ -167,8 +167,8 @@ public class HttpResponseProvider implements MessageBodyReader<HttpResponseBean>
 		}
 
 		// Now read the body, using the content-type header to determine the provider to use
-		String contentType = rval.getHeaders().get("Content-Type"); //$NON-NLS-1$
-		String contentClassName = rval.getHeaders().get("Content-Classname"); //$NON-NLS-1$
+		String contentType = rval.getHeaders().get("Content-Type");
+		String contentClassName = rval.getHeaders().get("Content-Classname");
 		Class<?> entityClass = String.class;
 		try {
 			if (contentClassName != null)
@@ -207,7 +207,7 @@ public class HttpResponseProvider implements MessageBodyReader<HttpResponseBean>
 			}
 			baos.write(b);
 		}
-		return new String(baos.toByteArray(), "UTF-8"); //$NON-NLS-1$
+		return new String(baos.toByteArray(), "UTF-8");
 	}
 
 }

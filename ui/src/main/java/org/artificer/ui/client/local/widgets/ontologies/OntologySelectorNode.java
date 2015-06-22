@@ -59,9 +59,9 @@ public class OntologySelectorNode extends Composite {
     @PostConstruct
     public void onPostConstruct() {
         treeToggleButton.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-        String id = "osnp_ul_" + counter++; //$NON-NLS-1$
+        String id = "osnp_ul_" + counter++;
         childPanel.getElement().setId(id);
-        treeToggleButton.getElement().setAttribute("data-target", "#" + id); //$NON-NLS-1$ //$NON-NLS-2$
+        treeToggleButton.getElement().setAttribute("data-target", "#" + id);
     }
 
     /**

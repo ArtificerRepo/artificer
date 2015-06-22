@@ -28,13 +28,13 @@ public class KieArtifactTypeDetector extends AbstractArtifactTypeDetector {
 
     @Override
     public ArtifactType detect(ArtifactContent content) {
-        if (content.getFilename().equals("kmodule.xml")) { //$NON-NLS-1$
+        if (content.getFilename().equals("kmodule.xml")) {
             return ArtifactType.valueOf(KieJarModel.KieXmlDocument, true);
         }
-        if (content.getFilename().endsWith(".bpmn") || content.getFilename().endsWith(".bpmn2")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (content.getFilename().endsWith(".bpmn") || content.getFilename().endsWith(".bpmn2")) {
             return ArtifactType.valueOf(KieJarModel.BpmnDocument, true);
         }
-        if (content.getFilename().endsWith(".drl")) { //$NON-NLS-1$
+        if (content.getFilename().endsWith(".drl")) {
             return ArtifactType.valueOf(KieJarModel.DroolsDocument, true);
         }
         return null;

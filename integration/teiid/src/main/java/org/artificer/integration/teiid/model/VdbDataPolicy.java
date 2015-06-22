@@ -31,27 +31,27 @@ public final class VdbDataPolicy {
         /**
          * The any authenticated attribute identifier.
          */
-        String ANY_AUTHENTICATED = "any-authenticated"; //$NON-NLS-1$
+        String ANY_AUTHENTICATED = "any-authenticated";
 
         /**
          * The data policy name attribute identifier.
          */
-        String NAME = "name"; //$NON-NLS-1$
+        String NAME = "name";
 
         /**
          * The data permission element identifier.
          */
-        String PERMISSION = "permission"; //$NON-NLS-1$
+        String PERMISSION = "permission";
 
         /**
          * The mapped role name element identifier.
          */
-        String ROLE_NAME = "mapped-role-name"; //$NON-NLS-1$
+        String ROLE_NAME = "mapped-role-name";
 
         /**
          * The allow create temporary tables attribute identifier.
          */
-        String TEMP_TABLE_CREATABLE = "allow-create-temporary-tables"; //$NON-NLS-1$
+        String TEMP_TABLE_CREATABLE = "allow-create-temporary-tables";
 
     }
 
@@ -63,17 +63,17 @@ public final class VdbDataPolicy {
         /**
          * Indicates if data policy has any authenticated.
          */
-        String ANY_AUTHENTICATED = "anyAuthenticated"; //$NON-NLS-1$
+        String ANY_AUTHENTICATED = "anyAuthenticated";
 
         /**
          * A collection of role names.
          */
-        String ROLE_NAMES = "roleNames"; //$NON-NLS-1$
+        String ROLE_NAMES = "roleNames";
 
         /**
          * Indicates if data policy can create temp tables.
          */
-        String TEMP_TABLE_CREATABLE = "tempTableCreatable"; //$NON-NLS-1$
+        String TEMP_TABLE_CREATABLE = "tempTableCreatable";
 
     }
 

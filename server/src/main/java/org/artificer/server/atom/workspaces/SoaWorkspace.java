@@ -33,34 +33,34 @@ public class SoaWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public SoaWorkspace(String hrefBase) {
-		super(hrefBase, "SOA Model"); //$NON-NLS-1$
+		super(hrefBase, "SOA Model");
 	}
 
 	@Override
 	protected void configureWorkspace() {
-        AppCollection soaCollection = addCollection("/s-ramp/soa", "SOA Model Objects", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
-        AppCollection effectCollection = addCollection("/s-ramp/soa/Effect", "Effect", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection eventCollection = addCollection("/s-ramp/soa/Event", "Event", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection informationTypeCollection = addCollection("/s-ramp/soa/InformationType", "InformationType", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection policyCollection = addCollection("/s-ramp/soa/Policy", "Policy", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection policySubjectCollection = addCollection("/s-ramp/soa/PolicySubject", "PolicySubject", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection elementCollection = addCollection("/s-ramp/soa/Element", "Element", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection actorCollection = addCollection("/s-ramp/soa/Actor", "Actor", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection organizationCollection = addCollection("/s-ramp/soa/Organization", "Organization", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection serviceCollection = addCollection("/s-ramp/soa/Service", "Service", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection systemCollection = addCollection("/s-ramp/soa/System", "System", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection compositionCollection = addCollection("/s-ramp/soa/Composition", "Composition", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection choreographyCollection = addCollection("/s-ramp/soa/Choreography", "Choreography", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection collaborationCollection = addCollection("/s-ramp/soa/Collaboration", "Collaboration", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection orchestrationCollection = addCollection("/s-ramp/soa/Orchestration", "Orchestration", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection processCollection = addCollection("/s-ramp/soa/Process", "Process", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection choreographyProcessCollection = addCollection("/s-ramp/soa/ChoreographyProcess", "ChoreographyProcess", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection collaborationProcessCollection = addCollection("/s-ramp/soa/CollaborationProcess", "CollaborationProcess", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection orchestrationProcessCollection = addCollection("/s-ramp/soa/OrchestrationProcess", "OrchestrationProcess", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection serviceCompositionCollection = addCollection("/s-ramp/soa/ServiceComposition", "ServiceComposition", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection taskCollection = addCollection("/s-ramp/soa/Task", "Task", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection serviceContractCollection = addCollection("/s-ramp/soa/ServiceContract", "ServiceContract", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection serviceInterfaceCollection = addCollection("/s-ramp/soa/ServiceInterface", "ServiceInterface", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        AppCollection soaCollection = addCollection("/s-ramp/soa", "SOA Model Objects", MediaType.APPLICATION_ZIP);
+        AppCollection effectCollection = addCollection("/s-ramp/soa/Effect", "Effect", "");
+        AppCollection eventCollection = addCollection("/s-ramp/soa/Event", "Event", "");
+        AppCollection informationTypeCollection = addCollection("/s-ramp/soa/InformationType", "InformationType", "");
+        AppCollection policyCollection = addCollection("/s-ramp/soa/Policy", "Policy", "");
+        AppCollection policySubjectCollection = addCollection("/s-ramp/soa/PolicySubject", "PolicySubject", "");
+        AppCollection elementCollection = addCollection("/s-ramp/soa/Element", "Element", "");
+        AppCollection actorCollection = addCollection("/s-ramp/soa/Actor", "Actor", "");
+        AppCollection organizationCollection = addCollection("/s-ramp/soa/Organization", "Organization", "");
+        AppCollection serviceCollection = addCollection("/s-ramp/soa/Service", "Service", "");
+        AppCollection systemCollection = addCollection("/s-ramp/soa/System", "System", "");
+        AppCollection compositionCollection = addCollection("/s-ramp/soa/Composition", "Composition", "");
+        AppCollection choreographyCollection = addCollection("/s-ramp/soa/Choreography", "Choreography", "");
+        AppCollection collaborationCollection = addCollection("/s-ramp/soa/Collaboration", "Collaboration", "");
+        AppCollection orchestrationCollection = addCollection("/s-ramp/soa/Orchestration", "Orchestration", "");
+        AppCollection processCollection = addCollection("/s-ramp/soa/Process", "Process", "");
+        AppCollection choreographyProcessCollection = addCollection("/s-ramp/soa/ChoreographyProcess", "ChoreographyProcess", "");
+        AppCollection collaborationProcessCollection = addCollection("/s-ramp/soa/CollaborationProcess", "CollaborationProcess", "");
+        AppCollection orchestrationProcessCollection = addCollection("/s-ramp/soa/OrchestrationProcess", "OrchestrationProcess", "");
+        AppCollection serviceCompositionCollection = addCollection("/s-ramp/soa/ServiceComposition", "ServiceComposition", "");
+        AppCollection taskCollection = addCollection("/s-ramp/soa/Task", "Task", "");
+        AppCollection serviceContractCollection = addCollection("/s-ramp/soa/ServiceContract", "ServiceContract", "");
+        AppCollection serviceInterfaceCollection = addCollection("/s-ramp/soa/ServiceInterface", "ServiceInterface", "");
 
         addTypeCategory(soaCollection, ArtifactTypeEnum.Effect);
         addTypeCategory(soaCollection, ArtifactTypeEnum.Event);

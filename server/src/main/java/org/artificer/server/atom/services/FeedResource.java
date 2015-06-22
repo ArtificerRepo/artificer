@@ -62,7 +62,7 @@ public class FeedResource extends AbstractFeedResource {
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
-		String xpath = String.format("/s-ramp/%1$s", model); //$NON-NLS-1$
+		String xpath = String.format("/s-ramp/%1$s", model);
 		String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
 		return createArtifactFeed(xpath, startPage, startIndex, count, orderBy, asc, propNames, baseUrl);
 	}
@@ -83,7 +83,7 @@ public class FeedResource extends AbstractFeedResource {
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
-		String xpath = String.format("/s-ramp/%1$s/%2$s", model, type); //$NON-NLS-1$
+		String xpath = String.format("/s-ramp/%1$s/%2$s", model, type);
 		String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
 		return createArtifactFeed(xpath, startPage, startIndex, count, orderBy, asc, propNames, baseUrl);
 	}

@@ -21,51 +21,51 @@ import java.util.Map;
 public class MediaType extends javax.ws.rs.core.MediaType {
 
     /** "application/zip" */
-    public final static String APPLICATION_ZIP = "application/zip"; //$NON-NLS-1$
+    public final static String APPLICATION_ZIP = "application/zip";
 
     /** "message/http" */
-    public final static String MESSAGE_HTTP = "message/http"; //$NON-NLS-1$
-    public final static MediaType MESSAGE_HTTP_TYPE = new MediaType("message", "http"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String MESSAGE_HTTP = "message/http";
+    public final static MediaType MESSAGE_HTTP_TYPE = new MediaType("message", "http");
 
     /** "application/atom+xml;type=entry" */
-    public final static String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml;type=entry"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_ATOM_XML_ENTRY_TYPE = new MediaType("application", "atom+xml", param("type", "entry")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public final static String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml;type=entry";
+    public final static MediaType APPLICATION_ATOM_XML_ENTRY_TYPE = new MediaType("application", "atom+xml", param("type", "entry"));
 
     /** "application/atom+xml;type=feed" */
-    public final static String APPLICATION_ATOM_XML_FEED = "application/atom+xml;type=feed"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_ATOM_XML_FEED_TYPE = new MediaType("application", "atom+xml", param("type", "feed")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public final static String APPLICATION_ATOM_XML_FEED = "application/atom+xml;type=feed";
+    public final static MediaType APPLICATION_ATOM_XML_FEED_TYPE = new MediaType("application", "atom+xml", param("type", "feed"));
 
     /** "application/atom+xml;charset=utf-8" */
-    public final static String APPLICATION_ATOM_XML_UTF8 = "application/atom+xml;charset=utf-8"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_ATOM_XML_UTF8_TYPE = new MediaType("application", "atom+xml", param("charset", "utf-8")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public final static String APPLICATION_ATOM_XML_UTF8 = "application/atom+xml;charset=utf-8";
+    public final static MediaType APPLICATION_ATOM_XML_UTF8_TYPE = new MediaType("application", "atom+xml", param("charset", "utf-8"));
 
     /** "multipart/mixed" */
-    public final static String MULTIPART_MIXED = "multipart/mixed"; //$NON-NLS-1$
-    public final static MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String MULTIPART_MIXED = "multipart/mixed";
+    public final static MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
 
     /** "application/artificer-server-exception" */
-    public final static String APPLICATION_ARTIFICER_SERVER_EXCEPTION = "application/artificer-server-exception"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_ARTIFICER_SERVER_EXCEPTION_TYPE = new MediaType("application", "artificer-server-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String APPLICATION_ARTIFICER_SERVER_EXCEPTION = "application/artificer-server-exception";
+    public final static MediaType APPLICATION_ARTIFICER_SERVER_EXCEPTION_TYPE = new MediaType("application", "artificer-server-exception");
 
     /** "application/artificer-conflict-exception" */
-    public final static String APPLICATION_ARTIFICER_CONFLICT_EXCEPTION = "application/artificer-conflict-exception"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_ARTIFICER_CONFLICT_EXCEPTION_TYPE = new MediaType("application", "artificer-conflict-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String APPLICATION_ARTIFICER_CONFLICT_EXCEPTION = "application/artificer-conflict-exception";
+    public final static MediaType APPLICATION_ARTIFICER_CONFLICT_EXCEPTION_TYPE = new MediaType("application", "artificer-conflict-exception");
 
     /** "application/artificer-notfound-exception" */
-    public final static String APPLICATION_ARTIFICER_NOTFOUND_EXCEPTION = "application/artificer-notfound-exception"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_ARTIFICER_NOTFOUND_EXCEPTION_TYPE = new MediaType("application", "artificer-notfound-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String APPLICATION_ARTIFICER_NOTFOUND_EXCEPTION = "application/artificer-notfound-exception";
+    public final static MediaType APPLICATION_ARTIFICER_NOTFOUND_EXCEPTION_TYPE = new MediaType("application", "artificer-notfound-exception");
 
     /** "application/artificer-wrongmodel-exception" */
-    public final static String APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION = "application/artificer-wrongmodel-exception"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION_TYPE = new MediaType("application", "artificer-wrongmodel-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION = "application/artificer-wrongmodel-exception";
+    public final static MediaType APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION_TYPE = new MediaType("application", "artificer-wrongmodel-exception");
 
     /** "application/rdf+xml" */
-    public final static String APPLICATION_RDF_XML = "application/rdf+xml"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_RDF_XML_TYPE = new MediaType("application", "rdf+xml"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String APPLICATION_RDF_XML = "application/rdf+xml";
+    public final static MediaType APPLICATION_RDF_XML_TYPE = new MediaType("application", "rdf+xml");
 
     /** "application/auditEntry+xml" */
-    public final static String APPLICATION_AUDIT_ENTRY_XML = "application/auditEntry+xml"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_AUDIT_ENTRY_XML_TYPE = new MediaType("application", "auditEntry+xml"); //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String APPLICATION_AUDIT_ENTRY_XML = "application/auditEntry+xml";
+    public final static MediaType APPLICATION_AUDIT_ENTRY_XML_TYPE = new MediaType("application", "auditEntry+xml");
 
     /**
      * Creates a parameter map.
@@ -107,8 +107,8 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     }
 
     public static MediaType getInstance(String mimeType) {
-        if (mimeType!=null && mimeType.contains("/")) { //$NON-NLS-1$
-            String[] type = mimeType.split("/"); //$NON-NLS-1$
+        if (mimeType!=null && mimeType.contains("/")) {
+            String[] type = mimeType.split("/");
             return new MediaType(type[0],type[1]);
         } else {
             return new MediaType(mimeType, null);

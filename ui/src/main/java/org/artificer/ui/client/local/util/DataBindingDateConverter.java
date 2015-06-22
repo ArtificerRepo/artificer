@@ -30,7 +30,7 @@ public class DataBindingDateConverter implements Converter<Date, String> {
 
     private static DateTimeFormat dateFormat;
     static {
-        String dFormat = "yyyy-MM-dd"; //$NON-NLS-1$
+        String dFormat = "yyyy-MM-dd";
         dateFormat = DateTimeFormat.getFormat(dFormat);
     }
 

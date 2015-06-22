@@ -104,13 +104,13 @@ public class MavenGavInfo {
 	}
 
     public static MavenGavInfo fromCommandLine(String gavArg, File file) throws Exception {
-        String [] split = gavArg.split(":"); //$NON-NLS-1$
+        String [] split = gavArg.split(":");
         String groupId = split[0];
         String artifactId = split[1];
         String version = split[2];
         String filename = file.getName();
-        if (file.getName().endsWith(".tmp")) { //$NON-NLS-1$
-            filename = filename.substring(0, filename.indexOf(".jar") + 4); //$NON-NLS-1$
+        if (file.getName().endsWith(".tmp")) {
+            filename = filename.substring(0, filename.indexOf(".jar") + 4);
         }
         String type = filename.substring(filename.lastIndexOf('.') + 1);
         if (filename.endsWith(".sha1")) {

@@ -65,7 +65,7 @@ public class MavenRepositoryAuthFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        String authHeader = req.getHeader("Authorization"); //$NON-NLS-1$
+        String authHeader = req.getHeader("Authorization");
         Creds credentials = parseAuthorizationHeader(authHeader);
         if  (credentials == null) {
             SimplePrincipal principal = new SimplePrincipal(ArtificerConfig.getMavenReadOnlyUsername());
@@ -86,7 +86,7 @@ public class MavenRepositoryAuthFilter implements Filter {
      * @throws IOException 
      */
     private void sendAuthResponse(HttpServletResponse response) throws IOException {
-        response.setHeader("WWW-Authenticate", String.format("BASIC realm=\"maven\"")); //$NON-NLS-1$ //$NON-NLS-2$
+        response.setHeader("WWW-Authenticate", String.format("BASIC realm=\"maven\""));
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
@@ -141,20 +141,20 @@ public class MavenRepositoryAuthFilter implements Filter {
     private Creds parseAuthorizationHeader(String authHeader) {
         if (authHeader == null)
             return null;
-        if (!authHeader.toUpperCase().startsWith("BASIC ")) //$NON-NLS-1$
+        if (!authHeader.toUpperCase().startsWith("BASIC "))
             return null;
 
         try {
             String userpassEncoded = authHeader.substring(6);
             byte[] decoded = Base64.decodeBase64(userpassEncoded);
-            String data = new String(decoded, "UTF-8"); //$NON-NLS-1$
+            String data = new String(decoded, "UTF-8");
             int sepIdx = data.indexOf(':');
             if (sepIdx > 0) {
                 String username = data.substring(0, sepIdx);
                 String password = data.substring(sepIdx + 1);
                 return new Creds(username, password);
             } else {
-                throw new RuntimeException(Messages.i18n.format("MavenRepositoryAuthFilter.InvalidCredFormat")); //$NON-NLS-1$
+                throw new RuntimeException(Messages.i18n.format("MavenRepositoryAuthFilter.InvalidCredFormat"));
             }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);

@@ -70,7 +70,7 @@ public class AuditResource extends AbstractResource {
             AuditEntry rval = auditService.create(artifactUuid, auditEntry);
             return auditEntryToAtomEntry(rval);
         } catch (Throwable e) {
-            logError(logger, Messages.i18n.format("ERROR_CREATING_AUDIT_ENTRY", artifactUuid), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_CREATING_AUDIT_ENTRY", artifactUuid), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -88,7 +88,7 @@ public class AuditResource extends AbstractResource {
             AuditEntry auditEntry = auditService.get(artifactUuid, auditEntryUuid);
             return auditEntryToAtomEntry(auditEntry);
         } catch (Throwable e) {
-            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRY", artifactUuid, auditEntryUuid), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRY", artifactUuid, auditEntryUuid), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -111,7 +111,7 @@ public class AuditResource extends AbstractResource {
             PagedResult<AuditEntry> entries = auditService.queryByArtifact(artifactUuid, startPage, startIndex, count);
             return createAuditFeed(entries);
         } catch (Throwable e) {
-            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRIES", artifactUuid), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRIES", artifactUuid), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -133,7 +133,7 @@ public class AuditResource extends AbstractResource {
             PagedResult<AuditEntry> entries = auditService.queryByUser(username, startPage, startIndex, count);
             return createAuditFeed(entries);
         } catch (Throwable e) {
-            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRIES_2", username), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRIES_2", username), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -146,13 +146,13 @@ public class AuditResource extends AbstractResource {
     @SuppressWarnings("unchecked")
     private Feed createAuditFeed(PagedResult<AuditEntry> auditEntries) throws Exception {
         Feed feed = new Feed();
-        feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord"); //$NON-NLS-1$
+        feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord");
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf(auditEntries.getPageSize()));
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_START_INDEX_QNAME, String.valueOf(auditEntries.getStartIndex()));
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(auditEntries.getTotalSize()));
-        feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString())); //$NON-NLS-1$
-        feed.setTitle("S-RAMP Audit Feed"); //$NON-NLS-1$
-        feed.setSubtitle("All Audit Entries for Artifact"); //$NON-NLS-1$
+        feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString()));
+        feed.setTitle("S-RAMP Audit Feed");
+        feed.setSubtitle("All Audit Entries for Artifact");
         feed.setUpdated(new Date());
 
         for (AuditEntry auditEntry : auditEntries.getResults()) {
@@ -162,7 +162,7 @@ public class AuditResource extends AbstractResource {
             entry.setUpdated(auditEntry.getWhen().toGregorianCalendar().getTime());
             entry.getAuthors().add(new Person(auditEntry.getWho()));
             entry.setTitle(auditEntry.getType());
-            entry.setSummary(""); //$NON-NLS-1$
+            entry.setSummary("");
 
             feed.getEntries().add(entry);
         }
@@ -177,12 +177,12 @@ public class AuditResource extends AbstractResource {
      */
     private Entry auditEntryToAtomEntry(AuditEntry auditEntry) throws URISyntaxException {
         Entry entry = new Entry();
-        entry.setId(new URI("urn:uuid:" + auditEntry.getUuid())); //$NON-NLS-1$
+        entry.setId(new URI("urn:uuid:" + auditEntry.getUuid()));
         entry.setPublished(auditEntry.getWhen().toGregorianCalendar().getTime());
         entry.setUpdated(auditEntry.getWhen().toGregorianCalendar().getTime());
         entry.getAuthors().add(new Person(auditEntry.getWho()));
         entry.setTitle(auditEntry.getType());
-        entry.setSummary(""); //$NON-NLS-1$
+        entry.setSummary("");
         entry.setAnyOtherJAXBObject(auditEntry);
         return entry;
     }

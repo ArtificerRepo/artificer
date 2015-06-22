@@ -67,7 +67,7 @@ public class EditCustomPropertyDialog extends ModalDialog implements HasValueCha
      * @param label
      */
     public void setLabel(String label) {
-        this.label.setInnerText(label + ":"); //$NON-NLS-1$
+        this.label.setInnerText(label + ":");
     }
 
     /**

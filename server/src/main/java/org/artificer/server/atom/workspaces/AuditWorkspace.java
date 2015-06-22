@@ -36,12 +36,12 @@ public class AuditWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public AuditWorkspace(String hrefBase) {
-		super(hrefBase, "Auditing Model"); //$NON-NLS-1$
+		super(hrefBase, "Auditing Model");
 	}
 
 	@Override
 	protected void configureWorkspace() {
-		AppCollection collection = addCollection("/s-ramp/audit", "Audit Entries", MediaType.APPLICATION_AUDIT_ENTRY_XML); //$NON-NLS-1$ //$NON-NLS-2$
+		AppCollection collection = addCollection("/s-ramp/audit", "Audit Entries", MediaType.APPLICATION_AUDIT_ENTRY_XML);
 
 		AppCategories categories = new AppCategories();
 		categories.setFixed(true);
@@ -49,8 +49,8 @@ public class AuditWorkspace extends AbstractWorkspace {
 
 		Category category = new Category();
 		category.setScheme(ArtificerAtomConstants.X_S_RAMP_TYPE_URN);
-		category.setTerm("audit"); //$NON-NLS-1$
-		category.setLabel("Audit"); //$NON-NLS-1$
+		category.setTerm("audit");
+		category.setLabel("Audit");
 		categories.getCategory().add(category);
 	}
 }

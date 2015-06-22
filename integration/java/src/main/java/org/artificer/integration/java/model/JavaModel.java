@@ -23,32 +23,32 @@ package org.artificer.integration.java.model;
  */
 public class JavaModel {
 
-    public static final String TYPE_ARCHIVE = "JavaArchive"; //$NON-NLS-1$
-    public static final String TYPE_WEB_APPLICATION = "JavaWebApplication"; //$NON-NLS-1$
-    public static final String TYPE_ENTERPRISE_APPLICATION = "JavaEnterpriseApplication"; //$NON-NLS-1$
-    public static final String TYPE_BEANS_XML = "BeanArchiveDescriptor"; //$NON-NLS-1$
+    public static final String TYPE_ARCHIVE = "JavaArchive";
+    public static final String TYPE_WEB_APPLICATION = "JavaWebApplication";
+    public static final String TYPE_ENTERPRISE_APPLICATION = "JavaEnterpriseApplication";
+    public static final String TYPE_BEANS_XML = "BeanArchiveDescriptor";
 
-    public static final String TYPE_JAVA_CLASS = "JavaClass"; //$NON-NLS-1$
-    public static final String TYPE_JAVA_INTERFACE = "JavaInterface"; //$NON-NLS-1$
-    public static final String TYPE_JAVA_ENUM = "JavaEnum"; //$NON-NLS-1$
+    public static final String TYPE_JAVA_CLASS = "JavaClass";
+    public static final String TYPE_JAVA_INTERFACE = "JavaInterface";
+    public static final String TYPE_JAVA_ENUM = "JavaEnum";
 
-    public static final String PROP_PACKAGE_NAME = "packageName"; //$NON-NLS-1$
-    public static final String PROP_CLASS_NAME = "className"; //$NON-NLS-1$
+    public static final String PROP_PACKAGE_NAME = "packageName";
+    public static final String PROP_CLASS_NAME = "className";
 
     //maven info
-    public static final String TYPE_MAVEN_POM_XML = "MavenPom"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_PROPERTY = "maven.property."; //$NON-NLS-1$
-    public static final String PROP_MAVEN_ARTIFACT_ID = "maven.artifactId"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_GROUP_ID = "maven.groupId"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_VERSION = "maven.version"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_TYPE = "maven.type"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_CLASSIFIER = "maven.classifier"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_PACKAGING = "maven.packaging"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_PARENT_ARTIFACT_ID = "maven.parent.artifactId"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_PARENT_GROUP_ID = "maven.parent.groupId"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_PARENT_VERSION = "maven.parent.version"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_HASH_MD5 = "maven.hash.md5"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_HASH_SHA1 = "maven.hash.sha1"; //$NON-NLS-1$
-    public static final String PROP_MAVEN_SNAPSHOT_ID = "maven.snapshot.id"; //$NON-NLS-1$
+    public static final String TYPE_MAVEN_POM_XML = "MavenPom";
+    public static final String PROP_MAVEN_PROPERTY = "maven.property.";
+    public static final String PROP_MAVEN_ARTIFACT_ID = "maven.artifactId";
+    public static final String PROP_MAVEN_GROUP_ID = "maven.groupId";
+    public static final String PROP_MAVEN_VERSION = "maven.version";
+    public static final String PROP_MAVEN_TYPE = "maven.type";
+    public static final String PROP_MAVEN_CLASSIFIER = "maven.classifier";
+    public static final String PROP_MAVEN_PACKAGING = "maven.packaging";
+    public static final String PROP_MAVEN_PARENT_ARTIFACT_ID = "maven.parent.artifactId";
+    public static final String PROP_MAVEN_PARENT_GROUP_ID = "maven.parent.groupId";
+    public static final String PROP_MAVEN_PARENT_VERSION = "maven.parent.version";
+    public static final String PROP_MAVEN_HASH_MD5 = "maven.hash.md5";
+    public static final String PROP_MAVEN_HASH_SHA1 = "maven.hash.sha1";
+    public static final String PROP_MAVEN_SNAPSHOT_ID = "maven.snapshot.id";
 
 }

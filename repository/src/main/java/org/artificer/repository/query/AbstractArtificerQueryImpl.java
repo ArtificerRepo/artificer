@@ -114,21 +114,21 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 	public static final String formatQuery(String xpathTemplate, List<QueryReplacementParam<?>> replacementParams)
 			throws ArtificerUserException {
 		StringBuilder builder = new StringBuilder();
-		String [] xpathSegments = xpathTemplate.split("\\?"); //$NON-NLS-1$
+		String [] xpathSegments = xpathTemplate.split("\\?");
 		int paramCounter = 0;
 		for (String segment : xpathSegments) {
 			builder.append(segment);
 			boolean isLastSegment = segment == xpathSegments[xpathSegments.length - 1];
 			if (!isLastSegment) {
 				if (paramCounter >= replacementParams.size())
-					throw new ArtificerUserException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS")); //$NON-NLS-1$
+					throw new ArtificerUserException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS"));
 				QueryReplacementParam<?> param = replacementParams.get(paramCounter);
 				builder.append(param.getFormattedValue());
 				paramCounter++;
 			}
 		}
 		if (replacementParams.size() > paramCounter)
-			throw new ArtificerUserException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS")); //$NON-NLS-1$
+			throw new ArtificerUserException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS"));
 
 		return builder.toString();
 	}
@@ -143,7 +143,7 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 		try {
 			return sParser.parseXPath(xpath);
 		} catch (Throwable e) {
-			throw new ArtificerUserException(Messages.i18n.format("QUERY_PARSE_FAILED"), e); //$NON-NLS-1$
+			throw new ArtificerUserException(Messages.i18n.format("QUERY_PARSE_FAILED"), e);
 		}
 	}
 

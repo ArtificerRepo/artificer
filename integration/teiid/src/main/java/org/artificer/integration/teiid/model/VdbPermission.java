@@ -31,52 +31,52 @@ public final class VdbPermission {
         /**
          * The allow alter element identifier.
          */
-        String ALTERABLE = "allow-alter"; //$NON-NLS-1$
+        String ALTERABLE = "allow-alter";
 
         /**
          * The condition element identifier.
          */
-        String CONDITION = "condition"; //$NON-NLS-1$
+        String CONDITION = "condition";
 
         /**
          * The allow create element identifier.
          */
-        String CREATABLE = "allow-create"; //$NON-NLS-1$
+        String CREATABLE = "allow-create";
 
         /**
          * The allow delete element identifier.
          */
-        String DELETABLE = "allow-delete"; //$NON-NLS-1$
+        String DELETABLE = "allow-delete";
 
         /**
          * The allow execute element identifier.
          */
-        String EXECUTABLE = "allow-execute"; //$NON-NLS-1$
+        String EXECUTABLE = "allow-execute";
 
         /**
          * The allow language element identifier.
          */
-        String LANGUAGABLE = "allow-language"; //$NON-NLS-1$
+        String LANGUAGABLE = "allow-language";
 
         /**
          * The mask element identifier.
          */
-        String MASK = "mask"; //$NON-NLS-1$
+        String MASK = "mask";
 
         /**
          * The allow read element identifier.
          */
-        String READABLE = "allow-read"; //$NON-NLS-1$
+        String READABLE = "allow-read";
 
         /**
          * The resource name element identifier.
          */
-        String RESOURCE_NAME = "resource-name"; //$NON-NLS-1$
+        String RESOURCE_NAME = "resource-name";
 
         /**
          * The allow update element identifier.
          */
-        String UPDATABLE = "allow-update"; //$NON-NLS-1$
+        String UPDATABLE = "allow-update";
 
     }
 
@@ -88,47 +88,47 @@ public final class VdbPermission {
         /**
          * Indicates if the permission resource is alterable.
          */
-        String ALTERABLE = "alterable"; //$NON-NLS-1$
+        String ALTERABLE = "alterable";
 
         /**
          * The optional permission condition.
          */
-        String CONDITION = "condition"; //$NON-NLS-1$
+        String CONDITION = "condition";
 
         /**
          * Indicates if the permission resource is creatable.
          */
-        String CREATABLE = "creatable"; //$NON-NLS-1$
+        String CREATABLE = "creatable";
 
         /**
          * Indicates if the permission resource is deletable.
          */
-        String DELETABLE = "deletable"; //$NON-NLS-1$
+        String DELETABLE = "deletable";
 
         /**
          * Indicates if the permission resource is executable.
          */
-        String EXECUTABLE = "executable"; //$NON-NLS-1$
+        String EXECUTABLE = "executable";
 
         /**
          * Indicates if the permission resource allows language.
          */
-        String LANGUAGABLE = "languagable"; //$NON-NLS-1$
+        String LANGUAGABLE = "languagable";
 
         /**
          * The mask property.
          */
-        String MASK = "mask"; //$NON-NLS-1$
+        String MASK = "mask";
 
         /**
          * Indicates if the permission resource is readable.
          */
-        String READABLE = "readable"; //$NON-NLS-1$
+        String READABLE = "readable";
 
         /**
          * Indicates if the permission resource is updatable.
          */
-        String UPDATABLE = "updatable"; //$NON-NLS-1$
+        String UPDATABLE = "updatable";
 
     }
 

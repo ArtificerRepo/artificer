@@ -43,7 +43,7 @@ public class KeycloakBearerTokenAuthenticationProvider implements Authentication
     @Override
     public void provideAuthentication(HttpRequest request) {
         String bearerToken = tBearerToken.get();
-        request.setHeader("Authorization", "Bearer " + bearerToken); //$NON-NLS-1$
+        request.setHeader("Authorization", "Bearer " + bearerToken);
     }
 
 }

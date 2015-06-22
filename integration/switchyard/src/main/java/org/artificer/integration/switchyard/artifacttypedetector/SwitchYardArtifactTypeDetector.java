@@ -30,7 +30,7 @@ public class SwitchYardArtifactTypeDetector extends AbstractArtifactTypeDetector
 
     @Override
     public ArtifactType detect(ArtifactContent content) {
-        if (content.getFilename().equals("switchyard.xml")) { //$NON-NLS-1$
+        if (content.getFilename().equals("switchyard.xml")) {
             return ArtifactType.valueOf(SwitchYardModel.SwitchYardXmlDocument, true);
         }
         return null;

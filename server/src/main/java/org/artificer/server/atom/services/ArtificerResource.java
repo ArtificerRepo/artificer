@@ -56,10 +56,10 @@ public class ArtificerResource extends AbstractFeedResource {
         Feed feed = new Feed();
         feed.getExtensionAttributes().put(ArtificerConstants.SRAMP_PROVIDER_QNAME, "Artificer");
         feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString()));
-        feed.setTitle("Artificer"); //$NON-NLS-1$
-        feed.setSubtitle("Reverse Relationships"); //$NON-NLS-1$
+        feed.setTitle("Artificer");
+        feed.setSubtitle("Reverse Relationships");
         feed.setUpdated(new Date());
-        feed.getAuthors().add(new Person("anonymous")); //$NON-NLS-1$
+        feed.getAuthors().add(new Person("anonymous"));
 
         ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, null);
         List<ReverseRelationship> relationships = queryService.reverseRelationships(uuid);

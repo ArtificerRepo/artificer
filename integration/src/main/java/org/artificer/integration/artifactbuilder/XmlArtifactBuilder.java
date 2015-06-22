@@ -109,9 +109,9 @@ public class XmlArtifactBuilder extends AbstractArtifactBuilder {
                         dat.setRelatedDocument(related);
                     }
                 } else {
-                    Relationship genericRelationship = ArtificerModelUtils.getGenericRelationship(derivedArtifact, "relatedDocument"); //$NON-NLS-1$
+                    Relationship genericRelationship = ArtificerModelUtils.getGenericRelationship(derivedArtifact, "relatedDocument");
                     if (genericRelationship == null) {
-                        ArtificerModelUtils.addGenericRelationship(derivedArtifact, "relatedDocument", primaryArtifact.getUuid()); //$NON-NLS-1$
+                        ArtificerModelUtils.addGenericRelationship(derivedArtifact, "relatedDocument", primaryArtifact.getUuid());
                     }
                 }
             }

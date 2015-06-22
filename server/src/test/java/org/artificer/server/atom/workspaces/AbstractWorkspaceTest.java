@@ -40,8 +40,8 @@ public class AbstractWorkspaceTest {
      * @param workspace
      */
     public static String getExpectedWorkspaceXML(String workspace) throws Exception {
-    	URL url = AbstractWorkspaceTest.class.getResource(String.format("/workspace-files/%1$s-workspace.xml", workspace)); //$NON-NLS-1$
-    	Assert.assertNotNull("Failed to find expected workspace XML file in /workspace-files (src/test/resources).", url); //$NON-NLS-1$
+    	URL url = AbstractWorkspaceTest.class.getResource(String.format("/workspace-files/%1$s-workspace.xml", workspace));
+    	Assert.assertNotNull("Failed to find expected workspace XML file in /workspace-files (src/test/resources).", url);
     	return IOUtils.toString(url);
     }
 
@@ -54,9 +54,9 @@ public class AbstractWorkspaceTest {
 		Marshaller marshaller = jaxbContext.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
-		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8"); //$NON-NLS-1$
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 		StringWriter writer = new StringWriter();
-		JAXBElement<AppService> element = new JAXBElement<AppService>(new QName("", "app:service", "app"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		JAXBElement<AppService> element = new JAXBElement<AppService>(new QName("", "app:service", "app"),
 				AppService.class, appService);
 		marshaller.marshal(element, writer);
 		return writer.toString();

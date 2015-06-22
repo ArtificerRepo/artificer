@@ -77,11 +77,11 @@ public class OntologyEditorTier extends FlowPanel implements HasValue<List<Ontol
      */
     @PostConstruct
     protected void postConstruct() {
-        setStyleName("sramp-ontology-tier"); //$NON-NLS-1$
-        header.getElement().setClassName("sramp-ontology-tier-header"); //$NON-NLS-1$
+        setStyleName("sramp-ontology-tier");
+        header.getElement().setClassName("sramp-ontology-tier-header");
         addNode.setText("+");
-        addNode.addStyleName("btn-mini"); //$NON-NLS-1$
-        addNode.addStyleName("btn"); //$NON-NLS-1$
+        addNode.addStyleName("btn-mini");
+        addNode.addStyleName("btn");
         addNode.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -89,9 +89,9 @@ public class OntologyEditorTier extends FlowPanel implements HasValue<List<Ontol
             }
         });
         header.add(addNode);
-        items.setStyleName("nav"); //$NON-NLS-1$
-        items.addStyleName("nav-pills"); //$NON-NLS-1$
-        items.addStyleName("nav-stacked"); //$NON-NLS-1$
+        items.setStyleName("nav");
+        items.addStyleName("nav-pills");
+        items.addStyleName("nav-stacked");
         
         add(header);
         add(items);
@@ -207,14 +207,14 @@ public class OntologyEditorTier extends FlowPanel implements HasValue<List<Ontol
         OntologyEditorTierItem oldSelection = selected;
         OntologyEditorTierItem newSelection = item;
         if (oldSelection != null) {
-            oldSelection.getElement().removeClassName("active"); //$NON-NLS-1$
+            oldSelection.getElement().removeClassName("active");
             oldSelection.hideActions();
         }
         if (oldSelection == newSelection) {
             selected = null;
             SelectionEvent.fire(this, null);
         } else {
-            newSelection.getElement().addClassName("active"); //$NON-NLS-1$
+            newSelection.getElement().addClassName("active");
             selected = newSelection;
             OntologyClassBean bean = selected.getValue();
             SelectionEvent.fire(this, bean);
