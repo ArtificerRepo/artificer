@@ -41,7 +41,7 @@ public class UploadResult extends JavaScriptObject {
     public static UploadResult fromResult(String resultData) {
         int startIdx = resultData.indexOf('{');
         int endIdx = resultData.lastIndexOf('}') + 1;
-        resultData = "(" + resultData.substring(startIdx, endIdx) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        resultData = "(" + resultData.substring(startIdx, endIdx) + ")";
         return fromJSON(UploadResult.class, resultData);
     }
 
@@ -60,14 +60,14 @@ public class UploadResult extends JavaScriptObject {
      * Returns true if the response is an error response.
      */
     public final boolean isError() {
-        return "true".equals(get("exception")); //$NON-NLS-1$ //$NON-NLS-2$
+        return "true".equals(get("exception"));
     }
 
     /**
      * Gets the error.
      */
     public final ArtificerUiException getError() {
-        String errorMessage = get("exception-message"); //$NON-NLS-1$
+        String errorMessage = get("exception-message");
         ArtificerUiException error = new ArtificerUiException(errorMessage);
         return error;
     }

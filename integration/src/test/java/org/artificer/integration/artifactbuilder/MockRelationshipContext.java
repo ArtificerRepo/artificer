@@ -33,7 +33,7 @@ public class MockRelationshipContext implements RelationshipContext {
         ArtifactSummary doc = new ArtifactSummary();
         doc.setType("Document");
         doc.setModel("core");
-        doc.setName("Mock Artifact"); //$NON-NLS-1$
+        doc.setName("Mock Artifact");
         doc.setUuid(UUID.randomUUID().toString());
         return Collections.singletonList(doc);
     }

@@ -40,8 +40,8 @@ public class QNameRelationshipSource extends CriteriaQueryRelationshipSource {
 
     @Override
     protected void addCriteria(Map<String, String> criteria) {
-        criteria.put("namespace", qName.getNamespaceURI()); //$NON-NLS-1$
-        criteria.put("ncName", qName.getLocalPart()); //$NON-NLS-1$
+        criteria.put("namespace", qName.getNamespaceURI());
+        criteria.put("ncName", qName.getLocalPart());
     }
 
 }

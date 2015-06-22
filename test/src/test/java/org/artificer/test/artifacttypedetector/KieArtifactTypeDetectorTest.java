@@ -37,7 +37,7 @@ public class KieArtifactTypeDetectorTest extends AbstractClientTest {
 
 	@Test
 	public void testKieIntegration() throws Exception {
-	    InputStream stream = getClass().getResourceAsStream("kie.jar"); //$NON-NLS-1$
+	    InputStream stream = getClass().getResourceAsStream("kie.jar");
         ArtificerAtomApiClient client = client();
 	    try {
             BaseArtifactType artifact = client.uploadArtifact(stream, "kie.jar");

@@ -45,18 +45,18 @@ public final class ModelArtifactBuilder extends XmlArtifactBuilder {
 
     @Override
     protected void derive() throws IOException {
-        LOGGER.debug("ModelArtifactBuilder element='{}' of artifact '{}'", rootElement.getLocalName(), getPrimaryArtifact().getName()); //$NON-NLS-1$
+        LOGGER.debug("ModelArtifactBuilder element='{}' of artifact '{}'", rootElement.getLocalName(), getPrimaryArtifact().getName());
 
         // make sure Teiid model
         if (!(getPrimaryArtifact() instanceof ExtendedDocument)
             || !TeiidArtifactType.MODEL.extendedType().equals(((ExtendedDocument)getPrimaryArtifact()).getExtendedType())) {
-            throw new IllegalArgumentException(Messages.I18N.format("notModelArtifact", getPrimaryArtifact().getName())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.I18N.format("notModelArtifact", getPrimaryArtifact().getName()));
         }
 
         try {
             // root element should be the XMI element
             if (!TeiidModel.XmiId.ROOT_ELEMENT.equals(rootElement.getLocalName())) {
-                throw new IllegalArgumentException(Messages.I18N.format("missingModelRootElement", getPrimaryArtifact().getName())); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.I18N.format("missingModelRootElement", getPrimaryArtifact().getName()));
             }
 
             processModelAnnotation();
@@ -71,7 +71,7 @@ public final class ModelArtifactBuilder extends XmlArtifactBuilder {
                                                          XPathConstants.NODE);
 
         if (annotationElement == null) {
-            throw new IllegalArgumentException(Messages.I18N.format("missingModelAnnotationElement", getPrimaryArtifact().getName())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.I18N.format("missingModelAnnotationElement", getPrimaryArtifact().getName()));
         }
 
         setProperty(annotationElement, TeiidModel.XmiId.UUID, TeiidModelObject.PropertyId.MMUID);
@@ -100,7 +100,7 @@ public final class ModelArtifactBuilder extends XmlArtifactBuilder {
 
             if (TeiidModel.XmiId.XML_NAMESPACE.equals(attr.getPrefix())) {
                 namespaceContext.addMapping(attr.getLocalName(), attr.getNodeValue());
-                LOGGER.debug("ModelArtifactBuilder:adding namespace with prefix '{}' and URI '{}'", attr.getLocalName(), attr.getNodeValue()); //$NON-NLS-1$
+                LOGGER.debug("ModelArtifactBuilder:adding namespace with prefix '{}' and URI '{}'", attr.getLocalName(), attr.getNodeValue());
             }
         }
     }
@@ -109,7 +109,7 @@ public final class ModelArtifactBuilder extends XmlArtifactBuilder {
     protected Object query( final Element context,
                             final String query,
                             final QName returnType ) throws XPathExpressionException {
-        LOGGER.debug("ModelArtifactBuilder:executing query '{}'", query); //$NON-NLS-1$
+        LOGGER.debug("ModelArtifactBuilder:executing query '{}'", query);
         return super.query(context, query, returnType);
     }
 

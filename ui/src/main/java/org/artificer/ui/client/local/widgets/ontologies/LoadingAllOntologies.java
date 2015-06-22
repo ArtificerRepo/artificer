@@ -41,6 +41,6 @@ public class LoadingAllOntologies extends Composite {
      */
     @PostConstruct
     protected void onPostConstruct() {
-        getElement().removeClassName("hide"); //$NON-NLS-1$
+        getElement().removeClassName("hide");
     }
 }

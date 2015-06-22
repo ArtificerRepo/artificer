@@ -113,7 +113,7 @@ public class ArtifactResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -137,7 +137,7 @@ public class ArtifactResource extends AbstractResource {
             BaseArtifactType artifact = artifactService.upload(model, type, fileName, is);
             return wrapArtifact(artifact, request);
         } catch (Exception e) {
-            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e);
             throw new ArtificerAtomException(e);
         } finally {
             IOUtils.closeQuietly(is);
@@ -169,7 +169,7 @@ public class ArtifactResource extends AbstractResource {
             BaseArtifactType artifact = artifactService.upload(fileName, is);
             return wrapArtifact(artifact, request);
         } catch (Exception e) {
-            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e);
             throw new ArtificerAtomException(e);
         } finally {
             IOUtils.closeQuietly(is);
@@ -214,7 +214,7 @@ public class ArtifactResource extends AbstractResource {
 			List<InputPart> list = input.getParts();
 			// Expecting 2 parts
 			if (list.size() != 2) {
-				throw new ArtificerAtomException(Messages.i18n.format("INVALID_MULTIPART_POST", list.size())); //$NON-NLS-1$
+				throw new ArtificerAtomException(Messages.i18n.format("INVALID_MULTIPART_POST", list.size()));
 			}
 			InputPart firstPart = list.get(0);
 			InputPart secondpart = list.get(1);
@@ -252,7 +252,7 @@ public class ArtifactResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-			logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -286,7 +286,7 @@ public class ArtifactResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_UPDATING_META_DATA", uuid), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_UPDATING_META_DATA", uuid), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -309,7 +309,7 @@ public class ArtifactResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-            logError(logger, Messages.i18n.format("ERROR_CREATING_COMMENT", uuid), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_CREATING_COMMENT", uuid), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -338,7 +338,7 @@ public class ArtifactResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_GETTING_META_DATA", uuid), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_GETTING_META_DATA", uuid), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -374,16 +374,16 @@ public class ArtifactResource extends AbstractResource {
                     artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 			return Response
 			        .ok(output, artifactType.getMimeType())
-			        .header("Content-Disposition", "attachment; filename=" + artifact.getName()) //$NON-NLS-1$ //$NON-NLS-2$
-			        .header("Content-Length", //$NON-NLS-1$
+			        .header("Content-Disposition", "attachment; filename=" + artifact.getName())
+			        .header("Content-Length",
                             artifact.getOtherAttributes().get(ArtificerConstants.SRAMP_CONTENT_SIZE_QNAME))
-			        .header("Last-Modified", lastModifiedDate).build(); //$NON-NLS-1$
+			        .header("Last-Modified", lastModifiedDate).build();
 		} catch (ArtificerServerException e) {
             // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_GETTING_CONTENT", uuid), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_GETTING_CONTENT", uuid), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -407,7 +407,7 @@ public class ArtifactResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -431,7 +431,7 @@ public class ArtifactResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-            logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e);
             throw new ArtificerAtomException(e);
         }
     }

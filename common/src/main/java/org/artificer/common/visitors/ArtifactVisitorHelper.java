@@ -36,12 +36,12 @@ public final class ArtifactVisitorHelper {
 	 */
 	public static void visitArtifact(ArtifactVisitor visitor, BaseArtifactType artifact) {
 		try {
-			Method method = visitor.getClass().getMethod("visit", artifact.getClass()); //$NON-NLS-1$
+			Method method = visitor.getClass().getMethod("visit", artifact.getClass());
 			method.invoke(visitor, artifact);
 		} catch (Exception e) {
 			// This shouldn't happen unless we've programmed something wrong in the visitor interface.
 			throw new RuntimeException(
-			        Messages.i18n.format("VISIT_METHOD_NOT_FOUND", visitor.getClass(), artifact.getClass()), //$NON-NLS-1$
+			        Messages.i18n.format("VISIT_METHOD_NOT_FOUND", visitor.getClass(), artifact.getClass()),
 					e);
 		}
 	}

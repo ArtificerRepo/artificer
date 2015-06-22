@@ -112,7 +112,7 @@ public class QueryCommand extends AbstractCommand {
 						completerInvocation.addAllCompleterValues(new ArrayList<>(modelCandidates));
 					}
 					// Artifact models matching the partial value
-					if (split.length == 3 && !currentValue.endsWith("/") && currentValue.startsWith("/s-ramp/")) { //$NON-NLS-2$
+					if (split.length == 3 && !currentValue.endsWith("/") && currentValue.startsWith("/s-ramp/")) {
 						String partialModel = split[2];
 						Set<String> modelCandidates = new TreeSet<>();
 						for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
@@ -127,7 +127,7 @@ public class QueryCommand extends AbstractCommand {
 						}
 					}
 					// All artifact types
-					if (split.length == 3 && currentValue.endsWith("/") && currentValue.startsWith("/s-ramp/")) { //$NON-NLS-2$
+					if (split.length == 3 && currentValue.endsWith("/") && currentValue.startsWith("/s-ramp/")) {
 						String model = split[2];
 						Set<String> typeCandidates = new TreeSet<>();
 						for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
@@ -138,7 +138,7 @@ public class QueryCommand extends AbstractCommand {
 						completerInvocation.addAllCompleterValues(new ArrayList<>(typeCandidates));
 					}
 					// Artifact types matching the partial value
-					if (split.length == 4 && !currentValue.endsWith("/") && currentValue.startsWith("/s-ramp/")) { //$NON-NLS-2$
+					if (split.length == 4 && !currentValue.endsWith("/") && currentValue.startsWith("/s-ramp/")) {
 						String model = split[2];
 						String partialType = split[3];
 						Set<String> typeCandidates = new TreeSet<>();

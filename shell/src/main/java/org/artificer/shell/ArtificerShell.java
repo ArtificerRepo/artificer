@@ -197,7 +197,7 @@ public class ArtificerShell {
         if (locale_str != null) {
             String lang = null;
             String region = null;
-            String[] lsplit = locale_str.split("_"); //$NON-NLS-1$
+            String[] lsplit = locale_str.split("_");
             if (lsplit.length > 0) {
                 lang = lsplit[0];
             }
@@ -221,16 +221,16 @@ public class ArtificerShell {
 //            commandClassloaders.add(Thread.currentThread().getContextClassLoader());
 //
 //            // Register commands listed in the user's commands.ini config file
-//            String userHome = System.getProperty("user.home", "/"); //$NON-NLS-1$ //$NON-NLS-2$
-//            String commandsDirName = System.getProperty("artificer.shell.commandsDir", //$NON-NLS-1$
-//                    userHome + "/.artificer/commands"); //$NON-NLS-1$
+//            String userHome = System.getProperty("user.home", "/");
+//            String commandsDirName = System.getProperty("artificer.shell.commandsDir",
+//                    userHome + "/.artificer/commands");
 //            File commandsDir = new File(commandsDirName);
 //            if (!commandsDir.exists()) {
 //                commandsDir.mkdirs();
 //            }
 //            if (commandsDir.isDirectory()) {
 //                try {
-//                    Collection<File> jarFiles = FileUtils.listFiles(commandsDir, new String[]{"jar"}, false); //$NON-NLS-1$
+//                    Collection<File> jarFiles = FileUtils.listFiles(commandsDir, new String[]{"jar"}, false);
 //                    List<URL> jarURLs = new ArrayList<URL>(jarFiles.size());
 //                    for (File jarFile : jarFiles) {
 //                        jarURLs.add(jarFile.toURI().toURL());

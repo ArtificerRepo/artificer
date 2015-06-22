@@ -102,7 +102,7 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 		} else if (artifact instanceof Operation) {
 			Operation operation = (Operation) artifact;
 			if (mostRecentPortType != null) {
-				String key = mostRecentPortType.toString() + ":" + operation.getNCName(); //$NON-NLS-1$
+				String key = mostRecentPortType.toString() + ":" + operation.getNCName();
 				operationIndex.put(key, operation);
 			}
 		} else if (artifact instanceof Binding) {
@@ -157,7 +157,7 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 	 * @param operationName
 	 */
 	public Operation lookupOperation(QName portTypeName, String operationName) {
-		String key = mostRecentPortType.toString() + ":" + operationName; //$NON-NLS-1$
+		String key = mostRecentPortType.toString() + ":" + operationName;
 		return operationIndex.get(key);
 	}
 

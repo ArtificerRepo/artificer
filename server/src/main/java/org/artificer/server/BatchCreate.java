@@ -33,7 +33,7 @@ public class BatchCreate {
     private final List<PersistenceManager.BatchItem> batchItems = new ArrayList<PersistenceManager.BatchItem>();
 
     public void add(BaseArtifactType artifact, ArtifactContent artifactContent, String path) throws Exception {
-        String contentId = String.format("<%1$s@package>", path); //$NON-NLS-1$
+        String contentId = String.format("<%1$s@package>", path);
         PersistenceManager.BatchItem bi = new PersistenceManager.BatchItem(contentId, artifact, artifactContent);
         batchItems.add(bi);
     }

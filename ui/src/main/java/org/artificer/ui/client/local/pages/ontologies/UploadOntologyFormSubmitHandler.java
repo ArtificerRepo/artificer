@@ -69,8 +69,8 @@ public class UploadOntologyFormSubmitHandler implements SubmitHandler, SubmitCom
         dialog.hide(false);
         uploadResult = null;
         notification = notificationService.startProgressNotification(
-                i18n.format("upload-ontology-submit.uploading.title"), //$NON-NLS-1$
-                i18n.format("upload-ontology-submit.uploading.msg")); //$NON-NLS-1$
+                i18n.format("upload-ontology-submit.uploading.title"),
+                i18n.format("upload-ontology-submit.uploading.msg"));
     }
 
 
@@ -87,19 +87,19 @@ public class UploadOntologyFormSubmitHandler implements SubmitHandler, SubmitCom
             if (results.getError() != null) {
                 notificationService.completeProgressNotification(
                         notification.getUuid(),
-                        i18n.format("upload-ontology-submit.upload-error.title"), //$NON-NLS-1$
+                        i18n.format("upload-ontology-submit.upload-error.title"),
                         results.getError());
             } else {
                 notificationService.completeProgressNotification(
                         notification.getUuid(),
-                        i18n.format("upload-ontology-submit.upload-error.title"), //$NON-NLS-1$
-                        i18n.format("upload-ontology-submit.upload-error.msg")); //$NON-NLS-1$
+                        i18n.format("upload-ontology-submit.upload-error.title"),
+                        i18n.format("upload-ontology-submit.upload-error.msg"));
             }
         } else {
             notificationService.completeProgressNotification(
                     notification.getUuid(),
-                    i18n.format("upload-ontology-submit.upload-complete.title"), //$NON-NLS-1$
-                    i18n.format("upload-ontology-submit.upload-complete.msg")); //$NON-NLS-1$
+                    i18n.format("upload-ontology-submit.upload-complete.title"),
+                    i18n.format("upload-ontology-submit.upload-complete.msg"));
             if (completionHandler != null) {
                 completionHandler.onImportComplete();
             }

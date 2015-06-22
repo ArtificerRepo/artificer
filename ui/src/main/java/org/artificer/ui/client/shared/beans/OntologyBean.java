@@ -66,7 +66,7 @@ public class OntologyBean extends OntologySummaryBean {
     public OntologyClassBean createClass(String id) {
         OntologyClassBean c = new OntologyClassBean();
         c.setId(id);
-        String uri = getBase() + "#" + id; //$NON-NLS-1$
+        String uri = getBase() + "#" + id;
         c.setUri(uri);
         return c;
     }

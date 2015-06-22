@@ -28,17 +28,17 @@ public final class VdbImport {
         /**
          * The import VDB import data policies attribute identifier.
          */
-        String IMPORT_DATA_POLICIES = "import-data-policies"; //$NON-NLS-1$
+        String IMPORT_DATA_POLICIES = "import-data-policies";
 
         /**
          * The Import VDB name and property name attribute identifier.
          */
-        String NAME = "name"; //$NON-NLS-1$
+        String NAME = "name";
 
         /**
          * The Import VDB version attribute identifier.
          */
-        String VERSION = "version"; //$NON-NLS-1$
+        String VERSION = "version";
 
     }
 
@@ -50,12 +50,12 @@ public final class VdbImport {
         /**
          * Indicates if Import VDB's data policies should be imported.
          */
-        String IMPORT_DATA_POLICIES = "importDataPolicies"; //$NON-NLS-1$
+        String IMPORT_DATA_POLICIES = "importDataPolicies";
 
         /**
          * The Import VDB version.
          */
-        String VERSION = "vdbVersion"; //$NON-NLS-1$
+        String VERSION = "vdbVersion";
 
     }
 

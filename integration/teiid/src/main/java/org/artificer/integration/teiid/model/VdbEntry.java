@@ -30,7 +30,7 @@ public final class VdbEntry {
         /**
          * The resource path identifier.
          */
-        String PATH = "path"; //$NON-NLS-1$
+        String PATH = "path";
 
     }
 

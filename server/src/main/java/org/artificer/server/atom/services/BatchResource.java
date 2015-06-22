@@ -100,7 +100,7 @@ public class BatchResource extends AbstractResource {
             archive = new ArtificerArchive(content);
 
             MultipartOutput output = new MultipartOutput();
-            output.setBoundary("package"); //$NON-NLS-1$
+            output.setBoundary("package");
 
             BatchResult batchResult = batchService.upload(archive);
 
@@ -128,7 +128,7 @@ public class BatchResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-            logError(logger, Messages.i18n.format("ERROR_CONSUMING_ZIP"), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_CONSUMING_ZIP"), e);
             throw new ArtificerAtomException(e);
         } finally {
             IOUtils.closeQuietly(content);
@@ -145,9 +145,9 @@ public class BatchResource extends AbstractResource {
 	 * @param atomEntry
 	 */
 	private void addCreatedPart(MultipartOutput output, String contentId, Entry atomEntry) {
-		HttpResponseBean createdResponse = new HttpResponseBean(201, "Created"); //$NON-NLS-1$
+		HttpResponseBean createdResponse = new HttpResponseBean(201, "Created");
 		createdResponse.setBody(atomEntry, MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-		output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId); //$NON-NLS-1$
+		output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
 	}
 
     /**
@@ -158,9 +158,9 @@ public class BatchResource extends AbstractResource {
      * @param atomEntry
      */
     private void addUpdatedPart(MultipartOutput output, String contentId, Entry atomEntry) {
-        HttpResponseBean createdResponse = new HttpResponseBean(200, "OK"); //$NON-NLS-1$
+        HttpResponseBean createdResponse = new HttpResponseBean(200, "OK");
         createdResponse.setBody(atomEntry, MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-        output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId); //$NON-NLS-1$
+        output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
     }
 
 	/**
@@ -171,10 +171,10 @@ public class BatchResource extends AbstractResource {
 	 * @param error
 	 */
 	private void addErrorPart(MultipartOutput output, String contentId, Exception error) {
-        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict"); //$NON-NLS-1$
+        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
         ArtificerAtomException e = new ArtificerAtomException(error);
         errorResponse.setBody(e, MediaType.APPLICATION_ARTIFICER_SERVER_EXCEPTION_TYPE);
-        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId); //$NON-NLS-1$
+        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
 	}
 
 }

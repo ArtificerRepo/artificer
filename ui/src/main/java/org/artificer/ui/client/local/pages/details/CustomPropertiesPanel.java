@@ -85,8 +85,8 @@ public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<Str
             Set<String> keys = new TreeSet<String>(value.keySet());
             for (final String propName : keys) {
                 String propValue = value.get(propName);
-                Label propLabel = new Label(propName + ":"); //$NON-NLS-1$
-                propLabel.setStyleName("sramp-meta-data-section-label"); //$NON-NLS-1$
+                Label propLabel = new Label(propName + ":");
+                propLabel.setStyleName("sramp-meta-data-section-label");
                 CustomPropertyEditableInlineLabel propValueWidget = propValueLabelFactory.get();
                 propValueWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
                     @Override
@@ -102,9 +102,9 @@ public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<Str
                     }
                 });
                 propValueWidget.setValue(propValue);
-                propValueWidget.setStyleName("sramp-meta-data-section-value"); //$NON-NLS-1$
+                propValueWidget.setStyleName("sramp-meta-data-section-value");
                 Label clearFix = new Label();
-                clearFix.setStyleName("clearfix"); //$NON-NLS-1$
+                clearFix.setStyleName("clearfix");
                 add(propLabel);
                 add(propValueWidget);
                 add(clearFix);

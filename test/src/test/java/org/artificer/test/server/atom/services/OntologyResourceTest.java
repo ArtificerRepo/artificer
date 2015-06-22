@@ -41,9 +41,9 @@ public class OntologyResourceTest extends AbstractResourceTest {
 
     @Test
     public void testCreate() throws Exception {
-        ClientRequest request = clientRequest("/s-ramp/ontology"); //$NON-NLS-1$
+        ClientRequest request = clientRequest("/s-ramp/ontology");
 
-        RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
+        RDF rdf = loadTestRDF("regional");
 
         request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
         ClientResponse<Entry> response = request.post(Entry.class);
@@ -61,32 +61,32 @@ public class OntologyResourceTest extends AbstractResourceTest {
      */
     @Test
     public void testCreate_SRAMP256() throws Exception {
-        ClientRequest request = clientRequest("/s-ramp/ontology"); //$NON-NLS-1$
+        ClientRequest request = clientRequest("/s-ramp/ontology");
 
-        RDF rdf = loadTestRDF("SRAMP-256"); //$NON-NLS-1$
+        RDF rdf = loadTestRDF("SRAMP-256");
 
         request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
         try {
             request.post(Entry.class);
-            Assert.fail("Expected an ontology validation error."); //$NON-NLS-1$
+            Assert.fail("Expected an ontology validation error.");
         } catch (Exception e) {
-            Assert.assertEquals("The ontology ID was invalid: SRAMP 256", e.getMessage()); //$NON-NLS-1$
+            Assert.assertEquals("The ontology ID was invalid: SRAMP 256", e.getMessage());
         }
     }
 
 	@Test
 	public void testGet() throws Exception {
-		ClientRequest request = clientRequest("/s-ramp/ontology"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/ontology");
 
 		// POST the ontology
-		RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
+		RDF rdf = loadTestRDF("regional");
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		ClientResponse<Entry> response = request.post(Entry.class);
 		Entry entry = response.getEntity();
 		String uuid = entry.getId().toString().replace("urn:uuid:", "");
 
 		// GET the ontology
-		request = clientRequest("/s-ramp/ontology/" + uuid); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/ontology/" + uuid);
 		entry = request.get(Entry.class).getEntity();
 		RDF ontology = ArtificerAtomUtils.unwrap(entry, RDF.class);
 
@@ -97,18 +97,18 @@ public class OntologyResourceTest extends AbstractResourceTest {
 	@Test
 	public void testFeed() throws Exception {
 		// POST the regional ontology
-		ClientRequest request = clientRequest("/s-ramp/ontology"); //$NON-NLS-1$
-		RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/ontology");
+		RDF rdf = loadTestRDF("regional");
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		request.post(Entry.class).getEntity();
 		// POST the colors ontology
-		request = clientRequest("/s-ramp/ontology"); //$NON-NLS-1$
-		rdf = loadTestRDF("colors"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/ontology");
+		rdf = loadTestRDF("colors");
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		request.post(Entry.class).getEntity();
 
 		// GET the ontology feed
-		request = clientRequest("/s-ramp/ontology"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/ontology");
 		Feed feed = request.get(Feed.class).getEntity();
 		Assert.assertNotNull(feed);
 		Assert.assertEquals(2, feed.getEntries().size());
@@ -176,7 +176,7 @@ public class OntologyResourceTest extends AbstractResourceTest {
 	 * @param testOwlName
 	 */
 	private RDF loadTestRDF(String testOwlName) throws Exception {
-		URL resourceUrl = getClass().getResource("/ontology-files/" + testOwlName + ".owl.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+		URL resourceUrl = getClass().getResource("/ontology-files/" + testOwlName + ".owl.xml");
 		Assert.assertNotNull(resourceUrl);
 		JAXBContext jaxbContext = JAXBContext.newInstance(RDF.class);
 		Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();

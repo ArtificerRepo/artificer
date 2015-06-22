@@ -33,9 +33,9 @@ public class StringReplacementParam extends QueryReplacementParam<String> {
 	@Override
 	public String getFormattedValue() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("'"); //$NON-NLS-1$
-		builder.append(getValue().replace("'", "''")); //$NON-NLS-1$ //$NON-NLS-2$
-		builder.append("'"); //$NON-NLS-1$
+		builder.append("'");
+		builder.append(getValue().replace("'", "''"));
+		builder.append("'");
 		return builder.toString();
 	}
 

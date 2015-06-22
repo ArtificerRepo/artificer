@@ -55,18 +55,18 @@ public abstract class AbstractDownloadServlet extends HttpServlet {
     protected void doDownloadContent(InputStream content, String contentType, String disposition,
             HttpServletResponse httpResponse) throws IOException {
         if (StringUtils.isNotBlank(disposition)) {
-            httpResponse.setHeader("Content-Disposition", disposition); //$NON-NLS-1$
+            httpResponse.setHeader("Content-Disposition", disposition);
         }
         if (StringUtils.isNotBlank(contentType)) {
-            httpResponse.setHeader("Content-Type", contentType); //$NON-NLS-1$
+            httpResponse.setHeader("Content-Type", contentType);
         }
 
         // Make sure the browser doesn't cache it
         Date now = new Date();
-        httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
-        httpResponse.setDateHeader("Expires", now.getTime() - 86400000L); //$NON-NLS-1$
-        httpResponse.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-        httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
+        httpResponse.setDateHeader("Date", now.getTime());
+        httpResponse.setDateHeader("Expires", now.getTime() - 86400000L);
+        httpResponse.setHeader("Pragma", "no-cache");
+        httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
         try {
             IOUtils.copy(content, httpResponse.getOutputStream());
         } finally {

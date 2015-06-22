@@ -54,12 +54,12 @@ import java.util.List;
  */
 public class JMSEventProducer implements EventProducer {
 
-    public static final String JMS_TYPE_ARTIFACT_CREATED = "artificer:artifactCreated"; //$NON-NLS-1$
-    public static final String JMS_TYPE_ARTIFACT_UPDATED = "artificer:artifactUpdated"; //$NON-NLS-1$
-    public static final String JMS_TYPE_ARTIFACT_DELETED = "artificer:artifactDeleted"; //$NON-NLS-1$
-    public static final String JMS_TYPE_ONTOLOGY_CREATED = "artificer:ontologyCreated"; //$NON-NLS-1$
-    public static final String JMS_TYPE_ONTOLOGY_UPDATED = "artificer:ontologyUpdated"; //$NON-NLS-1$
-    public static final String JMS_TYPE_ONTOLOGY_DELETED = "artificer:ontologyDeleted"; //$NON-NLS-1$
+    public static final String JMS_TYPE_ARTIFACT_CREATED = "artificer:artifactCreated";
+    public static final String JMS_TYPE_ARTIFACT_UPDATED = "artificer:artifactUpdated";
+    public static final String JMS_TYPE_ARTIFACT_DELETED = "artificer:artifactDeleted";
+    public static final String JMS_TYPE_ONTOLOGY_CREATED = "artificer:ontologyCreated";
+    public static final String JMS_TYPE_ONTOLOGY_UPDATED = "artificer:ontologyUpdated";
+    public static final String JMS_TYPE_ONTOLOGY_DELETED = "artificer:ontologyDeleted";
 
     private static Logger LOG = LoggerFactory.getLogger(JMSEventProducer.class);
 
@@ -74,19 +74,19 @@ public class JMSEventProducer implements EventProducer {
         if (ArtificerConfig.isJmsEnabled()) {
             try {
                 String connectionFactoryName = ArtificerConfig.getConfigProperty(
-                        ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_CONNECTIONFACTORY, "ConnectionFactory"); //$NON-NLS-1$
+                        ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_CONNECTIONFACTORY, "ConnectionFactory");
 
                 // Note that both properties end up doing the same thing.  Technically, we could combine both into one
                 // single sramp.config.events.jms.destinations, but leaving them split for readability.
-                String topicNamesProp = ArtificerConfig.getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
+                String topicNamesProp = ArtificerConfig.getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_TOPICS, "");
                 String[] topicNames = new String[0];
                 if (StringUtils.isNotEmpty(topicNamesProp)) {
-                    topicNames = topicNamesProp.split(","); //$NON-NLS-1$
+                    topicNames = topicNamesProp.split(",");
                 }
-                String queueNamesProp = ArtificerConfig.getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
+                String queueNamesProp = ArtificerConfig.getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_QUEUES, "");
                 String[] queueNames = new String[0];
                 if (StringUtils.isNotEmpty(queueNamesProp)) {
-                    queueNames = queueNamesProp.split(","); //$NON-NLS-1$
+                    queueNames = queueNamesProp.split(",");
                 }
 
                 // See if a ConnectionFactory and Topic/Queue exists on JNDI.  If so, assume JMS is properly
@@ -184,11 +184,11 @@ public class JMSEventProducer implements EventProducer {
     private Object jndiLookup(String name) throws NamingException {
         Context initContext = new InitialContext();
         try {
-            Context jndiContext = (Context) initContext.lookup("java:comp/env"); //$NON-NLS-1$
+            Context jndiContext = (Context) initContext.lookup("java:comp/env");
             return jndiContext.lookup(name);
         } catch (NamingException e) {
             // EAP (no namespace)
-            Context jndiContext = (Context) initContext.lookup("java:"); //$NON-NLS-1$
+            Context jndiContext = (Context) initContext.lookup("java:");
             return jndiContext.lookup(name);
         }
     }

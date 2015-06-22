@@ -27,13 +27,13 @@ public class DefaultArtifactTypeDetector extends AbstractArtifactTypeDetector {
     @Override
     public ArtifactType detect(ArtifactContent content) {
         String filename = content.getFilename().toLowerCase();
-        if (filename.endsWith(".xml")) { //$NON-NLS-1$
+        if (filename.endsWith(".xml")) {
             return ArtifactType.XmlDocument();
-        } else if (filename.endsWith(".wsdl")) { //$NON-NLS-1$
+        } else if (filename.endsWith(".wsdl")) {
             return ArtifactType.WsdlDocument();
-        } else if (filename.endsWith(".xsd")) { //$NON-NLS-1$
+        } else if (filename.endsWith(".xsd")) {
             return ArtifactType.XsdDocument();
-        } else if (filename.endsWith(".wspolicy")) { //$NON-NLS-1$
+        } else if (filename.endsWith(".wspolicy")) {
             return ArtifactType.PolicyDocument();
         } else {
             return ArtifactType.Document();

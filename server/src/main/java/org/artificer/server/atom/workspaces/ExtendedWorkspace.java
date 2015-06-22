@@ -33,12 +33,12 @@ public class ExtendedWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public ExtendedWorkspace(String hrefBase) {
-		super(hrefBase, "Extended Model"); //$NON-NLS-1$
+		super(hrefBase, "Extended Model");
 	}
 
 	@Override
 	protected void configureWorkspace() {
-        AppCollection extCollection = addCollection("/s-ramp/ext", "Extended Model Objects", MediaType.APPLICATION_OCTET_STREAM); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection extCollection = addCollection("/s-ramp/ext", "Extended Model Objects", MediaType.APPLICATION_OCTET_STREAM);
 
         addTypeCategory(extCollection, ArtifactTypeEnum.ExtendedArtifactType);
         addTypeCategory(extCollection, ArtifactTypeEnum.ExtendedDocument);

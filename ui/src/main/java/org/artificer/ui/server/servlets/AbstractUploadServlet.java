@@ -54,7 +54,7 @@ public abstract class AbstractUploadServlet extends HttpServlet {
 		File resourceTempFile = null;
 		OutputStream oStream = null;
 		try {
-			resourceTempFile = File.createTempFile("artificer-ui-upload", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+			resourceTempFile = File.createTempFile("artificer-ui-upload", ".tmp");
 			oStream = FileUtils.openOutputStream(resourceTempFile);
             IOUtils.copy(resourceInputStream, oStream);
             return resourceTempFile;
@@ -79,7 +79,7 @@ public abstract class AbstractUploadServlet extends HttpServlet {
         // Note: setting the content-type to text/html because otherwise IE prompt the user to download
         // the result rather than handing it off to the GWT form response handler.
         // See JIRA issue https://issues.jboss.org/browse/SRAMPUI-103
-		response.setContentType("text/html; charset=UTF8"); //$NON-NLS-1$
+		response.setContentType("text/html; charset=UTF8");
         JsonFactory f = new JsonFactory();
         JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
         g.useDefaultPrettyPrinter();

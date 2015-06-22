@@ -173,7 +173,7 @@ public class ArtificerOntology implements Serializable {
 	public ArtificerOntologyClass createClass(String id) {
 		ArtificerOntologyClass c = new ArtificerOntologyClass();
 		c.setId(id);
-		String uri = this.getBase() + "#" + id; //$NON-NLS-1$
+		String uri = this.getBase() + "#" + id;
 		c.setUri(uri);
 		return c;
 	}

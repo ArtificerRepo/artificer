@@ -31,10 +31,10 @@ public class DefaultNamespaceContext extends StaticNamespaceContext {
 	 */
 	public DefaultNamespaceContext() {
 		addMapping(ArtificerConstants.SRAMP_PREFIX, ArtificerConstants.SRAMP_NS);
-		addMapping("xs", "http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$ //$NON-NLS-2$
-		addMapping("fn", "http://www.w3.org/2005/xpath-functions"); //$NON-NLS-1$ //$NON-NLS-2$
-		addMapping("xp2", "http://www.w3.org/2005/xpath-functions"); //$NON-NLS-1$ //$NON-NLS-2$
-		addMapping("err", "http://www.w3.org/2005/xqt-error"); //$NON-NLS-1$ //$NON-NLS-2$
+		addMapping("xs", "http://www.w3.org/2001/XMLSchema");
+		addMapping("fn", "http://www.w3.org/2005/xpath-functions");
+		addMapping("xp2", "http://www.w3.org/2005/xpath-functions");
+		addMapping("err", "http://www.w3.org/2005/xqt-error");
 	}
 
 }

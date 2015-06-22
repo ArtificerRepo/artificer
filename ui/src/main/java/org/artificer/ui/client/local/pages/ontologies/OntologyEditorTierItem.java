@@ -77,12 +77,12 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
      */
     @PostConstruct
     protected void postConstruct() {
-        label.setText(""); //$NON-NLS-1$
+        label.setText("");
         sinkEvents(Event.ONCLICK);
 
         editButton.setText(i18n.format("ontology-editor.edit"));
-        editButton.addStyleName("btn-mini"); //$NON-NLS-1$
-        editButton.addStyleName("btn"); //$NON-NLS-1$
+        editButton.addStyleName("btn-mini");
+        editButton.addStyleName("btn");
         editButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -90,8 +90,8 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
             }
         });
         deleteButton.setText(i18n.format("ontology-editor.delete"));
-        deleteButton.addStyleName("btn-mini"); //$NON-NLS-1$
-        deleteButton.addStyleName("btn"); //$NON-NLS-1$
+        deleteButton.addStyleName("btn-mini");
+        deleteButton.addStyleName("btn");
         deleteButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -108,7 +108,7 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
         if (DOM.eventGetType(event) == Event.ONCLICK) {
             EventTarget target = event.getEventTarget();
             Element elem = (Element) target.cast();
-            if (elem.getNodeName().toLowerCase().equals("button")) { //$NON-NLS-1$
+            if (elem.getNodeName().toLowerCase().equals("button")) {
                 // an action button was clicked
                 event.preventDefault();
             } else {
@@ -214,7 +214,7 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
         String label = value.getLabel();
         String rval = label;
         if (rval != null && rval.trim().length() > 0 && !rval.equals(id)) {
-            rval += " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            rval += " (" + id + ")";
         }
         return rval;
     }

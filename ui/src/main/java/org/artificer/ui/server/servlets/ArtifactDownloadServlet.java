@@ -60,14 +60,14 @@ public class ArtifactDownloadServlet extends AbstractDownloadServlet {
         HttpServletResponse httpResponse = resp;
 		try {
 			ArtificerAtomApiClient client = ArtificerApiClientAccessor.getClient();
-			String uuid = req.getParameter("uuid"); //$NON-NLS-1$
-            String type = req.getParameter("type"); //$NON-NLS-1$
-            String as = req.getParameter("as"); //$NON-NLS-1$
+			String uuid = req.getParameter("uuid");
+            String type = req.getParameter("type");
+            String as = req.getParameter("as");
 
             ArtifactType artyType = ArtifactType.valueOf(type);
             BaseArtifactType artifact = client.getArtifactMetaData(artyType, uuid);
 
-            boolean downloadContent = !"meta-data".equals(as); //$NON-NLS-1$
+            boolean downloadContent = !"meta-data".equals(as);
             if (downloadContent) {
                 doDownloadContent(httpResponse, client, artyType, artifact);
             } else {
@@ -93,7 +93,7 @@ public class ArtifactDownloadServlet extends AbstractDownloadServlet {
         InputStream artifactContent = null;
         // Set the content-disposition
         String artifactName = artifact.getName();
-        String disposition = String.format("attachment; filename=\"%1$s\"", artifactName); //$NON-NLS-1$
+        String disposition = String.format("attachment; filename=\"%1$s\"", artifactName);
 
         // Set the content-type
         ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
@@ -105,7 +105,7 @@ public class ArtifactDownloadServlet extends AbstractDownloadServlet {
             DocumentArtifactType d = (DocumentArtifactType) artifact;
             long size = d.getContentSize();
             if (size != -1) {
-                httpResponse.setHeader("Content-Size", String.valueOf(size)); //$NON-NLS-1$
+                httpResponse.setHeader("Content-Size", String.valueOf(size));
             }
         }
         artifactContent = client.getArtifactContent(artyType, artifact.getUuid());
@@ -125,7 +125,7 @@ public class ArtifactDownloadServlet extends AbstractDownloadServlet {
             ArtifactType artyType, BaseArtifactType artifact) throws Exception {
         JAXBContext jaxbContext = JAXBContext.newInstance(Artifact.class);
         Artifact wrapper = new Artifact();
-        Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass()); //$NON-NLS-1$
+        Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
         method.invoke(wrapper, artifact);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         jaxbContext.createMarshaller().marshal(wrapper, baos);

@@ -61,7 +61,7 @@ public class FeedResourceTest extends AbstractResourceTest {
 		}
 
 		// Do a query using GET with query params
-		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument");
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		int uuidsFound = 0;
@@ -73,10 +73,10 @@ public class FeedResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(numEntries, uuidsFound);
 
 		// Make sure the query params work
-		request = clientRequest("/s-ramp/xsd/XsdDocument?startPage=2&count=2"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/xsd/XsdDocument?startPage=2&count=2");
 		response = request.get(Feed.class);
 		feed = response.getEntity();
-		Assert.assertTrue("Expected 2 entries.", feed.getEntries().size() == 2); //$NON-NLS-1$
+		Assert.assertTrue("Expected 2 entries.", feed.getEntries().size() == 2);
 	}
 
 	/**
@@ -85,15 +85,15 @@ public class FeedResourceTest extends AbstractResourceTest {
 	private Entry doAddXsd(String ... properties) throws Exception {
 		// Making a client call to the actual XsdDocument implementation running in
 		// an embedded container.
-		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument");
 
 		// read the XsdDocument from file
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xsd";
+		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		String xmltext = TestUtils.convertStreamToString(POXsd);
 		POXsd.close();
 
-		request.header("Slug", artifactFileName); //$NON-NLS-1$
+		request.header("Slug", artifactFileName);
 		request.body(MediaType.APPLICATION_XML, xmltext);
 
 		ClientResponse<Entry> response = request.post(Entry.class);
@@ -112,7 +112,7 @@ public class FeedResourceTest extends AbstractResourceTest {
 			}
 			String uuid = xsdDocument.getUuid();
 			entry.setAnyOtherJAXBObject(srampArtifactWrapper);
-			request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid); //$NON-NLS-1$
+			request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid);
 			request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry);
 			request.put(Void.class);
 		}
@@ -129,7 +129,7 @@ public class FeedResourceTest extends AbstractResourceTest {
 		// Add some pkg entries
 		Set<String> pkgUuids = new HashSet<String>();
 		for (int i = 0; i < 5; i++) {
-			Entry entry = doAddExtended("PkgDocument", "/sample-files/ext/defaultPackage.pkg"); //$NON-NLS-1$ //$NON-NLS-2$
+			Entry entry = doAddExtended("PkgDocument", "/sample-files/ext/defaultPackage.pkg");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString().replace("urn:uuid:", "");
 			pkgUuids.add(uuid);
@@ -137,31 +137,31 @@ public class FeedResourceTest extends AbstractResourceTest {
 		// Add some bpmn entries
 		Set<String> bpmnUuids = new HashSet<String>();
 		for (int i = 0; i < 3; i++) {
-			Entry entry = doAddExtended("BpmnDocument", "/sample-files/ext/Evaluation.bpmn"); //$NON-NLS-1$ //$NON-NLS-2$
+			Entry entry = doAddExtended("BpmnDocument", "/sample-files/ext/Evaluation.bpmn");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString().replace("urn:uuid:", "");
 			bpmnUuids.add(uuid);
 		}
 
 		// Test the feed of the pkg docs
-		ClientRequest request = clientRequest("/s-ramp/ext/PkgDocument"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/ext/PkgDocument");
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		for (Entry entry : feed.getEntries()) {
 			String entryUuid = entry.getId().toString().replace("urn:uuid:", "");
 			pkgUuids.remove(entryUuid);
 		}
-		assertEquals("The feed did not contain the expected PkgDocument entries.", 0, pkgUuids.size()); //$NON-NLS-1$
+		assertEquals("The feed did not contain the expected PkgDocument entries.", 0, pkgUuids.size());
 
 		// Test the feed of the pkg docs
-		request = clientRequest("/s-ramp/ext/BpmnDocument"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/ext/BpmnDocument");
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		for (Entry entry : feed.getEntries()) {
 			String entryUuid = entry.getId().toString().replace("urn:uuid:", "");
 			bpmnUuids.remove(entryUuid);
 		}
-        assertEquals("The feed did not contain the expected BpmnDocument entries.", 0, pkgUuids.size()); //$NON-NLS-1$
+        assertEquals("The feed did not contain the expected BpmnDocument entries.", 0, pkgUuids.size());
 	}
 
 	/**
@@ -170,15 +170,15 @@ public class FeedResourceTest extends AbstractResourceTest {
 	 * @throws Exception
 	 */
 	private Entry doAddExtended(String extendedType, String testFilePath) throws Exception {
-		ClientRequest request = clientRequest("/s-ramp/ext/" + extendedType); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/ext/" + extendedType);
 
 		File f = new File(testFilePath);
 		String artifactFileName = f.getName();
 		InputStream contentStream = this.getClass().getResourceAsStream(testFilePath);
 		if (contentStream == null)
-			throw new NullPointerException("Failed to find: " + testFilePath); //$NON-NLS-1$
+			throw new NullPointerException("Failed to find: " + testFilePath);
 		try {
-			request.header("Slug", artifactFileName); //$NON-NLS-1$
+			request.header("Slug", artifactFileName);
 			request.body(MediaType.APPLICATION_OCTET_STREAM, contentStream);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
@@ -207,7 +207,7 @@ public class FeedResourceTest extends AbstractResourceTest {
 		// Add some pkg entries
 		Set<String> pkgUuids = new HashSet<String>();
 		for (int i = 0; i < 5; i++) {
-			Entry entry = doAddExtended("PkgDocument", "/sample-files/ext/defaultPackage.pkg"); //$NON-NLS-1$ //$NON-NLS-2$
+			Entry entry = doAddExtended("PkgDocument", "/sample-files/ext/defaultPackage.pkg");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString();
 			pkgUuids.add(uuid);
@@ -215,14 +215,14 @@ public class FeedResourceTest extends AbstractResourceTest {
 		// Add some bpmn entries
 		Set<String> bpmnUuids = new HashSet<String>();
 		for (int i = 0; i < 3; i++) {
-			Entry entry = doAddExtended("BpmnDocument", "/sample-files/ext/Evaluation.bpmn"); //$NON-NLS-1$ //$NON-NLS-2$
+			Entry entry = doAddExtended("BpmnDocument", "/sample-files/ext/Evaluation.bpmn");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString();
 			bpmnUuids.add(uuid);
 		}
 
 		// Do a query for *just* the Extended types - there should be 5+3=8 of them
-		ClientRequest request = clientRequest("/s-ramp/ext"); //$NON-NLS-1$
+		ClientRequest request = clientRequest("/s-ramp/ext");
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		int uuidsFound = 0;
@@ -234,10 +234,10 @@ public class FeedResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(8, uuidsFound);
 
 		// Make sure the query params work
-		request = clientRequest("/s-ramp/xsd?startPage=1&count=2"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/xsd?startPage=1&count=2");
 		response = request.get(Feed.class);
 		feed = response.getEntity();
-		Assert.assertTrue("Expected 2 entries.", feed.getEntries().size() == 2); //$NON-NLS-1$
+		Assert.assertTrue("Expected 2 entries.", feed.getEntries().size() == 2);
 	}
 
 }

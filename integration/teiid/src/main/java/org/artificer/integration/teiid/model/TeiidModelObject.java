@@ -28,12 +28,12 @@ public interface TeiidModelObject {
         /**
          * The Teiid model object identifier.
          */
-        String MMUID = "mmuuid"; //$NON-NLS-1$
+        String MMUID = "mmuuid";
 
         /**
          * The Teiid model object name in source.
          */
-        String NAME_IN_SOURCE = "nameInSource"; //$NON-NLS-1$
+        String NAME_IN_SOURCE = "nameInSource";
 
     }
 

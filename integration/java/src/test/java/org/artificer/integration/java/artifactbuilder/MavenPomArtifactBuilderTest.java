@@ -37,8 +37,8 @@ public class MavenPomArtifactBuilderTest {
         MavenPomArtifactBuilder builder = new MavenPomArtifactBuilder();
         ExtendedDocument artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setName("pom.xml"); //$NON-NLS-1$
-        InputStream is = getClass().getResourceAsStream("pom.xml"); //$NON-NLS-1$
+        artifact.setName("pom.xml");
+        InputStream is = getClass().getResourceAsStream("pom.xml");
         // Derive
         @SuppressWarnings("unused")
 		Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent("pom.xml", is))
@@ -47,7 +47,7 @@ public class MavenPomArtifactBuilderTest {
         // Assert
         Assert.assertNotNull(artifact.getProperty());
         for (Property property : artifact.getProperty()) {
-        	System.out.println(property.getPropertyName() + " - " + property.getPropertyValue()); //$NON-NLS-1$
+        	System.out.println(property.getPropertyName() + " - " + property.getPropertyValue());
         }
         System.out.println(artifact.getDescription());
     }

@@ -41,7 +41,7 @@ public class AuditEntrySummary {
      * @return the uuid
      */
     public String getUuid() {
-        return this.entry.getId().toString().replace("urn:uuid:", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        return this.entry.getId().toString().replace("urn:uuid:", "");
     }
 
     /**
@@ -72,7 +72,7 @@ public class AuditEntrySummary {
     public String toString() {
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-        return String.format("%1$s by '%2$s' on %3$s at %4$s.", getType(), getWho(), //$NON-NLS-1$
+        return String.format("%1$s by '%2$s' on %3$s at %4$s.", getType(), getWho(),
                 dateFormat.format(getWhen()), timeFormat.format(getWhen()));
     }
 }

@@ -28,32 +28,32 @@ public final class TeiidModel implements TeiidModelObject {
         /**
          * The max set size property name of a model artifact.
          */
-        String MAX_SET_SIZE = "maxSetSize"; //$NON-NLS-1$
+        String MAX_SET_SIZE = "maxSetSize";
 
         /**
          * The model type property name of the model artifact.
          */
-        String MODEL_TYPE = "modelType"; //$NON-NLS-1$
+        String MODEL_TYPE = "modelType";
 
         /**
          * The primary metamodel URI property name of the model artifact.
          */
-        String PRIMARY_METAMODEL_URI = "primaryMetamodelUri"; //$NON-NLS-1$
+        String PRIMARY_METAMODEL_URI = "primaryMetamodelUri";
 
         /**
          * The producer name property name of the model artifact.
          */
-        String PRODUCER_NAME = "producerName"; //$NON-NLS-1$
+        String PRODUCER_NAME = "producerName";
 
         /**
          * The producer version property name of the model artifact.
          */
-        String PRODUCER_VERSION = "producerVersion"; //$NON-NLS-1$
+        String PRODUCER_VERSION = "producerVersion";
 
         /**
          * The model visibility flag property name of the model artifact.
          */
-        String VISIBLE = "visible"; //$NON-NLS-1$
+        String VISIBLE = "visible";
 
     }
 
@@ -65,57 +65,57 @@ public final class TeiidModel implements TeiidModelObject {
         /**
          * The max set size attribute of a model annotation.
          */
-        String MAX_SET_SIZE = "maxSetSize"; //$NON-NLS-1$
+        String MAX_SET_SIZE = "maxSetSize";
 
         /**
          * The model annotation element identifier. One and only one is required.
          */
-        String MODEL_ANNOTATION = "mmcore:ModelAnnotation"; //$NON-NLS-1$
+        String MODEL_ANNOTATION = "mmcore:ModelAnnotation";
 
         /**
          * The model type attribute of a model annotation.
          */
-        String MODEL_TYPE = "modelType"; //$NON-NLS-1$
+        String MODEL_TYPE = "modelType";
 
         /**
          * The name in source of a model annotation.
          */
-        String NAME_IN_SOURCE = "nameInSource"; //$NON-NLS-1$
+        String NAME_IN_SOURCE = "nameInSource";
 
         /**
          * The primary metamodel URI attribute of a model annotation.
          */
-        String PRIMARY_METAMODEL_URI = "primaryMetamodelUri"; //$NON-NLS-1$
+        String PRIMARY_METAMODEL_URI = "primaryMetamodelUri";
 
         /**
          * The producer name attribute of a model annotation.
          */
-        String PRODUCER_NAME = "ProducerName"; //$NON-NLS-1$
+        String PRODUCER_NAME = "ProducerName";
 
         /**
          * The producer version attribute of a model annotation.
          */
-        String PRODUCER_VERSION = "ProducerVersion"; //$NON-NLS-1$
+        String PRODUCER_VERSION = "ProducerVersion";
 
         /**
          * The XMI root element of a model.
          */
-        String ROOT_ELEMENT = "XMI"; //$NON-NLS-1$
+        String ROOT_ELEMENT = "XMI";
 
         /**
          * The UUID attribute of a model annotation.
          */
-        String UUID = "xmi:uuid"; //$NON-NLS-1$
+        String UUID = "xmi:uuid";
 
         /**
          * The visibility flag attribute.
          */
-        String VISIBLE = "visible"; //$NON-NLS-1$
+        String VISIBLE = "visible";
 
         /**
          * The XML namespace attribute.
          */
-        String XML_NAMESPACE = "xmlns"; //$NON-NLS-1$
+        String XML_NAMESPACE = "xmlns";
 
     }
 
@@ -127,6 +127,6 @@ public final class TeiidModel implements TeiidModelObject {
     /**
      * The file extension, including the '.' prefix, of a Teiid model. Value is {@value} .
      */
-    public static final String FILE_EXT = ".xmi"; //$NON-NLS-1$
+    public static final String FILE_EXT = ".xmi";
 
 }

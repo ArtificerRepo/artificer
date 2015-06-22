@@ -30,47 +30,47 @@ public final class VdbManifest {
         /**
          * The VDB data role element identifier. Zero or more data roles are allowed.
          */
-        String DATA_POLICY = "data-role"; //$NON-NLS-1$
+        String DATA_POLICY = "data-role";
 
         /**
          * The VDB entry element identifier. Zero or more VDB entries are allowed.
          */
-        String ENTRY = "entry"; //$NON-NLS-1$
+        String ENTRY = "entry";
 
         /**
          * The import VDB element identifier. Zero or more import VDB names are allowed.
          */
-        String IMPORT_VDB = "import-vdb"; //$NON-NLS-1$
+        String IMPORT_VDB = "import-vdb";
 
         /**
          * The VDB name attribute identifier.
          */
-        String NAME = "name"; //$NON-NLS-1$
+        String NAME = "name";
 
         /**
          * The VDB schema/model element identifier. Zero or more VDB models are allowed.
          */
-        String SCHEMA = "model"; //$NON-NLS-1$
+        String SCHEMA = "model";
 
         /**
          * The VDB translator element identifier. Zero or more VDB translators are allowed.
          */
-        String TRANSLATOR = "translator"; //$NON-NLS-1$
+        String TRANSLATOR = "translator";
 
         /**
          * The VDB validation error element identifier. Zero or more VDB translators are allowed for each model.
          */
-        String VALIDATION_ERROR = "validation-error"; //$NON-NLS-1$
+        String VALIDATION_ERROR = "validation-error";
 
         /**
          * The VDB element identifier that is the one and only child element under <code>xs:schema</code>.
          */
-        String VDB_ELEMENT = "vdb"; //$NON-NLS-1$
+        String VDB_ELEMENT = "vdb";
 
         /**
          * The VDB version attribute identifier.
          */
-        String VERSION = "version"; //$NON-NLS-1$
+        String VERSION = "version";
 
     }
 
@@ -82,17 +82,17 @@ public final class VdbManifest {
         /**
          * A property indicating if the VDB is a preview VDB.
          */
-        String PREVIEW = "preview"; //$NON-NLS-1$
+        String PREVIEW = "preview";
 
         /**
          * The VDB use connector metadata property.
          */
-        String USE_CONNECTOR_METADATA = "UseConnectorMetadata"; //$NON-NLS-1$
+        String USE_CONNECTOR_METADATA = "UseConnectorMetadata";
 
         /**
          * The VDB version.
          */
-        String VERSION = "vdbVersion"; //$NON-NLS-1$
+        String VERSION = "vdbVersion";
 
     }
 
@@ -104,42 +104,42 @@ public final class VdbManifest {
         /**
          * The VDB manifest data policy extended artifact type.
          */
-        DATA_POLICY("DataPolicy"), //$NON-NLS-1$
+        DATA_POLICY("DataPolicy"),
 
         /**
          * The VDB manifest entry extended artifact type.
          */
-        ENTRY("Entry"), //$NON-NLS-1$
+        ENTRY("Entry"),
 
         /**
          * The VDB manifest import VDB extended artifact type.
          */
-        IMPORT_VDB("ImportVdb"), //$NON-NLS-1$
+        IMPORT_VDB("ImportVdb"),
 
         /**
          * The VDB manifest permission extended artifact type.
          */
-        PERMISSION("Permission"), //$NON-NLS-1$
+        PERMISSION("Permission"),
 
         /**
          * The VDB manifest schema/model extended artifact type.
          */
-        SCHEMA("Schema"), //$NON-NLS-1$
+        SCHEMA("Schema"),
 
         /**
          * The VDB manifest schema source extended artifact type.
          */
-        SOURCE("Source"), //$NON-NLS-1$
+        SOURCE("Source"),
 
         /**
          * The VDB manifest translator extended artifact type.
          */
-        TRANSLATOR("Translator"), //$NON-NLS-1$
+        TRANSLATOR("Translator"),
 
         /**
          * The VDB manifest validation error artifact type.
          */
-        VALIDATION_ERROR("ValidationError"); //$NON-NLS-1$
+        VALIDATION_ERROR("ValidationError");
 
         private final String extendedType;
 
@@ -160,7 +160,7 @@ public final class VdbManifest {
                 }
             }
 
-            throw new IllegalArgumentException(Messages.I18N.format("invalidVdbManifestExtendedType", proposedExtendedType)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.I18N.format("invalidVdbManifestExtendedType", proposedExtendedType));
         }
 
         /**
@@ -199,47 +199,47 @@ public final class VdbManifest {
         /**
          * A relationship between a VDB manifest artifact and its artifacts.
          */
-        CONTAINS("Contains"), //$NON-NLS-1$
+        CONTAINS("Contains"),
 
         /**
          * A relationship between a data policy artifact and its permission artifacts.
          */
-        DATA_POLICY_TO_PERMISSIONS("DataPolicyPermissions"), //$NON-NLS-1$
+        DATA_POLICY_TO_PERMISSIONS("DataPolicyPermissions"),
 
         /**
          * A relationship between a permission artifact and its data policy artifact.
          */
-        PERMISSION_TO_DATA_POLICY("PermissionDataPolicy"), //$NON-NLS-1$
+        PERMISSION_TO_DATA_POLICY("PermissionDataPolicy"),
 
         /**
          * A relationship between a schema/model artifact and its source artifacts.
          */
-        SCHEMA_TO_SOURCES("SchemaSources"), //$NON-NLS-1$
+        SCHEMA_TO_SOURCES("SchemaSources"),
 
         /**
          * A relationship between a schema/model artifact and its validation error artifacts.
          */
-        SCHEMA_TO_VALIDATION_ERRORS("SchemaValidationErrors"), //$NON-NLS-1$
+        SCHEMA_TO_VALIDATION_ERRORS("SchemaValidationErrors"),
 
         /**
          * A relationship between a source artifact and its schema/model artifacts.
          */
-        SOURCE_TO_SCHEMAS("SourceSchemas"), //$NON-NLS-1$
+        SOURCE_TO_SCHEMAS("SourceSchemas"),
 
         /**
          * A relationship between a source artifact and its translator artifact.
          */
-        SOURCE_TO_TRANSLATOR("SourceTranslator"), //$NON-NLS-1$
+        SOURCE_TO_TRANSLATOR("SourceTranslator"),
 
         /**
          * A relationship between a translator artifact and the source artifacts that reference it.
          */
-        TRANSLATOR_TO_SOURCES("TranslatorSources"), //$NON-NLS-1$
+        TRANSLATOR_TO_SOURCES("TranslatorSources"),
 
         /**
          * A relationship between a validation error artifact and the source artifacts that reference it.
          */
-        VALIDATION_ERROR_TO_SOURCE("ValidationErrorSource"); //$NON-NLS-1$
+        VALIDATION_ERROR_TO_SOURCE("ValidationErrorSource");
 
         private final String relationshipType;
 
@@ -260,7 +260,7 @@ public final class VdbManifest {
                 }
             }
 
-            throw new IllegalArgumentException(Messages.I18N.format("invalidVdbRelationshipType", proposedRelationshipType)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.I18N.format("invalidVdbRelationshipType", proposedRelationshipType));
         }
 
         /**
@@ -304,12 +304,12 @@ public final class VdbManifest {
     /**
      * The name of the Teiid manifest file that is contained in the VDB archive.
      */
-    public static final String FILE_NAME = "vdb.xml"; //$NON-NLS-1$
+    public static final String FILE_NAME = "vdb.xml";
 
     /**
      * The path of the manifest file (including the name) contained in the VDB archive.
      */
-    public static final String PATH = "META-INF/" + FILE_NAME; //$NON-NLS-1$
+    public static final String PATH = "META-INF/" + FILE_NAME;
 
     private static final String PREFIX = Vdb.PREFIX;
 

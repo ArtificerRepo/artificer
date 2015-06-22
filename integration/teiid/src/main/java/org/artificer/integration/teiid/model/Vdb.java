@@ -31,7 +31,7 @@ public final class Vdb {
          * The VDB configuration info file contained in a VDB. This file is no longer supported but put here in case a deriver
          * would be written for files of this type.
          */
-        CONFIG_INFO("ConfigInfo"); //$NON-NLS-1$
+        CONFIG_INFO("ConfigInfo");
 
         private final String extendedType;
 
@@ -52,7 +52,7 @@ public final class Vdb {
                 }
             }
 
-            throw new IllegalArgumentException(Messages.I18N.format("invalidVdbExtendedType", proposedExtendedType)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.I18N.format("invalidVdbExtendedType", proposedExtendedType));
         }
 
         /**
@@ -91,16 +91,16 @@ public final class Vdb {
     /**
      * The name of the configuration info definition file. Value is {@value} .
      */
-    public static final String CONFIGURATION_INFO_FILE_NAME = "ConfigurationInfo.def"; //$NON-NLS-1$
+    public static final String CONFIGURATION_INFO_FILE_NAME = "ConfigurationInfo.def";
 
     /**
      * The default version for a VDB. Value is {@value} .
      */
-    public static final String DEFAULT_VERSION = "1"; //$NON-NLS-1$
+    public static final String DEFAULT_VERSION = "1";
 
     /**
      * The prefix used for each Teiid VDB artifact extended type.
      */
-    static final String PREFIX = TeiidArtifactType.PREFIX + "Vdb"; //$NON-NLS-1$
+    static final String PREFIX = TeiidArtifactType.PREFIX + "Vdb";
 
 }

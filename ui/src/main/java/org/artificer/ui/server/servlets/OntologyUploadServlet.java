@@ -89,21 +89,21 @@ public class OntologyUploadServlet extends AbstractUploadServlet {
 				responseMap = uploadOntology(ontologyContent);
 			} catch (ArtificerAtomException e) {
 				responseMap = new HashMap<String, String>();
-				responseMap.put("exception", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				responseMap.put("exception-message", e.getMessage()); //$NON-NLS-1$
-				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e)); //$NON-NLS-1$
+				responseMap.put("exception", "true");
+				responseMap.put("exception-message", e.getMessage());
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
 			} catch (Throwable e) {
 				responseMap = new HashMap<String, String>();
-				responseMap.put("exception", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				responseMap.put("exception-message", e.getMessage()); //$NON-NLS-1$
-				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e)); //$NON-NLS-1$
+				responseMap.put("exception", "true");
+				responseMap.put("exception-message", e.getMessage());
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
 			} finally {
 				IOUtils.closeQuietly(ontologyContent);
 			}
 			writeToResponse(responseMap, response);
 		} else {
 			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
-			        Messages.i18n.format("UploadServlet.ContentTypeNotSupported")); //$NON-NLS-1$
+			        Messages.i18n.format("UploadServlet.ContentTypeNotSupported"));
 		}
 	}
 
@@ -140,16 +140,16 @@ public class OntologyUploadServlet extends AbstractUploadServlet {
 
             if (ontology.getOtherAttributes() != null) {
                 responseParams
-                        .put("namespace", ontology.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                QName uuid = new QName(ArtificerConstants.SRAMP_NS, "uuid"); //$NON-NLS-1$
+                        .put("namespace", ontology.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base")));
+                QName uuid = new QName(ArtificerConstants.SRAMP_NS, "uuid");
                 if (ontology.getOtherAttributes().get(uuid) != null) {
-                    responseParams.put("uuid", ontology.getOtherAttributes().get(uuid)); //$NON-NLS-1$
+                    responseParams.put("uuid", ontology.getOtherAttributes().get(uuid));
                 }
             }
 
-            responseParams.put("id", ontology.getOntology().getID()); //$NON-NLS-1$
-            responseParams.put("label", ontology.getOntology().getLabel()); //$NON-NLS-1$
-            responseParams.put("comment", ontology.getOntology().getComment()); //$NON-NLS-1$
+            responseParams.put("id", ontology.getOntology().getID());
+            responseParams.put("label", ontology.getOntology().getLabel());
+            responseParams.put("comment", ontology.getOntology().getComment());
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}

@@ -28,9 +28,9 @@ public class TestUtils {
 	 */
 	public static String convertStreamToString(java.io.InputStream is) {
 		try {
-			return new java.util.Scanner(is).useDelimiter("\\A").next(); //$NON-NLS-1$
+			return new java.util.Scanner(is).useDelimiter("\\A").next();
 		} catch (java.util.NoSuchElementException e) {
-			return ""; //$NON-NLS-1$
+			return "";
 		}
 	}
 

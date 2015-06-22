@@ -46,11 +46,11 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
     @Override
     public PagedResult<ArtifactSummary> query(String query, String orderBy, Boolean ascending) throws Exception { // Add on the "/s-ramp/" if it's missing
         String xpath = query;
-        if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
-            if (query.startsWith("/")) //$NON-NLS-1$
-                xpath = "/s-ramp" + query; //$NON-NLS-1$
+        if (!xpath.startsWith("/s-ramp")) {
+            if (query.startsWith("/"))
+                xpath = "/s-ramp" + query;
             else
-                xpath = "/s-ramp/" + query; //$NON-NLS-1$
+                xpath = "/s-ramp/" + query;
         }
 
         ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending);
@@ -63,11 +63,11 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
             String orderBy, Boolean ascending) throws Exception {
         // Add on the "/s-ramp/" if it's missing
         String xpath = query;
-        if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
-            if (query.startsWith("/")) //$NON-NLS-1$
-                xpath = "/s-ramp" + query; //$NON-NLS-1$
+        if (!xpath.startsWith("/s-ramp")) {
+            if (query.startsWith("/"))
+                xpath = "/s-ramp" + query;
             else
-                xpath = "/s-ramp/" + query; //$NON-NLS-1$
+                xpath = "/s-ramp/" + query;
         }
 
         ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending, startPage, startIndex, count);

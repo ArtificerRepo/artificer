@@ -81,7 +81,7 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
      */
     @Override
     protected void setElement(Element elem) {
-        super.setElement(DOM.createElement("ul")); //$NON-NLS-1$
+        super.setElement(DOM.createElement("ul"));
     }
 
     /**
@@ -177,9 +177,9 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
                 clear();
                 add(noOntologiesFoundFactory.get());
                 if (error instanceof ArtificerUiException) {
-                    notificationService.sendErrorNotification(i18n.format("classifier-filter-container.error"), (ArtificerUiException) error); //$NON-NLS-1$
+                    notificationService.sendErrorNotification(i18n.format("classifier-filter-container.error"), (ArtificerUiException) error);
                 } else {
-                    notificationService.sendErrorNotification(i18n.format("classifier-filter-container.error"), error.getMessage(), null); //$NON-NLS-1$
+                    notificationService.sendErrorNotification(i18n.format("classifier-filter-container.error"), error.getMessage(), null);
                 }
             }
         });

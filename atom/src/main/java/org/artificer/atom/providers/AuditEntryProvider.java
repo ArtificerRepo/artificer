@@ -102,12 +102,12 @@ public class AuditEntryProvider implements MessageBodyReader<AuditEntry>, Messag
 			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException {
 		if (auditEntryContext == null)
-			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), //$NON-NLS-1$
-			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_AUDIT_JAXBCTX"))); //$NON-NLS-1$
+			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType),
+			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_AUDIT_JAXBCTX")));
 		try {
 			auditEntryContext.createMarshaller().marshal(t, entityStream);
 		} catch (JAXBException e) {
-			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), e); //$NON-NLS-1$
+			throw new JAXBMarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), e);
 		}
 	}
 
@@ -121,13 +121,13 @@ public class AuditEntryProvider implements MessageBodyReader<AuditEntry>, Messag
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException,
 			WebApplicationException {
 		if (auditEntryContext == null)
-			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), //$NON-NLS-1$
-			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_AUDIT_JAXBCTX"))); //$NON-NLS-1$
+			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType),
+			        new NullPointerException(Messages.i18n.format("FAILED_TO_CREATE_AUDIT_JAXBCTX")));
 		try {
 			AuditEntry entry = (AuditEntry) auditEntryContext.createUnmarshaller().unmarshal(entityStream);
 			return entry;
 		} catch (JAXBException e) {
-			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), e); //$NON-NLS-1$
+			throw new JAXBUnmarshalException(Messages.i18n.format("UNABLE_TO_MARSHAL", mediaType), e);
 		}
 	}
 

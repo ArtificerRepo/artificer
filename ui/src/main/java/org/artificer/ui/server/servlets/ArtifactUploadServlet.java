@@ -76,7 +76,7 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
 				List<FileItem> items = upload.parseRequest(req);
 				for (FileItem item : items) {
 					if (item.isFormField()) {
-						if (item.getFieldName().equals("artifactType")) { //$NON-NLS-1$
+						if (item.getFieldName().equals("artifactType")) {
 							artifactType = item.getString();
 						}
 					} else {
@@ -91,21 +91,21 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
 				responseMap = uploadArtifact(artifactType, fileName, artifactContent);
 			} catch (ArtificerAtomException e) {
 				responseMap = new HashMap<String, String>();
-				responseMap.put("exception", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				responseMap.put("exception-message", e.getMessage()); //$NON-NLS-1$
-				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e)); //$NON-NLS-1$
+				responseMap.put("exception", "true");
+				responseMap.put("exception-message", e.getMessage());
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
 			} catch (Throwable e) {
 				responseMap = new HashMap<String, String>();
-				responseMap.put("exception", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				responseMap.put("exception-message", e.getMessage()); //$NON-NLS-1$
-				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e)); //$NON-NLS-1$
+				responseMap.put("exception", "true");
+				responseMap.put("exception-message", e.getMessage());
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
 			} finally {
 				IOUtils.closeQuietly(artifactContent);
 			}
 			writeToResponse(responseMap, response);
 		} else {
 			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
-			        Messages.i18n.format("UploadServlet.ContentTypeNotSupported")); //$NON-NLS-1$
+			        Messages.i18n.format("UploadServlet.ContentTypeNotSupported"));
 		}
 	}
 
@@ -155,10 +155,10 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
                 }
             }
             // TODO turn these things into constants
-            responseParams.put("batch", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-            responseParams.put("batchTotal", String.valueOf(numSuccess + numFailed)); //$NON-NLS-1$
-            responseParams.put("batchNumSuccess", String.valueOf(numSuccess)); //$NON-NLS-1$
-            responseParams.put("batchNumFailed", String.valueOf(numFailed)); //$NON-NLS-1$
+            responseParams.put("batch", "true");
+            responseParams.put("batchTotal", String.valueOf(numSuccess + numFailed));
+            responseParams.put("batchNumSuccess", String.valueOf(numSuccess));
+            responseParams.put("batchNumFailed", String.valueOf(numFailed));
         } finally {
             ArtificerArchive.closeQuietly(archive);
         }
@@ -186,9 +186,9 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
                 artifact = ArtificerApiClientAccessor.getClient().uploadArtifact(contentStream, fileName);
             }
             ArtifactType responseArtifactType = ArtifactType.valueOf(artifact);
-			responseParams.put("model", responseArtifactType.getModel()); //$NON-NLS-1$
-			responseParams.put("type", responseArtifactType.getType()); //$NON-NLS-1$
-			responseParams.put("uuid", artifact.getUuid()); //$NON-NLS-1$
+			responseParams.put("model", responseArtifactType.getModel());
+			responseParams.put("type", responseArtifactType.getType());
+			responseParams.put("uuid", artifact.getUuid());
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}

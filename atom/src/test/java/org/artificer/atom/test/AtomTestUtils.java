@@ -35,7 +35,7 @@ public class AtomTestUtils {
 	 * @throws Exception
 	 */
 	public static File getArchiveWorkDir(ArtificerArchive archive) throws Exception {
-		Field field = archive.getClass().getDeclaredField("workDir"); //$NON-NLS-1$
+		Field field = archive.getClass().getDeclaredField("workDir");
 		boolean oldAccessible = field.isAccessible();
 		field.setAccessible(true);
 		File workDir = (File) field.get(archive);

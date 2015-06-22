@@ -44,10 +44,10 @@ public class DescriptionInlineLabel extends EditableInlineLabel {
     @Override
     public void setText(String text) {
         if (text == null || text.trim().length() == 0) {
-            this.setText(i18n.format("no-value")); //$NON-NLS-1$
+            this.setText(i18n.format("no-value"));
         } else {
-            if (text.contains("\n")) { //$NON-NLS-1$
-                String html = text.replace("\n", "<br />"); //$NON-NLS-1$ //$NON-NLS-2$
+            if (text.contains("\n")) {
+                String html = text.replace("\n", "<br />");
                 getElement().setInnerHTML(html);
             } else {
                 super.setText(text);

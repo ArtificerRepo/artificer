@@ -21,10 +21,10 @@ package org.artificer.common.audit;
  */
 public final class AuditItemTypes {
 
-    public static final String PROPERTY_ADDED    = "property:added"; //$NON-NLS-1$
-    public static final String PROPERTY_CHANGED  = "property:changed"; //$NON-NLS-1$
-    public static final String PROPERTY_REMOVED  = "property:removed"; //$NON-NLS-1$
-    public static final String CLASSIFIERS_ADDED    = "classifier:added"; //$NON-NLS-1$
-    public static final String CLASSIFIERS_REMOVED  = "classifier:removed"; //$NON-NLS-1$
+    public static final String PROPERTY_ADDED    = "property:added";
+    public static final String PROPERTY_CHANGED  = "property:changed";
+    public static final String PROPERTY_REMOVED  = "property:removed";
+    public static final String CLASSIFIERS_ADDED    = "classifier:added";
+    public static final String CLASSIFIERS_REMOVED  = "classifier:removed";
 
 }

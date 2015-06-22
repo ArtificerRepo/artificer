@@ -35,38 +35,38 @@ public class AbstractArtificerQueryImplTest {
 
 	@Test
 	public void testFormatQuery() throws ArtificerUserException {
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument", "/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$ //$NON-NLS-2$
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop = ?]", //$NON-NLS-1$
-				"/s-ramp/xsd/XsdDocument[@prop = 'hello-world']",  //$NON-NLS-1$
-				new StringReplacementParam("hello-world")); //$NON-NLS-1$
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]", //$NON-NLS-1$
-				"/s-ramp/xsd/XsdDocument[@size = 10]",  //$NON-NLS-1$
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument", "/s-ramp/xsd/XsdDocument");
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop = ?]",
+				"/s-ramp/xsd/XsdDocument[@prop = 'hello-world']",
+				new StringReplacementParam("hello-world"));
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]",
+				"/s-ramp/xsd/XsdDocument[@size = 10]",
 				new NumberReplacementParam(10));
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]", //$NON-NLS-1$
-				"/s-ramp/xsd/XsdDocument[@size = 1.0]",  //$NON-NLS-1$
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]",
+				"/s-ramp/xsd/XsdDocument[@size = 1.0]",
 				new NumberReplacementParam(1.0));
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]", //$NON-NLS-1$
-				"/s-ramp/xsd/XsdDocument[@size = 12345123451234512345123451234512345]",  //$NON-NLS-1$
-				new NumberReplacementParam(new BigInteger("12345123451234512345123451234512345"))); //$NON-NLS-1$
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]", //$NON-NLS-1$
-				"/s-ramp/xsd/XsdDocument[@size = 123456789012345]",  //$NON-NLS-1$
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]",
+				"/s-ramp/xsd/XsdDocument[@size = 12345123451234512345123451234512345]",
+				new NumberReplacementParam(new BigInteger("12345123451234512345123451234512345")));
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@size = ?]",
+				"/s-ramp/xsd/XsdDocument[@size = 123456789012345]",
 				new NumberReplacementParam(123456789012345L));
 
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop1 = ? and @prop2 = ? and @prop3 = ?]", //$NON-NLS-1$
-				"/s-ramp/xsd/XsdDocument[@prop1 = 'val1' and @prop2 = 'val2' and @prop3 = 17]",  //$NON-NLS-1$
-				new StringReplacementParam("val1"), //$NON-NLS-1$
-				new StringReplacementParam("val2"), //$NON-NLS-1$
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop1 = ? and @prop2 = ? and @prop3 = ?]",
+				"/s-ramp/xsd/XsdDocument[@prop1 = 'val1' and @prop2 = 'val2' and @prop3 = 17]",
+				new StringReplacementParam("val1"),
+				new StringReplacementParam("val2"),
 				new NumberReplacementParam(17));
 	}
 
 	@Test(expected=ArtificerUserException.class)
 	public void testFormatQuery_tooManyParams() throws ArtificerUserException {
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument", null, new StringReplacementParam("val1")); //$NON-NLS-1$ //$NON-NLS-2$
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument", null, new StringReplacementParam("val1"));
 	}
 
 	@Test(expected=ArtificerUserException.class)
 	public void testFormatQuery_notEnoughParams() throws ArtificerUserException {
-		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop1 = ? or @prop2 = ?]", null, new StringReplacementParam("val1")); //$NON-NLS-1$ //$NON-NLS-2$
+		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop1 = ? or @prop2 = ?]", null, new StringReplacementParam("val1"));
 	}
 	
 	/**

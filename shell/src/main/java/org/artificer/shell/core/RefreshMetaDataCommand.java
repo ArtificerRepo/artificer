@@ -45,14 +45,14 @@ public class RefreshMetaDataCommand extends AbstractCommand {
 			ArtifactType type = ArtifactType.valueOf(artifact);
 			BaseArtifactType metaData = client.getArtifactMetaData(type, artifact.getUuid());
 			context(commandInvocation).setCurrentArtifact(metaData);
-			commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.Success", metaData.getName())); //$NON-NLS-1$
-			commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.MetaDataFor", metaData.getUuid())); //$NON-NLS-1$
-			commandInvocation.getShell().out().println("--------------"); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.Success", metaData.getName()));
+			commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.MetaDataFor", metaData.getUuid()));
+			commandInvocation.getShell().out().println("--------------");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor(commandInvocation);
 			ArtifactVisitorHelper.visitArtifact(visitor, metaData);
 		} catch (Exception e) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.Failure")); //$NON-NLS-1$
-			commandInvocation.getShell().out().println("\t" + e.getMessage()); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("RefreshMetaData.Failure"));
+			commandInvocation.getShell().out().println("\t" + e.getMessage());
             return CommandResult.FAILURE;
 		}
         return CommandResult.SUCCESS;

@@ -51,25 +51,25 @@ public class XPathParserTest {
 		XPathParser parser = new XPathParser();
 		XPathSerializationVisitor visitor = new XPathSerializationVisitor();
 		for (Properties properties : testCases) {
-			String testCaseName = properties.getProperty("testcase.name"); //$NON-NLS-1$
-			String xpath = properties.getProperty("xpath"); //$NON-NLS-1$
-			String expectedXpath = properties.getProperty("expected.xpath"); //$NON-NLS-1$
-			String expectedErrorMessage = properties.getProperty("expected.errorMessage"); //$NON-NLS-1$
+			String testCaseName = properties.getProperty("testcase.name");
+			String xpath = properties.getProperty("xpath");
+			String expectedXpath = properties.getProperty("expected.xpath");
+			String expectedErrorMessage = properties.getProperty("expected.errorMessage");
 
 			try {
 				Query query = parser.parseXPath(xpath);
 				visitor.reset();
 				query.accept(visitor);
 				String actualXpath = visitor.getXPath();
-				Assert.assertNotNull("Case [" + testCaseName + "]", query); //$NON-NLS-1$ //$NON-NLS-2$
-				Assert.assertEquals("Case [" + testCaseName + "]", expectedXpath, actualXpath); //$NON-NLS-1$ //$NON-NLS-2$
+				Assert.assertNotNull("Case [" + testCaseName + "]", query);
+				Assert.assertEquals("Case [" + testCaseName + "]", expectedXpath, actualXpath);
 			} catch (XPathParserException e) {
-				Assert.assertNotNull("Case [" + testCaseName + "] Got unexpected parse error: " + e.getMessage(), expectedErrorMessage); //$NON-NLS-1$ //$NON-NLS-2$
-				Assert.assertEquals("Case [" + testCaseName + "]", expectedErrorMessage, e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+				Assert.assertNotNull("Case [" + testCaseName + "] Got unexpected parse error: " + e.getMessage(), expectedErrorMessage);
+				Assert.assertEquals("Case [" + testCaseName + "]", expectedErrorMessage, e.getMessage());
 			} catch (AssertionError e) {
 				throw e;
 			} catch (Throwable t) {
-				Assert.fail("Case [" + testCaseName + "] Got unexpected error: " + t.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+				Assert.fail("Case [" + testCaseName + "] Got unexpected error: " + t.getMessage());
 			}
 		}
 //		System.out.println("All " + testCases.size() + " XPath parser test cases passed.");
@@ -80,13 +80,13 @@ public class XPathParserTest {
 	 * @throws Exception
 	 */
 	private Collection<Properties> getTestCases() throws Exception {
-		URL testCaseDirUrl = XPathParserTest.class.getResource("parser-test-cases"); //$NON-NLS-1$
-		Assert.assertNotNull("Failed to find test case directory!", testCaseDirUrl); //$NON-NLS-1$
+		URL testCaseDirUrl = XPathParserTest.class.getResource("parser-test-cases");
+		Assert.assertNotNull("Failed to find test case directory!", testCaseDirUrl);
 		File testCaseDir = new File(testCaseDirUrl.toURI());
 		if (!testCaseDir.isDirectory())
-			throw new Exception("Failed to find test case directory: " + testCaseDirUrl); //$NON-NLS-1$
+			throw new Exception("Failed to find test case directory: " + testCaseDirUrl);
 
-		Collection<File> testCaseFiles = FileUtils.listFiles(testCaseDir, new String[] { "properties" }, true); //$NON-NLS-1$
+		Collection<File> testCaseFiles = FileUtils.listFiles(testCaseDir, new String[] { "properties" }, true);
 		testCaseFiles = new TreeSet<File>(testCaseFiles);
 		Collection<Properties> testCases = new ArrayList<Properties>(testCaseFiles.size());
 		for (File testCaseFile : testCaseFiles) {
@@ -97,7 +97,7 @@ public class XPathParserTest {
 			} finally {
 				IOUtils.closeQuietly(reader);
 			}
-			props.setProperty("testcase.name", testCaseFile.getName()); //$NON-NLS-1$
+			props.setProperty("testcase.name", testCaseFile.getName());
 			testCases.add(props);
 		}
 		return testCases;

@@ -25,22 +25,22 @@ public enum TeiidArtifactType implements TeiidExtendedType {
     /**
      * The Teiid model, or schema, file extended artifact type.
      */
-    MODEL("Model"), //$NON-NLS-1$
+    MODEL("Model"),
 
     /**
      * The Teiid VDB file extended artifact type.
      */
-    VDB("Vdb"), //$NON-NLS-1$
+    VDB("Vdb"),
 
     /**
      * The VDB manifest file extended artifact type.
      */
-    VDB_MANIFEST("VdbManifest"); //$NON-NLS-1$
+    VDB_MANIFEST("VdbManifest");
 
     /**
      * The prefix used for each Teiid artifact extended type.
      */
-    static final String PREFIX = "Teiid"; //$NON-NLS-1$
+    static final String PREFIX = "Teiid";
 
     private final String extendedType;
 
@@ -61,7 +61,7 @@ public enum TeiidArtifactType implements TeiidExtendedType {
             }
         }
 
-        throw new IllegalArgumentException(Messages.I18N.format("invalidTeiidArtifactType", proposedExtendedType)); //$NON-NLS-1$
+        throw new IllegalArgumentException(Messages.I18N.format("invalidTeiidArtifactType", proposedExtendedType));
     }
 
     /**
