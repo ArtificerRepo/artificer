@@ -1,5 +1,6 @@
 .login-pf .container {
     padding-top: 40px;
+    background: none;
 }
 
 .login-pf body {
@@ -16,16 +17,11 @@
 }
 
 #kc-header {
-    overflow: visible;
-    padding-left: 80px;
-    white-space: nowrap;
+    display: none;
 }
 
 #kc-header-wrapper {
-    font-size: 26px;
-    text-transform: uppercase;
-    line-height: 1.2em;
-    margin-bottom: 15px;
+    display: none;
 }
 
 #kc-container-wrapper {
