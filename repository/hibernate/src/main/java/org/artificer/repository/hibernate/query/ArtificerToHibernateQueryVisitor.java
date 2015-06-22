@@ -663,6 +663,9 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
                 .forEntity(ArtificerArtifact.class).get();
         BooleanJunction<BooleanJunction> junction = qb.bool();
 
+        // not trashed
+        junction.must(qb.keyword().onField("trashed").matching(false).createQuery());
+
         // the main full-text query
         junction.must(qb.keyword()
                 .onFields("description", "name", "comments.text", "properties.key", "properties.value")
