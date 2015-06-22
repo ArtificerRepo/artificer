@@ -24,25 +24,24 @@ import javax.xml.namespace.QName;
  */
 public class ArtificerConstants {
 
-    public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z"; //$NON-NLS-1$
+    public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z";
 
-	public static final String SRAMP_NS         = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"; //$NON-NLS-1$
-	public static final String SRAMP_PREFIX     = "s-ramp"; //$NON-NLS-1$
-    public static final String SRAMP_AUDIT_NS   = "http://downloads.jboss.org/artificer/2013/auditing.xsd"; //$NON-NLS-1$
-    public static final String ARTIFICER_PREFIX = "artificer"; //$NON-NLS-1$
+	public static final String SRAMP_NS         = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0";
+	public static final String SRAMP_PREFIX     = "s-ramp";
+    public static final String ARTIFICER_PREFIX = "artificer";
     // TODO: Not sure if we'll need an actual schema...
-    public static final String ARTIFICER_NS     = "http://artificer.jboss.org"; //$NON-NLS-1$
+    public static final String ARTIFICER_NS     = "http://artificer.jboss.org";
 
-	private static final String SRAMP_CONTENT_SIZE         = "contentSize"; //$NON-NLS-1$
-	private static final String SRAMP_CONTENT_TYPE         = "contentType"; //$NON-NLS-1$
-    private static final String SRAMP_DERIVED              = "derived"; //$NON-NLS-1$
-    private static final String SRAMP_EXTENDED_TYPE        = "extendedType"; //$NON-NLS-1$
-    private static final String SRAMP_PROVIDER             = "provider"; //$NON-NLS-1$
-    private static final String SRAMP_START_INDEX          = "startIndex"; //$NON-NLS-1$
-    private static final String SRAMP_ITEMS_PER_PAGE_INDEX = "itemsPerPage"; //$NON-NLS-1$
-    private static final String SRAMP_TOTAL_RESULTS        = "totalResults"; //$NON-NLS-1$
+	private static final String SRAMP_CONTENT_SIZE         = "contentSize";
+	private static final String SRAMP_CONTENT_TYPE         = "contentType";
+    private static final String SRAMP_DERIVED              = "derived";
+    private static final String SRAMP_EXTENDED_TYPE        = "extendedType";
+    private static final String SRAMP_PROVIDER             = "provider";
+    private static final String SRAMP_START_INDEX          = "startIndex";
+    private static final String SRAMP_ITEMS_PER_PAGE_INDEX = "itemsPerPage";
+    private static final String SRAMP_TOTAL_RESULTS        = "totalResults";
 
-    public static final QName S_RAMP_WRAPPER_ELEM         = new QName(SRAMP_NS, "artifact"); //$NON-NLS-1$
+    public static final QName S_RAMP_WRAPPER_ELEM         = new QName(SRAMP_NS, "artifact");
 
     public static final QName SRAMP_CONTENT_SIZE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_SIZE, SRAMP_PREFIX);
     public static final QName SRAMP_CONTENT_TYPE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_TYPE, SRAMP_PREFIX);
@@ -59,28 +58,24 @@ public class ArtificerConstants {
     public static final QName ARTIFICER_RELATIONSHIP_TYPE_QNAME = new QName(ARTIFICER_NS, ARTIFICER_RELATIONSHIP_TYPE, ARTIFICER_PREFIX);
 
     // Configuration constants
-    public static final String ARTIFICER_CONFIG_FILE_NAME = "artificer.config.file.name"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_FILE_REFRESH = "artificer.config.file.refresh"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_BASEURL = "artificer.config.baseurl"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_AUDITING = "artificer.config.auditing.enabled"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_DERIVED_AUDITING = "artificer.config.auditing.enabled-derived"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_AUDIT_USER = "artificer.config.auditing.user"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_AUDIT_PASS = "artificer.config.auditing.password"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_ENABLED = "artificer.config.events.jms.enabled"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_CONNECTIONFACTORY = "artificer.config.events.jms.connectionfactory"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_TOPICS = "artificer.config.events.jms.topics"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_QUEUES = "artificer.config.events.jms.queues"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_USER = "artificer.config.events.jms.user"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_PASSWORD = "artificer.config.events.jms.password"; //$NON-NLS-1$
+    public static final String ARTIFICER_CONFIG_FILE_NAME = "artificer.config.file.name";
+    public static final String ARTIFICER_CONFIG_FILE_REFRESH = "artificer.config.file.refresh";
+    public static final String ARTIFICER_CONFIG_BASEURL = "artificer.config.baseurl";
+    public static final String ARTIFICER_CONFIG_AUDITING = "artificer.config.auditing.enabled";
+    public static final String ARTIFICER_CONFIG_DERIVED_AUDITING = "artificer.config.auditing.enabled-derived";
+    public static final String ARTIFICER_CONFIG_EVENT_JMS_ENABLED = "artificer.config.events.jms.enabled";
+    public static final String ARTIFICER_CONFIG_EVENT_JMS_CONNECTIONFACTORY = "artificer.config.events.jms.connectionfactory";
+    public static final String ARTIFICER_CONFIG_EVENT_JMS_TOPICS = "artificer.config.events.jms.topics";
+    public static final String ARTIFICER_CONFIG_EVENT_JMS_QUEUES = "artificer.config.events.jms.queues";
     public static final String ARTIFICER_CONFIG_REPO_PROVIDER = "artificer.config.repository.provider";
     public static final String ARTIFICER_FILE_STORAGE = "artificer.file.storage";
     public static final String ARTIFICER_FILE_STORAGE_FILESYSTEM_PATH = "artificer.file.storage.filesystem.path";
 
     // Location of a directory containing JARs which provide custom ArtifactBuilderProviders
-    public static final String ARTIFICER_CUSTOM_EXTENSION_DIR = "artificer.extension.customDir"; //$NON-NLS-1$
+    public static final String ARTIFICER_CUSTOM_EXTENSION_DIR = "artificer.extension.customDir";
 
-    public static final String ARTIFICER_CONFIG_MAVEN_READONLY_USERNAME = "artificer.config.maven.readonly-username"; //$NON-NLS-1$
+    public static final String ARTIFICER_CONFIG_MAVEN_READONLY_USERNAME = "artificer.config.maven.readonly-username";
 
-    public static final String ARTIFICER_SNAPSHOT_ALLOWED = "artificer.config.maven.allow-snapshots"; //$NON-NLS-1$
+    public static final String ARTIFICER_SNAPSHOT_ALLOWED = "artificer.config.maven.allow-snapshots";
 
 }
