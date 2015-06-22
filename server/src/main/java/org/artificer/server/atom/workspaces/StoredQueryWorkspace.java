@@ -43,26 +43,26 @@ public class StoredQueryWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public StoredQueryWorkspace(String hrefBase) {
-		super(hrefBase, "Query Model"); //$NON-NLS-1$
+		super(hrefBase, "Query Model");
 	}
 
 	@Override
 	protected void configureWorkspace() {
-        AppCollection collection = addCollection("/s-ramp/query", "Query Model", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
-        addCategory(collection, "query", "StoredQuery"); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection collection = addCollection("/s-ramp/query", "Query Model", MediaType.APPLICATION_ZIP);
+        addCategory(collection, "query", "StoredQuery");
         
         // The spec requires that all queries in the system be listed as a collection.
         try {
             PersistenceManager persistenceManager = RepositoryProviderFactory.persistenceManager();
             List<StoredQuery> storedQueries = persistenceManager.getStoredQueries();
             for (StoredQuery storedQuery : storedQueries) {
-                AppCollection queryCollection = addCollection("/s-ramp/query/" + storedQuery.getQueryName(), //$NON-NLS-1$
-                        storedQuery.getQueryName(), ""); //$NON-NLS-1$
+                AppCollection queryCollection = addCollection("/s-ramp/query/" + storedQuery.getQueryName(),
+                        storedQuery.getQueryName(), "");
                 // I *think* this is necessary since /query/{name} can accept a PUT
-                addCategory(queryCollection, "query", "StoredQuery"); //$NON-NLS-1$ //$NON-NLS-2$
+                addCategory(queryCollection, "query", "StoredQuery");
             }
         } catch (ArtificerException e) {
-            LOGGER.error(Messages.i18n.format("ERROR_GETTING_STOREDQUERIES"), e); //$NON-NLS-1$
+            LOGGER.error(Messages.i18n.format("ERROR_GETTING_STOREDQUERIES"), e);
         }
 	}
 }

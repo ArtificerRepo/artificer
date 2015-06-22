@@ -36,9 +36,9 @@ public class BuiltInArtifactBuilderTest extends AbstractIntegrationTest {
         InputStream coreContent = null;
         InputStream xsdContent = null;
         try {
-            baseContent = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd"); //$NON-NLS-1$
-            coreContent = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd"); //$NON-NLS-1$
-            xsdContent = getClass().getResourceAsStream("/sample-files/xsd/xsdmodel.xsd"); //$NON-NLS-1$
+            baseContent = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd");
+            coreContent = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd");
+            xsdContent = getClass().getResourceAsStream("/sample-files/xsd/xsdmodel.xsd");
 
             XsdDocument uploadedBaseArtifact = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
                     baseContent, "xlink.xsd");
@@ -71,18 +71,18 @@ public class BuiltInArtifactBuilderTest extends AbstractIntegrationTest {
         InputStream coreContent1 = null;
         InputStream coreContent2 = null;
         try {
-            baseContent1 = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd"); //$NON-NLS-1$
+            baseContent1 = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd");
             XsdDocument uploadedBaseArtifact1 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
                     baseContent1, "xlink.xsd");
-            coreContent1 = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd"); //$NON-NLS-1$
+            coreContent1 = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd");
             XsdDocument uploadedCoreArtifact1 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
                     coreContent1, "coremodel.xsd");
             
             // do it again
-            baseContent2 = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd"); //$NON-NLS-1$
+            baseContent2 = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd");
             XsdDocument uploadedBaseArtifact2 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
                     baseContent2, "xlink.xsd");
-            coreContent2 = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd"); //$NON-NLS-1$
+            coreContent2 = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd");
             XsdDocument uploadedCoreArtifact2 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
                     coreContent2, "coremodel.xsd");
 

@@ -48,7 +48,7 @@ public class ClientMessages {
     public String format(String key, Object ... args) {
         String pattern = translationService.getTranslation(key);
         if (pattern == null)
-            return "!!!" + key + "!!!"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "!!!" + key + "!!!";
         if (args.length == 0)
             return pattern;
 

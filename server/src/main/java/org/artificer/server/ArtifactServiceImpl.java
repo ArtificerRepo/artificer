@@ -73,7 +73,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
             throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
         }
         if (artifactType.isDocument()) {
-            throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
+            throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE"));
         }
 
         PersistenceManager persistenceManager = persistenceManager();
@@ -106,11 +106,11 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         // Pick a reasonable file name if Slug is not present
         if (fileName == null) {
             if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
-                fileName = "newartifact.bin"; //$NON-NLS-1$
+                fileName = "newartifact.bin";
             } else if (artifactType.getArtifactType() == ArtifactTypeEnum.XmlDocument) {
-                fileName = "newartifact.xml"; //$NON-NLS-1$
+                fileName = "newartifact.xml";
             } else {
-                fileName = "newartifact." + artifactType.getArtifactType().getModel(); //$NON-NLS-1$
+                fileName = "newartifact." + artifactType.getArtifactType().getModel();
             }
         }
 
@@ -222,7 +222,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         PersistenceManager persistenceManager = persistenceManager();
         // store the content
         if (!ArtificerModelUtils.isDocumentArtifact(artifact)) {
-            throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
+            throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE"));
         }
 
         artifact = persistenceManager.persistArtifact(artifact, content);

@@ -50,22 +50,22 @@ public class ArtifactType implements Serializable {
     }
     
     public static final ArtifactType Document() {
-        return new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream"); //$NON-NLS-1$
+        return new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream");
     }
     public static final ArtifactType Document(String mimeType) {
         return new ArtifactType(ArtifactTypeEnum.Document, mimeType);
     }
     public static final ArtifactType XmlDocument() {
-        return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml"); //$NON-NLS-1$
+        return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
     }
     public static final ArtifactType XsdDocument() {
-        return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml"); //$NON-NLS-1$
+        return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml");
     }
     public static final ArtifactType WsdlDocument() {
-        return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml"); //$NON-NLS-1$
+        return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml");
     }
     public static final ArtifactType PolicyDocument() {
-        return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml"); //$NON-NLS-1$
+        return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
     }
     public static final ArtifactType ExtendedArtifactType(String extendedType) {
         return ExtendedArtifactType(extendedType, false);
@@ -99,9 +99,9 @@ public class ArtifactType implements Serializable {
         // if you let null happen, you'll eventually get NPEs within RESTEasy.
         if (mimeType == null) {
             if (artifactType == ArtifactTypeEnum.Document || artifactType == ArtifactTypeEnum.ExtendedDocument) {
-                mimeType = "application/octet-stream"; //$NON-NLS-1$
+                mimeType = "application/octet-stream";
             } else {
-                mimeType = "application/xml"; //$NON-NLS-1$
+                mimeType = "application/xml";
             }
         }
         setMimeType(mimeType);
@@ -114,12 +114,12 @@ public class ArtifactType implements Serializable {
      */
     public BaseArtifactType unwrap(Artifact artifactWrapper) {
         try {
-            Method method = Artifact.class.getMethod("get" + getArtifactType().getType()); //$NON-NLS-1$
+            Method method = Artifact.class.getMethod("get" + getArtifactType().getType());
             BaseArtifactType artifact = (BaseArtifactType) method.invoke(artifactWrapper);
             artifact.setArtifactType(this.getArtifactType().getApiType());
             return artifact;
         } catch (Exception e) {
-            throw new RuntimeException(Messages.i18n.format("ARTIFACT_UNWRAP_ERROR", getArtifactType().getType()), e); //$NON-NLS-1$
+            throw new RuntimeException(Messages.i18n.format("ARTIFACT_UNWRAP_ERROR", getArtifactType().getType()), e);
         }
     }
 
@@ -146,7 +146,7 @@ public class ArtifactType implements Serializable {
             }
             ArtifactType rval = new ArtifactType(artifactTypeEnum, null);
             rval.setExtendedType(artifactType);
-            rval.setMimeType("application/octet-stream"); //$NON-NLS-1$
+            rval.setMimeType("application/octet-stream");
             return rval;
         }
     }
@@ -171,7 +171,7 @@ public class ArtifactType implements Serializable {
      */
     public static ArtifactType valueOf(String model, String type, Boolean isDocument) {
         ArtifactType artifactType = null;
-        if ("ext".equals(model)) { //$NON-NLS-1$
+        if ("ext".equals(model)) {
         	ArtifactTypeEnum artifactTypeEnum = null;
             if  ( type.equals(ArtifactTypeEnum.ExtendedDocument.getType()) || 
             		( !type.equals(ArtifactTypeEnum.ExtendedArtifactType.getType()) && isDocument!=null && isDocument ) ) {
@@ -206,7 +206,7 @@ public class ArtifactType implements Serializable {
                     artifactType.setMimeType(contentTypeStr);
                 }
                 String extendedDerived = artifact.getOtherAttributes().get(ArtificerConstants.SRAMP_DERIVED_QNAME);
-                artifactType.setExtendedDerivedType("true".equals(extendedDerived)); //$NON-NLS-1$
+                artifactType.setExtendedDerivedType("true".equals(extendedDerived));
             }
             if (artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType) {
                 String extendedType = ((ExtendedArtifactType) artifact).getExtendedType();
@@ -231,12 +231,12 @@ public class ArtifactType implements Serializable {
                             .getExtendedType() : ((ExtendedDocument) artifact).getExtendedType();
                     String extendedDerived = artifact.getOtherAttributes().get(ArtificerConstants.SRAMP_DERIVED_QNAME);
                     artifactType.setExtendedType(extendedType);
-                    artifactType.setExtendedDerivedType("true".equals(extendedDerived)); //$NON-NLS-1$
+                    artifactType.setExtendedDerivedType("true".equals(extendedDerived));
                 }
                 return artifactType;
             }
         }
-        throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_CLASS_ERROR", artifact.getClass())); //$NON-NLS-1$
+        throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_CLASS_ERROR", artifact.getClass()));
     }
 
     /**
@@ -261,7 +261,7 @@ public class ArtifactType implements Serializable {
             }
             return baseArtifactType;
         } catch (Exception e) {
-            throw new RuntimeException(Messages.i18n.format("ARTIFACT_INSTANTIATION_ERROR", getArtifactType().getTypeClass()), e); //$NON-NLS-1$
+            throw new RuntimeException(Messages.i18n.format("ARTIFACT_INSTANTIATION_ERROR", getArtifactType().getTypeClass()), e);
         }
     }
 
@@ -276,7 +276,7 @@ public class ArtifactType implements Serializable {
                 return new ArtifactType(artifactType, null);
             }
         }
-        throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_APITYPE_ERROR", apiType.value())); //$NON-NLS-1$
+        throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_APITYPE_ERROR", apiType.value()));
     }
 
     /**
@@ -362,7 +362,7 @@ public class ArtifactType implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format("/s-ramp/%1$s/%2$s (%3$s)", getArtifactType().getModel(), getArtifactType() //$NON-NLS-1$
+        return String.format("/s-ramp/%1$s/%2$s (%3$s)", getArtifactType().getModel(), getArtifactType()
                 .getType(), getMimeType());
     }
 
@@ -372,7 +372,7 @@ public class ArtifactType implements Serializable {
      */
     public void setExtendedType(String extendedType) {
         if (extendedType != null && !isValid(extendedType)) {
-            throw new RuntimeException(Messages.i18n.format("ArtifactType.InvalidExtendedType", extendedType)); //$NON-NLS-1$
+            throw new RuntimeException(Messages.i18n.format("ArtifactType.InvalidExtendedType", extendedType));
         }
         this.extendedType = extendedType;
     }
@@ -401,7 +401,7 @@ public class ArtifactType implements Serializable {
         ArtifactType type = null;
         // We were given a hint - try using that first.
         if (hint != null) {
-            String methodName = "get" + hint; //$NON-NLS-1$
+            String methodName = "get" + hint;
             try {
                 Method method = artifactWrapper.getClass().getMethod(methodName);
                 Object o = method.invoke(artifactWrapper);
@@ -419,7 +419,7 @@ public class ArtifactType implements Serializable {
             Method[] methods = artifactWrapper.getClass().getMethods();
             try {
                 for (Method method : methods) {
-                    if (method.getName().startsWith("get")) { //$NON-NLS-1$
+                    if (method.getName().startsWith("get")) {
                         Object o = method.invoke(artifactWrapper);
                         if (o != null && BaseArtifactType.class.isAssignableFrom(o.getClass())) {
                             Class<? extends BaseArtifactType> artyClass = ((BaseArtifactType) o).getClass();

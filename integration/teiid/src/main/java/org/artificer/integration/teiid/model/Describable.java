@@ -28,7 +28,7 @@ public interface Describable {
         /**
          * The name of the description artifact property.
          */
-        String DESCRIPTION = "description"; //$NON-NLS-1$
+        String DESCRIPTION = "description";
 
     }
 
@@ -40,7 +40,7 @@ public interface Describable {
         /**
          * The name of the description manifest identifier.
          */
-        String DESCRIPTION = "description"; //$NON-NLS-1$
+        String DESCRIPTION = "description";
 
     }
 

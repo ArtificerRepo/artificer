@@ -99,7 +99,7 @@ public class ServiceDocumentResource extends AbstractResource {
 	    String uri = null;
 	    if (uriInfo!=null) uri = uriInfo.getBaseUri().toString();
 		if (uri == null) {
-			uri = "http://localhost:8080/artificer-server/"; //$NON-NLS-1$
+			uri = "http://localhost:8080/artificer-server/";
 		}
 		return uri;
 	}

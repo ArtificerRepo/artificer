@@ -161,7 +161,7 @@ public abstract class AbstractPersistenceTest {
         try {
             document.setArtifactType(type);
             document.setName(filename);
-            document.setContentType("application/xml"); //$NON-NLS-1$
+            document.setContentType("application/xml");
             // Persist the artifact
             artifact = persistenceManager.persistArtifact(document, new ArtifactContent(filename, contentStream));
             Assert.assertNotNull(artifact);
@@ -189,7 +189,7 @@ public abstract class AbstractPersistenceTest {
      * @throws Exception
      */
     protected BaseArtifactType assertSingleArtifact(ArtifactTypeEnum type, String name) throws Exception {
-        String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType()); //$NON-NLS-1$
+        String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType());
         ArtificerQuery query = queryManager.createQuery(q);
         query.setString(name);
         PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
@@ -213,7 +213,7 @@ public abstract class AbstractPersistenceTest {
      * @throws Exception
      */
     protected BaseArtifactType getArtifactByUUID(String uuid) throws Exception {
-        ArtificerQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]"); //$NON-NLS-1$
+        ArtificerQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]");
         query.setString(uuid);
         PagedResult<ArtifactSummary> artifactSet = query.executeQuery();
         Assert.assertEquals(1, artifactSet.getTotalSize());
@@ -227,7 +227,7 @@ public abstract class AbstractPersistenceTest {
      * @throws Exception
      */
     protected BaseArtifactType getArtifactByTarget(Target target) throws Exception {
-        Assert.assertNotNull("Missing target/relationship.", target); //$NON-NLS-1$
+        Assert.assertNotNull("Missing target/relationship.", target);
         return getArtifactByUUID(target.getValue());
     }
 

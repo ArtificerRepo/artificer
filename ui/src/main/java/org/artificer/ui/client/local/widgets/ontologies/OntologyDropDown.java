@@ -53,7 +53,7 @@ public class OntologyDropDown extends Composite implements HasChangeHandlers {
      */
     public void setOptions(List<OntologyBean> ontologies) {
         selector.clear();
-        selector.addItem("", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        selector.addItem("", "");
         for (OntologyBean ontology : ontologies) {
             selector.addItem(ontology.getId(), ontology.getBase());
         }

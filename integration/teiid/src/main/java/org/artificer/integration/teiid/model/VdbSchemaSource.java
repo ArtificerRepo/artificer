@@ -31,17 +31,17 @@ public final class VdbSchemaSource {
         /**
          * The schema/model source JNDI name attribute identifier.
          */
-        String JNDI_NAME = "connection-jndi-name"; //$NON-NLS-1$
+        String JNDI_NAME = "connection-jndi-name";
 
         /**
          * The source name attribute identifier.
          */
-        String NAME = "name"; //$NON-NLS-1$
+        String NAME = "name";
 
         /**
          * The schema/model source translator name attribute identifier.
          */
-        String TRANSLATOR_NAME = "translator-name"; //$NON-NLS-1$
+        String TRANSLATOR_NAME = "translator-name";
 
     }
 
@@ -53,12 +53,12 @@ public final class VdbSchemaSource {
         /**
          * The source connection JNDI name.
          */
-        String JNDI_NAME = "jndiName"; //$NON-NLS-1$
+        String JNDI_NAME = "jndiName";
 
         /**
          * The source translator name.
          */
-        String TRANSLATOR_NAME = "translatorName"; //$NON-NLS-1$
+        String TRANSLATOR_NAME = "translatorName";
 
     }
 

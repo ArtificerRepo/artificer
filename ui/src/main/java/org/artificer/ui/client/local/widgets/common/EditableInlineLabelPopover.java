@@ -64,9 +64,9 @@ public class EditableInlineLabelPopover extends Composite implements IMouseInOut
      */
     public void setSupportsRemove(boolean flag) {
         if (flag) {
-            remove.getElement().removeClassName("hide"); //$NON-NLS-1$
+            remove.getElement().removeClassName("hide");
         } else {
-            remove.getElement().addClassName("hide"); //$NON-NLS-1$
+            remove.getElement().addClassName("hide");
         }
     }
 
@@ -76,9 +76,9 @@ public class EditableInlineLabelPopover extends Composite implements IMouseInOut
      */
     public void setSupportsEdit(boolean flag) {
         if (flag) {
-            edit.getElement().removeClassName("hide"); //$NON-NLS-1$
+            edit.getElement().removeClassName("hide");
         } else {
-            edit.getElement().addClassName("hide"); //$NON-NLS-1$
+            edit.getElement().addClassName("hide");
         }
     }
 
@@ -92,7 +92,7 @@ public class EditableInlineLabelPopover extends Composite implements IMouseInOut
      */
     public void showOver(Element element) {
         rootPanel.add(this);
-        getElement().removeClassName("hide"); //$NON-NLS-1$
+        getElement().removeClassName("hide");
         positionOver(getElement(), element);
         registration = Window.addWindowScrollHandler(new ScrollHandler() {
             @Override

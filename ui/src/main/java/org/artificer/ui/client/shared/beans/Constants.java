@@ -21,7 +21,7 @@ package org.artificer.ui.client.shared.beans;
  */
 public class Constants {
 
-    public static final String SORT_COLID_NAME = "name"; //$NON-NLS-1$
-    public static final String SORT_COLID_MODIFIED_ON = "lastModifiedTimestamp"; //$NON-NLS-1$
+    public static final String SORT_COLID_NAME = "name";
+    public static final String SORT_COLID_MODIFIED_ON = "lastModifiedTimestamp";
 
 }

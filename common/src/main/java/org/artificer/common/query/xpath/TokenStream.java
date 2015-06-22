@@ -46,7 +46,7 @@ public class TokenStream {
 	 */
 	public void addToken(String value, TokenType type) {
 		if (tokens == null) {
-			throw new RuntimeException(Messages.i18n.format("TOKEN_STREAM_ALREADY_BUILT")); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("TOKEN_STREAM_ALREADY_BUILT"));
 		}
 		tokens.add(new Token(type, value));
 	}
@@ -56,7 +56,7 @@ public class TokenStream {
 	 */
 	public TokenStream build() {
 		if (tokens == null) {
-			throw new RuntimeException(Messages.i18n.format("TOKEN_STREAM_ALREADY_BUILT_2")); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("TOKEN_STREAM_ALREADY_BUILT_2"));
 		}
 		stream = tokens.toArray(new Token[tokens.size()]);
 		tokens = null;
@@ -209,8 +209,8 @@ public class TokenStream {
 			boolean first = true;
 			for (Token token : this.stream) {
 				if (!first) {
-					builder.append(" "); //$NON-NLS-1$
-					pbuilder.append(" "); //$NON-NLS-1$
+					builder.append(" ");
+					pbuilder.append(" ");
 				} else {
 					first = false;
 				}
@@ -225,7 +225,7 @@ public class TokenStream {
 				count++;
 			}
 		}
-		return builder.toString() + "\n" + pbuilder.toString(); //$NON-NLS-1$
+		return builder.toString() + "\n" + pbuilder.toString();
 	}
 
 }

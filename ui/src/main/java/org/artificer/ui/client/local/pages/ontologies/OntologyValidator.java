@@ -70,8 +70,8 @@ public class OntologyValidator {
         String id = bean.getId();
         if (classAlreadyExists(id, getOntology().getRootClasses())) {
             notificationService.sendWarningNotification(
-                    i18n.format("ontology-validator.edit-error.title"), //$NON-NLS-1$
-                    i18n.format("ontology-validator.edit-error.message", bean.getId())); //$NON-NLS-1$
+                    i18n.format("ontology-validator.edit-error.title"),
+                    i18n.format("ontology-validator.edit-error.message", bean.getId()));
             return false;
         }
         return true;

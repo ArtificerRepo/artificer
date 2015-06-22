@@ -57,7 +57,7 @@ public class JavaRelationshipSource extends CriteriaQueryRelationshipSource {
     
     @Override
     protected void notFound() {
-        LOGGER.debug(Messages.i18n.format("NO_JAVA_CLASS", packageName + "." + shortName)); //$NON-NLS-1$ //$NON-NLS-2$
+        LOGGER.debug(Messages.i18n.format("NO_JAVA_CLASS", packageName + "." + shortName));
     }
 
 }

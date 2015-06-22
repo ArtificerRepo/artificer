@@ -58,7 +58,7 @@ public class ArtificerArchive implements Serializable {
 			if (workDir != null && workDir.exists()) {
 				try { FileUtils.deleteDirectory(workDir); } catch (IOException e1) { }
 			}
-			throw new ArtificerArchiveException(Messages.i18n.format("FAILED_TO_CREATE_WORK_DIR"), e); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("FAILED_TO_CREATE_WORK_DIR"), e);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class ArtificerArchive implements Serializable {
 			if (this.workDir != null) {
 				try { FileUtils.deleteDirectory(this.workDir); } catch (IOException e1) { }
 			}
-			throw new ArtificerArchiveException(Messages.i18n.format("FAILED_TO_UNPACK_ARCHIVE_TO_WORK_DIR"), e); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("FAILED_TO_UNPACK_ARCHIVE_TO_WORK_DIR"), e);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ArtificerArchive implements Serializable {
 		this.shouldDeleteOriginalFile = true;
 
 		try {
-			this.originalFile = File.createTempFile("s-ramp-archive", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+			this.originalFile = File.createTempFile("s-ramp-archive", ".zip");
 			copyZipStream(input, this.originalFile);
 			ArchiveUtils.unpackToWorkDir(this.originalFile, this.workDir);
 		} catch (IOException e) {
@@ -104,7 +104,7 @@ public class ArtificerArchive implements Serializable {
 			if (this.originalFile != null && this.originalFile.exists()) {
 				this.originalFile.delete();
 			}
-			throw new ArtificerArchiveException(Messages.i18n.format("FAILED_TO_UNPACK_ARCHIVE_TO_WORK_DIR"), e); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("FAILED_TO_UNPACK_ARCHIVE_TO_WORK_DIR"), e);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class ArtificerArchive implements Serializable {
 	 * @throws IOException
 	 */
 	private static File createWorkDir() throws IOException {
-		File tempFile = File.createTempFile("s-ramp-archive", ".work"); //$NON-NLS-1$ //$NON-NLS-2$
+		File tempFile = File.createTempFile("s-ramp-archive", ".work");
 		tempFile.delete();
 		tempFile.mkdir();
 		return tempFile;
@@ -168,7 +168,7 @@ public class ArtificerArchive implements Serializable {
 	 * @throws ArtificerArchiveException
 	 */
 	public Collection<ArtificerArchiveEntry> getEntries() throws ArtificerArchiveException {
-		Collection<File> files = FileUtils.listFiles(workDir, new String[] { "atom" }, true); //$NON-NLS-1$
+		Collection<File> files = FileUtils.listFiles(workDir, new String[] { "atom" }, true);
 		Collection<ArtificerArchiveEntry> entries = new ArrayList<ArtificerArchiveEntry>(files.size());
 		for (File metaDataFile : files) {
 			String metaDataAbsPath = metaDataFile.getAbsolutePath();
@@ -205,13 +205,13 @@ public class ArtificerArchive implements Serializable {
 	 */
 	public void addEntry(String path, BaseArtifactType metaData, InputStream content) throws ArtificerArchiveException {
 		if (path == null)
-			throw new ArtificerArchiveException(Messages.i18n.format("INVALID_ENTRY_PATH")); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("INVALID_ENTRY_PATH"));
 		if (metaData == null)
-			throw new ArtificerArchiveException(Messages.i18n.format("MISSING_META_DATA")); //$NON-NLS-1$
-		File metaDataFile = new File(this.workDir, path + ".atom"); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("MISSING_META_DATA"));
+		File metaDataFile = new File(this.workDir, path + ".atom");
 		File contentFile = new File(this.workDir, path);
 		if (metaDataFile.exists())
-			throw new ArtificerArchiveException(Messages.i18n.format("ARCHIVE_ALREADY_EXISTS")); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("ARCHIVE_ALREADY_EXISTS"));
 		// Create any required parent directories
 		metaDataFile.getParentFile().mkdirs();
 		if (content != null)
@@ -232,9 +232,9 @@ public class ArtificerArchive implements Serializable {
 	 */
 	public void updateEntry(ArtificerArchiveEntry entry, InputStream content) throws ArtificerArchiveException {
 		if (entry.getPath() == null)
-			throw new ArtificerArchiveException(Messages.i18n.format("INVALID_ENTRY_PATH")); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("INVALID_ENTRY_PATH"));
 		File contentFile = new File(this.workDir, entry.getPath());
-		File metaDataFile = new File(this.workDir, entry.getPath() + ".atom"); //$NON-NLS-1$
+		File metaDataFile = new File(this.workDir, entry.getPath() + ".atom");
 
 		if (content != null)
 			writeContent(contentFile, content);
@@ -259,7 +259,7 @@ public class ArtificerArchive implements Serializable {
 			outStream = new FileOutputStream(workPath);
 			IOUtils.copy(content, outStream);
 		} catch (Throwable t) {
-			throw new ArtificerArchiveException(Messages.i18n.format("ERROR_WRITING_CONTENT"), t); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("ERROR_WRITING_CONTENT"), t);
 		} finally {
 			IOUtils.closeQuietly(content);
 			IOUtils.closeQuietly(outStream);
@@ -277,7 +277,7 @@ public class ArtificerArchive implements Serializable {
 		try {
 			File archiveFile = null;
 			try {
-				archiveFile = File.createTempFile("artificer-archive", ".sramp"); //$NON-NLS-1$ //$NON-NLS-2$
+				archiveFile = File.createTempFile("artificer-archive", ".sramp");
 				FileOutputStream outputStream = FileUtils.openOutputStream(archiveFile);
 				ZipOutputStream zipOutputStream = null;
 				try {
@@ -298,7 +298,7 @@ public class ArtificerArchive implements Serializable {
 			}
 			return archiveFile;
 		} catch (Throwable t) {
-			throw new ArtificerArchiveException(Messages.i18n.format("ERROR_PACKING_ARCHIVE"), t); //$NON-NLS-1$
+			throw new ArtificerArchiveException(Messages.i18n.format("ERROR_PACKING_ARCHIVE"), t);
 		}
 	}
 
@@ -329,7 +329,7 @@ public class ArtificerArchive implements Serializable {
 		}
 
 		// Store the meta-data in the ZIP
-		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath() + ".atom")); //$NON-NLS-1$
+		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath() + ".atom"));
 		try {
 			ArtificerArchiveJaxbUtils.writeMetaData(zipOutputStream, entry.getMetaData());
 		} finally {
@@ -344,7 +344,7 @@ public class ArtificerArchive implements Serializable {
 	 */
 	public ArtificerArchiveEntry getEntry(String archivePath) {
 		File contentFile = new File(this.workDir, archivePath);
-		File metaDataFile = new File(this.workDir, archivePath + ".atom"); //$NON-NLS-1$
+		File metaDataFile = new File(this.workDir, archivePath + ".atom");
 		ArtificerArchiveEntry rval = null;
 		if (metaDataFile.exists()) {
 			rval = new ArtificerArchiveEntry(archivePath, metaDataFile, contentFile);
@@ -358,7 +358,7 @@ public class ArtificerArchive implements Serializable {
 	 * @return true if an entry exists at the path
 	 */
 	public boolean containsEntry(String archivePath) {
-		File metaDataFile = new File(this.workDir, archivePath + ".atom"); //$NON-NLS-1$
+		File metaDataFile = new File(this.workDir, archivePath + ".atom");
 		return metaDataFile.exists();
 	}
 
@@ -368,7 +368,7 @@ public class ArtificerArchive implements Serializable {
 	 * @return true if an entry existed and was removed
 	 */
 	public boolean removeEntry(String archivePath) {
-		File metaDataFile = new File(this.workDir, archivePath + ".atom"); //$NON-NLS-1$
+		File metaDataFile = new File(this.workDir, archivePath + ".atom");
 		File contentFile = new File(this.workDir, archivePath);
 		if (metaDataFile.isFile()) {
 			metaDataFile.delete();

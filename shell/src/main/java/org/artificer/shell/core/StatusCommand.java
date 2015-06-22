@@ -42,22 +42,22 @@ public class StatusCommand extends AbstractCommand {
 		QueryResultSet feed = context(commandInvocation).getCurrentArtifactFeed();
 
 		if (client == null) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status1")); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status1"));
 		} else {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status2", client.getEndpoint())); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status2", client.getEndpoint()));
 		}
 
 		if (artifact == null) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status3")); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status3"));
 		} else {
 			ArtifactType type = ArtifactType.valueOf(artifact);
-			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status4", artifact.getName(), type.getType())); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status4", artifact.getName(), type.getType()));
 		}
 
 		if (feed == null) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status5")); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status5"));
 		} else {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status6", feed.size())); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Status.Status6", feed.size()));
 		}
 
         return CommandResult.SUCCESS;

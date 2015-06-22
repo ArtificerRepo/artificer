@@ -35,9 +35,9 @@ public class Version {
      * Loads the version info from version.properties.
      */
     private void load() {
-        URL url = Version.class.getResource("version.properties"); //$NON-NLS-1$
+        URL url = Version.class.getResource("version.properties");
         if (url == null) {
-            this.versionString = "Unknown"; //$NON-NLS-1$
+            this.versionString = "Unknown";
             this.versionDate = new Date().toString();
         } else {
             InputStream is = null;
@@ -45,8 +45,8 @@ public class Version {
             try {
                 is = url.openStream();
                 props.load(is);
-                this.versionString = props.getProperty("version", "Unknown"); //$NON-NLS-1$ //$NON-NLS-2$
-                this.versionDate = props.getProperty("date", new Date().toString()); //$NON-NLS-1$
+                this.versionString = props.getProperty("version", "Unknown");
+                this.versionDate = props.getProperty("date", new Date().toString());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {

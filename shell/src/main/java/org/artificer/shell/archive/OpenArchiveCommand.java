@@ -59,7 +59,7 @@ public class OpenArchiveCommand extends AbstractArchiveCommand {
 
         ArtificerArchive archive = new ArtificerArchive(archiveFile);
         context(commandInvocation).setCurrentArchive(archive);
-        commandInvocation.getShell().out().println(Messages.i18n.format("OpenArchive.Opened", archiveFile.getCanonicalPath())); //$NON-NLS-1$
+        commandInvocation.getShell().out().println(Messages.i18n.format("OpenArchive.Opened", archiveFile.getCanonicalPath()));
         return CommandResult.SUCCESS;
 	}
 

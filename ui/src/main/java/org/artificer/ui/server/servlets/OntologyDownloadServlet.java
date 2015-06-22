@@ -68,11 +68,11 @@ public class OntologyDownloadServlet extends AbstractDownloadServlet {
         HttpServletResponse httpResponse = resp;
         try {
             ArtificerAtomApiClient client = ArtificerApiClientAccessor.getClient();
-            String uuid = req.getParameter("uuid"); //$NON-NLS-1$
+            String uuid = req.getParameter("uuid");
             if (StringUtils.isNotEmpty(uuid)) {
                 doDownloadContent(httpResponse, client, uuid);
             } else {
-                throw new Exception(Messages.i18n.format("OntologyDownloadServlet.no.uuid.param")); //$NON-NLS-1$
+                throw new Exception(Messages.i18n.format("OntologyDownloadServlet.no.uuid.param"));
             }
 
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class OntologyDownloadServlet extends AbstractDownloadServlet {
 
         // Set the content-type
 
-        String contentType = "application/rdf+xml"; //$NON-NLS-1$
+        String contentType = "application/rdf+xml";
         RDF ontologyRDF=client.getOntology(uuid);
         StringWriter writer=new StringWriter();
         JAXBContext jaxbContext = JAXBContext.newInstance(RDF.class);
@@ -110,17 +110,17 @@ public class OntologyDownloadServlet extends AbstractDownloadServlet {
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         jaxbMarshaller.marshal(ontologyRDF, writer);
         String content = writer.getBuffer().toString();
-        ontologyContent = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
+        ontologyContent = new ByteArrayInputStream(content.getBytes("UTF-8"));
         // Set the content-size
-        httpResponse.setHeader("Content-Size", content.getBytes().length + ""); //$NON-NLS-1$ //$NON-NLS-2$
+        httpResponse.setHeader("Content-Size", content.getBytes().length + "");
         // Set the content-disposition
         String base = ontologyRDF.getOtherAttributes().get(
-                new QName("http://www.w3.org/XML/1998/namespace", "base")); //$NON-NLS-1$ //$NON-NLS-2$
-        String name = "sramp-ontology.owl"; //$NON-NLS-1$
-        if (base.endsWith(".owl")) { //$NON-NLS-1$
-            name = base.substring(base.lastIndexOf("/") + 1); //$NON-NLS-1$
+                new QName("http://www.w3.org/XML/1998/namespace", "base"));
+        String name = "sramp-ontology.owl";
+        if (base.endsWith(".owl")) {
+            name = base.substring(base.lastIndexOf("/") + 1);
         }
-        String disposition = "attachment; filename=\"" + name + "\""; //$NON-NLS-1$ //$NON-NLS-2$
+        String disposition = "attachment; filename=\"" + name + "\"";
         super.doDownloadContent(ontologyContent, contentType, disposition, httpResponse);
 
     }

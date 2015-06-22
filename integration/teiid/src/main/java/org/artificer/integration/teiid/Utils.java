@@ -26,7 +26,7 @@ import org.artificer.common.ArtificerModelUtils;
  */
 public final class Utils {
 
-    private static final String ELEMENT_QUERY_PATTERN = "./%s"; //$NON-NLS-1$
+    private static final String ELEMENT_QUERY_PATTERN = "./%s";
 
     /**
      * Creates a one way relationship. Creates the relationship instance if necessary.

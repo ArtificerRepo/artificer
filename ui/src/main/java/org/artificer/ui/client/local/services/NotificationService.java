@@ -82,7 +82,7 @@ public class NotificationService {
      */
     @PostConstruct
     private void onPostConstruct() {
-        bus.subscribe("NotificationService", new MessageCallback() { //$NON-NLS-1$
+        bus.subscribe("NotificationService", new MessageCallback() {
             @Override
             public void callback(Message message) {
                 NotificationBean notification = message.getValue(NotificationBean.class);
@@ -239,7 +239,7 @@ public class NotificationService {
      */
     protected void sendNotification(NotificationBean notification) {
         MessageBuilder.createMessage()
-            .toSubject("NotificationService") //$NON-NLS-1$
+            .toSubject("NotificationService")
             .signalling()
             .withValue(notification)
             .noErrorHandling()
@@ -354,9 +354,9 @@ public class NotificationService {
      * @param bottom
      */
     private void moveNotificationTo(NotificationWidget widget, int bottom) {
-        int fromBottom = new Integer(widget.getElement().getStyle().getBottom().split("px")[0]).intValue(); //$NON-NLS-1$
+        int fromBottom = new Integer(widget.getElement().getStyle().getBottom().split("px")[0]).intValue();
         int toBottom = bottom;
-        MoveAnimation animation = new MoveAnimation(widget, "bottom", fromBottom, toBottom); //$NON-NLS-1$
+        MoveAnimation animation = new MoveAnimation(widget, "bottom", fromBottom, toBottom);
         animation.run(200);
     }
 
@@ -366,7 +366,7 @@ public class NotificationService {
      */
     private void createNotificationWidget(final Notification notification) {
         NotificationWidget widget = this.notificationWidgetFactory.get();
-        String additionalClass = "growl-dialog-" + notification.getData().getType(); //$NON-NLS-1$
+        String additionalClass = "growl-dialog-" + notification.getData().getType();
         widget.addStyleName(additionalClass);
         widget.setNotificationTitle(notification.getData().getTitle());
         if (notification.getData().getMessageWidget() != null) {
@@ -430,7 +430,7 @@ public class NotificationService {
         int right = NotificationConstants.MARGIN;
         if (relativeTo != null) {
             String relativeTo_bottomStyle = relativeTo.getElement().getStyle().getBottom();
-            int relativeTo_bottom = new Integer(relativeTo_bottomStyle.split("px")[0]).intValue(); //$NON-NLS-1$
+            int relativeTo_bottom = new Integer(relativeTo_bottomStyle.split("px")[0]).intValue();
             bottom = relativeTo_bottom + relativeTo.getOffsetHeight() + NotificationConstants.MARGIN;
         }
 
@@ -438,8 +438,8 @@ public class NotificationService {
         widget.getElement().getStyle().setPosition(Position.FIXED);
         widget.getElement().getStyle().setBottom(Window.getClientHeight() + 100, Unit.PX);
         widget.getElement().getStyle().setRight(right, Unit.PX);
-        widget.getElement().getStyle().setProperty("left", null); //$NON-NLS-1$
-        widget.getElement().getStyle().setProperty("top", null); //$NON-NLS-1$
+        widget.getElement().getStyle().setProperty("left", null);
+        widget.getElement().getStyle().setProperty("top", null);
         widget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
         
         moveNotificationTo(notification.getWidget(), bottom);
@@ -487,8 +487,8 @@ public class NotificationService {
             } else {
                 notification.getWidget().setNotificationMessage(notificationBean.getMessage(), NotificationType.notification);
             }
-            notification.getWidget().removeStyleName("growl-dialog-progress"); //$NON-NLS-1$
-            notification.getWidget().addStyleName("growl-dialog-notification"); //$NON-NLS-1$
+            notification.getWidget().removeStyleName("growl-dialog-progress");
+            notification.getWidget().addStyleName("growl-dialog-notification");
             notification.getAliveTimer().schedule(5000);
 
             resizeNotification(notification.getIndex() + 1);
@@ -521,8 +521,8 @@ public class NotificationService {
                 }
                 notification.getWidget().setNotificationMessage(errorDetails);
             }
-            notification.getWidget().removeStyleName("growl-dialog-progress"); //$NON-NLS-1$
-            notification.getWidget().addStyleName("growl-dialog-error"); //$NON-NLS-1$
+            notification.getWidget().removeStyleName("growl-dialog-progress");
+            notification.getWidget().addStyleName("growl-dialog-error");
 
             resizeNotification(notification.getIndex() + 1);
         }

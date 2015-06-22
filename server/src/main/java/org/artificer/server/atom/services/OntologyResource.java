@@ -92,7 +92,7 @@ public class OntologyResource extends AbstractResource {
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
-        	logError(logger, Messages.i18n.format("ERROR_CREATING_ONTOLOGY"), e); //$NON-NLS-1$
+        	logError(logger, Messages.i18n.format("ERROR_CREATING_ONTOLOGY"), e);
 			throw new ArtificerAtomException(e);
         }
     }
@@ -122,7 +122,7 @@ public class OntologyResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-        	logError(logger, Messages.i18n.format("ERROR_UPDATING_ONTOLOGY", uuid), e); //$NON-NLS-1$
+        	logError(logger, Messages.i18n.format("ERROR_UPDATING_ONTOLOGY", uuid), e);
 			throw new ArtificerAtomException(e);
         }
     }
@@ -149,7 +149,7 @@ public class OntologyResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-        	logError(logger, Messages.i18n.format("ERROR_GETTING_ONTOLOGY", uuid), e); //$NON-NLS-1$
+        	logError(logger, Messages.i18n.format("ERROR_GETTING_ONTOLOGY", uuid), e);
 			throw new ArtificerAtomException(e);
         }
     }
@@ -169,7 +169,7 @@ public class OntologyResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-        	logError(logger, Messages.i18n.format("ERROR_DELETING_ONTOLOGY", uuid), e); //$NON-NLS-1$
+        	logError(logger, Messages.i18n.format("ERROR_DELETING_ONTOLOGY", uuid), e);
 			throw new ArtificerAtomException(e);
         }
     }
@@ -186,7 +186,7 @@ public class OntologyResource extends AbstractResource {
 			List<ArtificerOntology> ontologies = ontologyService.get();
 
 			Feed feed = new Feed();
-			feed.setTitle("S-RAMP Ontology Feed"); //$NON-NLS-1$
+			feed.setTitle("S-RAMP Ontology Feed");
 			feed.setUpdated(new Date());
 
 			for (ArtificerOntology ontology : ontologies) {
@@ -201,7 +201,7 @@ public class OntologyResource extends AbstractResource {
 
 			return feed;
         } catch (Exception e) {
-        	logError(logger, Messages.i18n.format("ERROR_GETTING_ONTOLOGIES"), e); //$NON-NLS-1$
+        	logError(logger, Messages.i18n.format("ERROR_GETTING_ONTOLOGIES"), e);
 			throw new ArtificerAtomException(e);
         }
 	}

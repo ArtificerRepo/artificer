@@ -73,7 +73,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
-            logError(logger, Messages.i18n.format("ERROR_CREATING_STOREDQUERY"), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_CREATING_STOREDQUERY"), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -90,7 +90,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_UPDATING_STOREDQUERY", queryName), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_UPDATING_STOREDQUERY", queryName), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -110,7 +110,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_GETTING_STOREDQUERY", queryName), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_GETTING_STOREDQUERY", queryName), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -123,7 +123,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             List<StoredQuery> storedQueries = queryService.getStoredQueries();
 
             Feed feed = new Feed();
-            feed.setTitle("S-RAMP Stored Queries Feed"); //$NON-NLS-1$
+            feed.setTitle("S-RAMP Stored Queries Feed");
             feed.setUpdated(new Date());
 
             for (StoredQuery storedQuery : storedQueries) {
@@ -132,7 +132,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 
             return feed;
         } catch (Exception e) {
-            logError(logger, Messages.i18n.format("ERROR_GETTING_STOREDQUERIES"), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_GETTING_STOREDQUERIES"), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -161,7 +161,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-            logError(logger, Messages.i18n.format("ERROR_EXECUTING_STOREDQUERY", queryName), e); //$NON-NLS-1$
+            logError(logger, Messages.i18n.format("ERROR_EXECUTING_STOREDQUERY", queryName), e);
             throw new ArtificerAtomException(e);
         }
     }
@@ -176,7 +176,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
-			logError(logger, Messages.i18n.format("ERROR_DELETING_STOREDQUERY", queryName), e); //$NON-NLS-1$
+			logError(logger, Messages.i18n.format("ERROR_DELETING_STOREDQUERY", queryName), e);
 			throw new ArtificerAtomException(e);
 		}
 	}
@@ -187,19 +187,19 @@ public class StoredQueryResource extends AbstractFeedResource {
 //        entry.setPublished();
 //        entry.setUpdated();
         
-        String atomLink = baseUrl + "/s-ramp/query/" + storedQuery.getQueryName(); //$NON-NLS-1$
+        String atomLink = baseUrl + "/s-ramp/query/" + storedQuery.getQueryName();
         
         // self link
         Link linkToSelf = new Link();
         linkToSelf.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-        linkToSelf.setRel("self"); //$NON-NLS-1$
+        linkToSelf.setRel("self");
         linkToSelf.setHref(new URI(atomLink));
         entry.getLinks().add(linkToSelf);
         
         // edit link
         Link linkToEdit = new Link();
         linkToEdit.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-        linkToEdit.setRel("edit"); //$NON-NLS-1$
+        linkToEdit.setRel("edit");
         linkToEdit.setHref(new URI(atomLink));
         entry.getLinks().add(linkToEdit);
         
@@ -208,7 +208,7 @@ public class StoredQueryResource extends AbstractFeedResource {
         Link linkToResults = new Link();
         linkToResults.setType(MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
         linkToResults.setRel(ArtificerAtomConstants.X_S_RAMP_QUERY_RESULTS);
-        linkToResults.setHref(new URI(atomLink + "/results")); //$NON-NLS-1$
+        linkToResults.setHref(new URI(atomLink + "/results"));
         entry.getLinks().add(linkToResults);
         
         return entry;

@@ -131,7 +131,7 @@ public class ArtifactService implements IArtifactService {
         try {
             ArtifactType at = ArtifactType.valueOf(artifactType);
             BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(at, uuid);
-            String response = Messages.i18n.format("ArtifactService.DownloadContent"); //$NON-NLS-1$
+            String response = Messages.i18n.format("ArtifactService.DownloadContent");
             if (ArtificerModelUtils.isDocumentArtifact(artifact)) {
                 DocumentArtifactType doc = (DocumentArtifactType) artifact;
                 if (ArtificerModelUtils.isTextDocumentArtifact(doc) && doc.getContentSize() <= TWO_MEG) {
@@ -141,7 +141,7 @@ public class ArtifactService implements IArtifactService {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         IOUtils.copy(content, baos);
                         // TODO: obey the document's encoding here (if we can find it) but default to UTF-8
-                        response = baos.toString("UTF-8"); //$NON-NLS-1$
+                        response = baos.toString("UTF-8");
                     } finally {
                         IOUtils.closeQuietly(content);
                     }
@@ -316,14 +316,14 @@ public class ArtifactService implements IArtifactService {
         StringBuilder builder = new StringBuilder();
         String endpoint = ArtificerApiClientAccessor.getClient().getEndpoint();
         builder.append(endpoint);
-        if (!endpoint.endsWith("/")) { //$NON-NLS-1$
-            builder.append("/"); //$NON-NLS-1$
+        if (!endpoint.endsWith("/")) {
+            builder.append("/");
         }
         builder.append("s-ramp/");
         builder.append(artifactType.getModel());
-        builder.append("/"); //$NON-NLS-1$
+        builder.append("/");
         builder.append(artifactType.getType());
-        builder.append("/"); //$NON-NLS-1$
+        builder.append("/");
         builder.append(artifact.getUuid());
         return builder.toString();
     }
@@ -334,7 +334,7 @@ public class ArtifactService implements IArtifactService {
      * @param artifactType 
      */
     private String getRepositoryMediaLink(BaseArtifactType artifact, ArtifactType artifactType) {
-        return getRepositoryLink(artifact, artifactType) + "/media"; //$NON-NLS-1$
+        return getRepositoryLink(artifact, artifactType) + "/media";
     }
 
 }

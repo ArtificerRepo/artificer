@@ -70,10 +70,10 @@ public class DeleteCommand extends AbstractCommand {
 
         try {
 			client.deleteArtifact(artifactUuid, artifactType);
-			commandInvocation.getShell().out().println(Messages.i18n.format("Delete.Success", artifactName)); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Delete.Success", artifactName));
 		} catch (Exception e) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Delete.Failure")); //$NON-NLS-1$
-			commandInvocation.getShell().out().println("\t" + e.getMessage()); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("Delete.Failure"));
+			commandInvocation.getShell().out().println("\t" + e.getMessage());
 	        return CommandResult.FAILURE;
 		}
         return CommandResult.SUCCESS;

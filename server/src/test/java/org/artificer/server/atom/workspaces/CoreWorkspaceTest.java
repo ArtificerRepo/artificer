@@ -29,9 +29,9 @@ public class CoreWorkspaceTest extends AbstractWorkspaceTest {
     @Test
     public void testWorkspace() throws Exception {
         AppService appService = new AppService();
-        appService.getWorkspace().add(new CoreWorkspace("http://example.org")); //$NON-NLS-1$
+        appService.getWorkspace().add(new CoreWorkspace("http://example.org"));
         String actual = marshall(appService);
-        String expected = getExpectedWorkspaceXML("core"); //$NON-NLS-1$
+        String expected = getExpectedWorkspaceXML("core");
 
         XMLAssert.assertXMLEqual(expected, actual);
     }

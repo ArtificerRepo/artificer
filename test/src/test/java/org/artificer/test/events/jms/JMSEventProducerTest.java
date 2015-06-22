@@ -72,7 +72,7 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        System.setProperty(ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_ENABLED, "true"); //$NON-NLS-1$
+        System.setProperty(ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_ENABLED, "true");
     }
     
     @Test
@@ -88,9 +88,9 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
         ArtificerAtomApiClient client = client();
         ExtendedArtifactType artifact = new ExtendedArtifactType();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setExtendedType("FooArtifactType"); //$NON-NLS-1$
-        artifact.setName("Foo"); //$NON-NLS-1$
-        artifact.setDescription("created"); //$NON-NLS-1$
+        artifact.setExtendedType("FooArtifactType");
+        artifact.setName("Foo");
+        artifact.setDescription("created");
         ExtendedArtifactType persistedArtifact = (ExtendedArtifactType) client.createArtifact(artifact);
         
         // update

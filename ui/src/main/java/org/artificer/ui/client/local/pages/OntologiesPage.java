@@ -125,7 +125,7 @@ public class OntologiesPage extends AbstractPage {
 
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification(i18n.format("ontologies-page.error-getting-ontologies"), error); //$NON-NLS-1$
+                notificationService.sendErrorNotification(i18n.format("ontologies-page.error-getting-ontologies"), error);
             }
         });
     }
@@ -179,20 +179,20 @@ public class OntologiesPage extends AbstractPage {
      */
     protected void onNewOntology(final OntologyBean value) {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
-                i18n.format("new-ontology.creating.title"), //$NON-NLS-1$
-                i18n.format("new-ontology.creating.message")); //$NON-NLS-1$
+                i18n.format("new-ontology.creating.title"),
+                i18n.format("new-ontology.creating.message"));
         ontologyService.add(value, new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        i18n.format("new-ontology.created.title"), //$NON-NLS-1$
-                        i18n.format("new-ontology.created.message", value.getId())); //$NON-NLS-1$
+                        i18n.format("new-ontology.created.title"),
+                        i18n.format("new-ontology.created.message", value.getId()));
                 doOntologyList();
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        i18n.format("new-ontology.created-error.title"), //$NON-NLS-1$
+                        i18n.format("new-ontology.created-error.title"),
                         error);
             }
         });
@@ -207,7 +207,7 @@ public class OntologiesPage extends AbstractPage {
     protected void onOntologyClicked(OntologySummaryBean ontology) {
         if (ontologySummaryPanel.getSelectedOntology() != null) {
             if (editor.isDirty()) {
-                Window.alert(i18n.format("ontologies-page.editor-is-dirty")); //$NON-NLS-1$
+                Window.alert(i18n.format("ontologies-page.editor-is-dirty"));
                 return;
             }
             reloadOntologyEditor(ontology.getUuid());
@@ -233,7 +233,7 @@ public class OntologiesPage extends AbstractPage {
             @Override
             public void onError(Throwable error) {
                 notificationService.sendErrorNotification(
-                        i18n.format("ontologies-page.error-loading-ontology"), error); //$NON-NLS-1$
+                        i18n.format("ontologies-page.error-loading-ontology"), error);
                 editor.clear();
             }
         });

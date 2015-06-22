@@ -42,7 +42,7 @@ import org.artificer.common.visitors.HierarchicalArtifactVisitor;
  */
 public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisitor {
 
-    protected String baseUrl = ""; //$NON-NLS-1$
+    protected String baseUrl = "";
 	protected Entry atomEntry;
 	protected Exception failure;
 	protected Set<String> propertyNames;
@@ -106,7 +106,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisit
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
 			Entry entry = new Entry();
 			if (artifact.getUuid() != null)
-				entry.setId(new URI("urn:uuid:" + artifact.getUuid())); //$NON-NLS-1$
+				entry.setId(new URI("urn:uuid:" + artifact.getUuid()));
 			if (artifact.getLastModifiedTimestamp() != null)
 				entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 			if (artifact.getName() != null)
@@ -119,29 +119,29 @@ public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisit
 				entry.setSummary(artifact.getDescription());
 			entry.getExtensionAttributes().put(ArtificerConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifactType.isDerived()));
 
-			atomLink = baseUrl + "/s-ramp/" //$NON-NLS-1$
-					+ artifactType.getModel() + "/" //$NON-NLS-1$
-					+ artifactType.getType() + "/" + artifact.getUuid(); //$NON-NLS-1$
-			mediaLink = atomLink + "/media"; //$NON-NLS-1$
+			atomLink = baseUrl + "/s-ramp/"
+					+ artifactType.getModel() + "/"
+					+ artifactType.getType() + "/" + artifact.getUuid();
+			mediaLink = atomLink + "/media";
 
 			// Self can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToSelf = new Link();
 			linkToSelf.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-			linkToSelf.setRel("self"); //$NON-NLS-1$
+			linkToSelf.setRel("self");
 			linkToSelf.setHref(new URI(atomLink));
 			entry.getLinks().add(linkToSelf);
 
 			// Link to edit-media can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/edit-media
 			Link linkToEditMedia = new Link();
 			linkToEditMedia.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-			linkToEditMedia.setRel("edit-media"); //$NON-NLS-1$
+			linkToEditMedia.setRel("edit-media");
 			linkToEditMedia.setHref(new URI(mediaLink));
 			entry.getLinks().add(linkToEditMedia);
 
 			// Link to edit can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToEdit = new Link();
 			linkToEdit.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-			linkToEdit.setRel("edit"); //$NON-NLS-1$
+			linkToEdit.setRel("edit");
 			linkToEdit.setHref(new URI(atomLink));
 			entry.getLinks().add(linkToEdit);
 
@@ -176,7 +176,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisit
 			if (includeArtifact()) {
 				Artifact artifactWrapper = new Artifact();
 				BaseArtifactType includedArtifact = createIncludedArtifact(artifact);
-				Method method = Artifact.class.getMethod("set" + includedArtifact.getClass().getSimpleName(), includedArtifact.getClass()); //$NON-NLS-1$
+				Method method = Artifact.class.getMethod("set" + includedArtifact.getClass().getSimpleName(), includedArtifact.getClass());
 				method.invoke(artifactWrapper, includedArtifact);
 				entry.setAnyOtherJAXBObject(artifactWrapper);
 			}
@@ -202,7 +202,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisit
                 // Only for Document style artifacts.
                 Link linkToAlternate = new Link();
                 linkToAlternate.setType(ctVisitor.getContentType());
-                linkToAlternate.setRel("alternate"); //$NON-NLS-1$
+                linkToAlternate.setRel("alternate");
                 linkToAlternate.setHref(new URI(mediaLink));
                 atomEntry.getLinks().add(linkToAlternate);
             }

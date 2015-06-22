@@ -222,14 +222,14 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 
 		switch (status) {
 			case INTERNAL_SERVER_ERROR:
-				throw new Exception(Messages.i18n.format("UNKNOWN_ARTIFICER_ERROR")); //$NON-NLS-1$
+				throw new Exception(Messages.i18n.format("UNKNOWN_ARTIFICER_ERROR"));
 			case NOT_FOUND:
 			case UNSUPPORTED_MEDIA_TYPE:
-				throw new ArtificerAtomException(Messages.i18n.format("ENDPOINT_NOT_FOUND")); //$NON-NLS-1$
+				throw new ArtificerAtomException(Messages.i18n.format("ENDPOINT_NOT_FOUND"));
 			case FORBIDDEN:
-				throw new ArtificerAtomException(Messages.i18n.format("AUTHORIZATION_FAILED")); //$NON-NLS-1$
+				throw new ArtificerAtomException(Messages.i18n.format("AUTHORIZATION_FAILED"));
 			case UNAUTHORIZED:
-				throw new ArtificerAtomException(Messages.i18n.format("AUTHENTICATION_FAILED")); //$NON-NLS-1$
+				throw new ArtificerAtomException(Messages.i18n.format("AUTHENTICATION_FAILED"));
 		}
 	}
 

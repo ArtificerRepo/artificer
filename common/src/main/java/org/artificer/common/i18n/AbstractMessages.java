@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
  */
 public class AbstractMessages {
 
-    public static final List<String> FORMATS = Collections.unmodifiableList(Arrays.asList("java.properties")); //$NON-NLS-1$
+    public static final List<String> FORMATS = Collections.unmodifiableList(Arrays.asList("java.properties"));
 
     private static Map<String, ResourceBundle> bundles = new HashMap<String, ResourceBundle>();
 
@@ -73,7 +73,7 @@ public class AbstractMessages {
      */
     private String getBundleKey() {
         Locale locale = getLocale();
-        return clazz.getName() + "::" + locale.toString(); //$NON-NLS-1$
+        return clazz.getName() + "::" + locale.toString();
     }
 
     /**
@@ -83,7 +83,7 @@ public class AbstractMessages {
     private ResourceBundle loadBundle() {
         String pkg = clazz.getPackage().getName();
         Locale locale = getLocale();
-        return PropertyResourceBundle.getBundle(pkg + ".messages", locale, clazz.getClassLoader(), new ResourceBundle.Control() { //$NON-NLS-1$
+        return PropertyResourceBundle.getBundle(pkg + ".messages", locale, clazz.getClassLoader(), new ResourceBundle.Control() {
             @Override
             public List<String> getFormats(String baseName) {
                 return FORMATS;
@@ -115,7 +115,7 @@ public class AbstractMessages {
             String msg = bundle.getString(key);
             return MessageFormat.format(msg, params);
         } else {
-            return MessageFormat.format("!!{0}!!", key); //$NON-NLS-1$
+            return MessageFormat.format("!!{0}!!", key);
         }
     }
 

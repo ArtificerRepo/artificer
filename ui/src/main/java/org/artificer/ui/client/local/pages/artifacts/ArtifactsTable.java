@@ -66,12 +66,12 @@ public class ArtifactsTable extends SortableTemplatedWidgetTable {
 
     public void addRow(final ArtifactSummaryBean artifactSummaryBean, Widget extraColumnWidget) {
         int rowIdx = this.rowElements.size();
-        DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy"); //$NON-NLS-1$
+        DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy");
 
-        Anchor name = toDetailsPageLinkFactory.get("uuid", artifactSummaryBean.getUuid()); //$NON-NLS-1$
+        Anchor name = toDetailsPageLinkFactory.get("uuid", artifactSummaryBean.getUuid());
         name.setText(artifactSummaryBean.getName());
         InlineLabel type = new InlineLabel(artifactSummaryBean.getType());
-        InlineLabel derived = new InlineLabel(artifactSummaryBean.isDerived() ? "true" : ""); //$NON-NLS-1$ //$NON-NLS-2$
+        InlineLabel derived = new InlineLabel(artifactSummaryBean.isDerived() ? "true" : "");
         InlineLabel modified = new InlineLabel(format.format(artifactSummaryBean.getUpdatedOn()));
 
         add(rowIdx, 0, name);

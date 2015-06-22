@@ -28,14 +28,14 @@ import org.artificer.ui.server.api.ArtificerApiClientAccessor;
  */
 public class ArtificerUIConfig {
 
-    public static final String ARTIFICER_UI_CONFIG_FILE_NAME = "artificer-ui.config.file.name"; //$NON-NLS-1$
-    public static final String ARTIFICER_UI_CONFIG_FILE_REFRESH = "artificer-ui.config.file.refresh"; //$NON-NLS-1$
+    public static final String ARTIFICER_UI_CONFIG_FILE_NAME = "artificer-ui.config.file.name";
+    public static final String ARTIFICER_UI_CONFIG_FILE_REFRESH = "artificer-ui.config.file.refresh";
 
-    public static final String ARTIFICER_API_ENDPOINT = "artificer-ui.atom-api.endpoint"; //$NON-NLS-1$
-    public static final String ARTIFICER_API_VALIDATING = "artificer-ui.atom-api.validating"; //$NON-NLS-1$
-    public static final String ARTIFICER_API_AUTH_PROVIDER = "artificer-ui.atom-api.authentication.provider"; //$NON-NLS-1$
-    public static final String ARTIFICER_API_BASIC_AUTH_USER = "artificer-ui.atom-api.authentication.basic.user"; //$NON-NLS-1$
-    public static final String ARTIFICER_API_BASIC_AUTH_PASS = "artificer-ui.atom-api.authentication.basic.password"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_ENDPOINT = "artificer-ui.atom-api.endpoint";
+    public static final String ARTIFICER_API_VALIDATING = "artificer-ui.atom-api.validating";
+    public static final String ARTIFICER_API_AUTH_PROVIDER = "artificer-ui.atom-api.authentication.provider";
+    public static final String ARTIFICER_API_BASIC_AUTH_USER = "artificer-ui.atom-api.authentication.basic.user";
+    public static final String ARTIFICER_API_BASIC_AUTH_PASS = "artificer-ui.atom-api.authentication.basic.password";
 
     public static Configuration config;
     static {
@@ -48,12 +48,12 @@ public class ArtificerUIConfig {
 
         config = ConfigurationFactory.createConfig(
                 configFile,
-                "artificer-ui.properties", //$NON-NLS-1$
+                "artificer-ui.properties",
                 refreshDelay,
-                "/META-INF/config/org.artificer.ui.server.api.properties", //$NON-NLS-1$
+                "/META-INF/config/org.artificer.ui.server.api.properties",
                 ArtificerApiClientAccessor.class);
-        String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/artificer-server"; //$NON-NLS-1$
-        System.out.println(Messages.i18n.format("Config.Loaded", ArtificerUIConfig.config.getString(ARTIFICER_API_ENDPOINT, defaultSrampApiEndpoint))); //$NON-NLS-1$
+        String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/artificer-server";
+        System.out.println(Messages.i18n.format("Config.Loaded", ArtificerUIConfig.config.getString(ARTIFICER_API_ENDPOINT, defaultSrampApiEndpoint)));
     }
 
     /**

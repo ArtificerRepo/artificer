@@ -69,7 +69,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	public void visit(AndExpr node) {
 		node.getLeft().accept(this);
 		if (node.getRight() != null) {
-			this.builder.append(" and "); //$NON-NLS-1$
+			this.builder.append(" and ");
 			node.getRight().accept(this);
 		}
 	}
@@ -101,9 +101,9 @@ public class XPathSerializationVisitor implements XPathVisitor {
 		if (node.getSubartifactSet() != null) {
 			node.getSubartifactSet().accept(this);
 		} else if (node.getExpr() != null) {
-			this.builder.append("("); //$NON-NLS-1$
+			this.builder.append("(");
 			node.getExpr().accept(this);
-			this.builder.append(")"); //$NON-NLS-1$
+			this.builder.append(")");
 		} else {
 			node.getLeft().accept(this);
 			if (node.getOperator() != null) {
@@ -140,7 +140,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	@Override
 	public void visit(FunctionCall node) {
 		QName functionName = node.getFunctionName();
-		if (functionName.getPrefix() != null && functionName.getPrefix().trim().length() > 0 && !"s-ramp".equals(functionName.getPrefix())) { //$NON-NLS-1$
+		if (functionName.getPrefix() != null && functionName.getPrefix().trim().length() > 0 && !"s-ramp".equals(functionName.getPrefix())) {
 			this.builder.append(functionName.getPrefix());
 			this.builder.append(':');
 		}
@@ -150,7 +150,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 		while (iterator.hasNext()) {
 			iterator.next().accept(this);
 			if (iterator.hasNext())
-				this.builder.append(", "); //$NON-NLS-1$
+				this.builder.append(", ");
 		}
 		this.builder.append(')');
 	}
@@ -160,7 +160,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(LocationPath node) {
-		this.builder.append("/s-ramp"); //$NON-NLS-1$
+		this.builder.append("/s-ramp");
 		if (node.getArtifactModel() != null) {
 			this.builder.append('/');
 			this.builder.append(node.getArtifactModel());
@@ -179,7 +179,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	public void visit(OrExpr node) {
 		node.getLeft().accept(this);
 		if (node.getRight() != null) {
-			this.builder.append(" or "); //$NON-NLS-1$
+			this.builder.append(" or ");
 			node.getRight().accept(this);
 		}
 	}
@@ -198,13 +198,13 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	@Override
 	public void visit(PrimaryExpr node) {
 		if (node.getLiteral() != null) {
-			this.builder.append("'"); //$NON-NLS-1$
-			this.builder.append(node.getLiteral().replace("'", "''")); //$NON-NLS-1$ //$NON-NLS-2$
-			this.builder.append("'"); //$NON-NLS-1$
+			this.builder.append("'");
+			this.builder.append(node.getLiteral().replace("'", "''"));
+			this.builder.append("'");
 		} else if (node.getNumber() != null) {
 			this.builder.append(node.getNumber().toString());
 		} else if (node.getPropertyQName() != null) {
-			this.builder.append("$"); //$NON-NLS-1$
+			this.builder.append("$");
 			appendQName(node.getPropertyQName());
 		} else if (node.getXpathValue() != null) {
             this.builder.append(node.getXpathValue());
@@ -218,7 +218,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	private void appendQName(QName qname) {
 		if (qname.getPrefix() != null && qname.getPrefix().trim().length() > 0) {
 			this.builder.append(qname.getPrefix());
-			this.builder.append(":"); //$NON-NLS-1$
+			this.builder.append(":");
 		}
 		this.builder.append(qname.getLocalPart());
 	}

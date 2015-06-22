@@ -67,23 +67,23 @@ public class BatchResourceTest extends AbstractResourceTest {
 		try {
 			// Create a test s-ramp archive
 			archive = new ArtificerArchive();
-			xsd1ContentStream = this.getClass().getResourceAsStream("/sample-files/xsd/PO.xsd"); //$NON-NLS-1$
+			xsd1ContentStream = this.getClass().getResourceAsStream("/sample-files/xsd/PO.xsd");
 			BaseArtifactType metaData = new XsdDocument();
 			metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-			metaData.setName("PO.xsd"); //$NON-NLS-1$
-			archive.addEntry("schemas/PO.xsd", metaData, xsd1ContentStream); //$NON-NLS-1$
-			xsd2ContentStream = this.getClass().getResourceAsStream("/sample-files/xsd/XMLSchema.xsd"); //$NON-NLS-1$
+			metaData.setName("PO.xsd");
+			archive.addEntry("schemas/PO.xsd", metaData, xsd1ContentStream);
+			xsd2ContentStream = this.getClass().getResourceAsStream("/sample-files/xsd/XMLSchema.xsd");
 			metaData = new XsdDocument();
 			metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-			metaData.setName("XMLSchema.xsd"); //$NON-NLS-1$
-			metaData.setVersion("1.0"); //$NON-NLS-1$
-			archive.addEntry("schemas/XMLSchema.xsd", metaData, xsd2ContentStream); //$NON-NLS-1$
+			metaData.setName("XMLSchema.xsd");
+			metaData.setVersion("1.0");
+			archive.addEntry("schemas/XMLSchema.xsd", metaData, xsd2ContentStream);
 
 			zipFile = archive.pack();
 			zipStream = FileUtils.openInputStream(zipFile);
 
 			// Now POST the archive to the s-ramp repository (POST to /s-ramp as application/zip)
-			request = clientRequest("/s-ramp"); //$NON-NLS-1$
+			request = clientRequest("/s-ramp");
 			request.body(MediaType.APPLICATION_ZIP, zipStream);
 			ClientResponse<MultipartInput> clientResponse = request.post(MultipartInput.class);
 
@@ -94,7 +94,7 @@ public class BatchResourceTest extends AbstractResourceTest {
 			List<InputPart> parts = response.getParts();
 			Map<String, BaseArtifactType> artyMap = new HashMap<String, BaseArtifactType>();
 			for (InputPart part : parts) {
-				String id = part.getHeaders().getFirst("Content-ID"); //$NON-NLS-1$
+				String id = part.getHeaders().getFirst("Content-ID");
 				HttpResponseBean rbean = part.getBody(HttpResponseBean.class, null);
 				Assert.assertEquals(201, rbean.getCode());
 				Entry entry = (Entry) rbean.getBody();
@@ -102,19 +102,19 @@ public class BatchResourceTest extends AbstractResourceTest {
 				artyMap.put(id, artifact);
 			}
 
-			Assert.assertTrue(artyMap.keySet().contains("<schemas/PO.xsd@package>")); //$NON-NLS-1$
-			Assert.assertTrue(artyMap.keySet().contains("<schemas/XMLSchema.xsd@package>")); //$NON-NLS-1$
+			Assert.assertTrue(artyMap.keySet().contains("<schemas/PO.xsd@package>"));
+			Assert.assertTrue(artyMap.keySet().contains("<schemas/XMLSchema.xsd@package>"));
 
 			// Assertions for artifact 1
-			BaseArtifactType arty = artyMap.get("<schemas/PO.xsd@package>"); //$NON-NLS-1$
+			BaseArtifactType arty = artyMap.get("<schemas/PO.xsd@package>");
 			Assert.assertNotNull(arty);
-			Assert.assertEquals("PO.xsd", arty.getName()); //$NON-NLS-1$
+			Assert.assertEquals("PO.xsd", arty.getName());
 			Assert.assertNull(arty.getVersion());
 
-			arty = artyMap.get("<schemas/XMLSchema.xsd@package>"); //$NON-NLS-1$
+			arty = artyMap.get("<schemas/XMLSchema.xsd@package>");
 			Assert.assertNotNull(arty);
-			Assert.assertEquals("XMLSchema.xsd", arty.getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.0", arty.getVersion()); //$NON-NLS-1$
+			Assert.assertEquals("XMLSchema.xsd", arty.getName());
+			Assert.assertEquals("1.0", arty.getVersion());
 		} finally {
 			IOUtils.closeQuietly(xsd1ContentStream);
 			IOUtils.closeQuietly(xsd2ContentStream);
@@ -125,7 +125,7 @@ public class BatchResourceTest extends AbstractResourceTest {
 
 		// Verify by querying
 		// Do a query using GET with query params
-		request = clientRequest("/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/xsd/XsdDocument");
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		Assert.assertEquals(2, feed.getEntries().size());
@@ -133,8 +133,8 @@ public class BatchResourceTest extends AbstractResourceTest {
 		for (Entry entry : feed.getEntries()) {
 			artyNames.add(entry.getTitle());
 		}
-		Assert.assertTrue(artyNames.contains("PO.xsd")); //$NON-NLS-1$
-		Assert.assertTrue(artyNames.contains("XMLSchema.xsd")); //$NON-NLS-1$
+		Assert.assertTrue(artyNames.contains("PO.xsd"));
+		Assert.assertTrue(artyNames.contains("XMLSchema.xsd"));
 	}
 
 	/**
@@ -162,29 +162,29 @@ public class BatchResourceTest extends AbstractResourceTest {
 			archive = new ArtificerArchive();
 
 			// A new XSD document
-			xsd1ContentStream = this.getClass().getResourceAsStream("/sample-files/xsd/PO.xsd"); //$NON-NLS-1$
+			xsd1ContentStream = this.getClass().getResourceAsStream("/sample-files/xsd/PO.xsd");
 			BaseArtifactType metaData = new XsdDocument();
 			metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 			metaData.setUuid(UUID.randomUUID().toString()); // will be ignored
-			metaData.setName("PO.xsd"); //$NON-NLS-1$
-			archive.addEntry("schemas/PO.xsd", metaData, xsd1ContentStream); //$NON-NLS-1$
+			metaData.setName("PO.xsd");
+			archive.addEntry("schemas/PO.xsd", metaData, xsd1ContentStream);
 			// Update an existing WSDL document (content and meta-data)
-			wsdlContentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/sample-updated.wsdl"); //$NON-NLS-1$
+			wsdlContentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/sample-updated.wsdl");
 			metaData = wsdlDoc;
-			metaData.setVersion("2.0"); //$NON-NLS-1$
-			ArtificerModelUtils.setCustomProperty(metaData, "foo", "bar"); //$NON-NLS-1$ //$NON-NLS-2$
-			archive.addEntry("wsdl/sample.wsdl", metaData, wsdlContentStream); //$NON-NLS-1$
+			metaData.setVersion("2.0");
+			ArtificerModelUtils.setCustomProperty(metaData, "foo", "bar");
+			archive.addEntry("wsdl/sample.wsdl", metaData, wsdlContentStream);
 			// Update an existing XML document (meta-data only)
 			metaData = xmlDoc;
-			metaData.setVersion("3.0"); //$NON-NLS-1$
-			ArtificerModelUtils.setCustomProperty(metaData, "far", "baz"); //$NON-NLS-1$ //$NON-NLS-2$
-			archive.addEntry("core/PO.xml", metaData, null); //$NON-NLS-1$
+			metaData.setVersion("3.0");
+			ArtificerModelUtils.setCustomProperty(metaData, "far", "baz");
+			archive.addEntry("core/PO.xml", metaData, null);
 
 			zipFile = archive.pack();
 			zipStream = FileUtils.openInputStream(zipFile);
 
 			// Now POST the archive to the s-ramp repository (POST to /s-ramp as application/zip)
-			request = clientRequest("/s-ramp"); //$NON-NLS-1$
+			request = clientRequest("/s-ramp");
 			request.body(MediaType.APPLICATION_ZIP, zipStream);
 			ClientResponse<MultipartInput> clientResponse = request.post(MultipartInput.class);
 
@@ -195,47 +195,47 @@ public class BatchResourceTest extends AbstractResourceTest {
 			List<InputPart> parts = response.getParts();
 			Map<String, HttpResponseBean> respMap = new HashMap<String, HttpResponseBean>();
 			for (InputPart part : parts) {
-				String id = part.getHeaders().getFirst("Content-ID"); //$NON-NLS-1$
+				String id = part.getHeaders().getFirst("Content-ID");
 				HttpResponseBean rbean = part.getBody(HttpResponseBean.class, null);
 				respMap.put(id, rbean);
 			}
 
 			// Should be three responses.
 			Assert.assertEquals(3, respMap.size());
-			Assert.assertTrue(respMap.keySet().contains("<schemas/PO.xsd@package>")); //$NON-NLS-1$
-			Assert.assertTrue(respMap.keySet().contains("<wsdl/sample.wsdl@package>")); //$NON-NLS-1$
-			Assert.assertTrue(respMap.keySet().contains("<core/PO.xml@package>")); //$NON-NLS-1$
+			Assert.assertTrue(respMap.keySet().contains("<schemas/PO.xsd@package>"));
+			Assert.assertTrue(respMap.keySet().contains("<wsdl/sample.wsdl@package>"));
+			Assert.assertTrue(respMap.keySet().contains("<core/PO.xml@package>"));
 
 			// Assertions for artifact 1 (PO.xsd)
-			HttpResponseBean httpResp = respMap.get("<schemas/PO.xsd@package>"); //$NON-NLS-1$
+			HttpResponseBean httpResp = respMap.get("<schemas/PO.xsd@package>");
 			Assert.assertEquals(201, httpResp.getCode());
-			Assert.assertEquals("Created", httpResp.getStatus()); //$NON-NLS-1$
+			Assert.assertEquals("Created", httpResp.getStatus());
 			Entry entry = (Entry) httpResp.getBody();
 			BaseArtifactType artifact = ArtificerAtomUtils.unwrapSrampArtifact(entry);
-			Assert.assertEquals("PO.xsd", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("PO.xsd", artifact.getName());
 			Assert.assertNull(artifact.getVersion());
 			Long size = ((XsdDocument) artifact).getContentSize();
             Assert.assertTrue(size >= 2376L);
 			xsdUuid = artifact.getUuid();
 
 			// Assertions for artifact 2 (sample.wsdl)
-			httpResp = respMap.get("<wsdl/sample.wsdl@package>"); //$NON-NLS-1$
+			httpResp = respMap.get("<wsdl/sample.wsdl@package>");
 			Assert.assertEquals(200, httpResp.getCode());
-			Assert.assertEquals("OK", httpResp.getStatus()); //$NON-NLS-1$
+			Assert.assertEquals("OK", httpResp.getStatus());
 			entry = (Entry) httpResp.getBody();
 			artifact = ArtificerAtomUtils.unwrapSrampArtifact(entry);
-			Assert.assertEquals("sample.wsdl", artifact.getName()); //$NON-NLS-1$
-			Assert.assertEquals("2.0", artifact.getVersion()); //$NON-NLS-1$
+			Assert.assertEquals("sample.wsdl", artifact.getName());
+			Assert.assertEquals("2.0", artifact.getVersion());
 			wsdlUuid = artifact.getUuid();
 
 			// Assertions for artifact 3 (PO.xml)
-			httpResp = respMap.get("<core/PO.xml@package>"); //$NON-NLS-1$
+			httpResp = respMap.get("<core/PO.xml@package>");
 			Assert.assertEquals(200, httpResp.getCode());
-			Assert.assertEquals("OK", httpResp.getStatus()); //$NON-NLS-1$
+			Assert.assertEquals("OK", httpResp.getStatus());
 			entry = (Entry) httpResp.getBody();
 			artifact = ArtificerAtomUtils.unwrapSrampArtifact(entry);
-			Assert.assertEquals("PO.xml", artifact.getName()); //$NON-NLS-1$
-			Assert.assertEquals("3.0", artifact.getVersion()); //$NON-NLS-1$
+			Assert.assertEquals("PO.xml", artifact.getName());
+			Assert.assertEquals("3.0", artifact.getVersion());
 			xmlUuid = artifact.getUuid();
 		} finally {
 			IOUtils.closeQuietly(xsd1ContentStream);
@@ -248,33 +248,33 @@ public class BatchResourceTest extends AbstractResourceTest {
 		// Verify by querying
 		// Do a query using GET with query params
 		Map<String, BaseArtifactType> artyMap = new HashMap<String, BaseArtifactType>();
-		request = clientRequest("/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/xsd/XsdDocument");
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		Assert.assertEquals(1, feed.getEntries().size());
 		for (Entry entry : feed.getEntries()) {
 		    String uuid = entry.getId().toString().replace("urn:uuid:", "");
-			request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid); //$NON-NLS-1$
+			request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid);
 			BaseArtifactType artifact = ArtificerAtomUtils.unwrapSrampArtifact(request.get(Entry.class).getEntity());
 			artyMap.put(artifact.getUuid(), artifact);
 		}
-		request = clientRequest("/s-ramp/wsdl/WsdlDocument"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/wsdl/WsdlDocument");
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Assert.assertEquals(1, feed.getEntries().size());
 		for (Entry entry : feed.getEntries()) {
 		    String uuid = entry.getId().toString().replace("urn:uuid:", "");
-            request = clientRequest("/s-ramp/wsdl/WsdlDocument/" + uuid); //$NON-NLS-1$
+            request = clientRequest("/s-ramp/wsdl/WsdlDocument/" + uuid);
 			BaseArtifactType artifact = ArtificerAtomUtils.unwrapSrampArtifact(request.get(Entry.class).getEntity());
 			artyMap.put(artifact.getUuid(), artifact);
 		}
-		request = clientRequest("/s-ramp/core/XmlDocument"); //$NON-NLS-1$
+		request = clientRequest("/s-ramp/core/XmlDocument");
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Assert.assertEquals(1, feed.getEntries().size());
 		for (Entry entry : feed.getEntries()) {
 		    String uuid = entry.getId().toString().replace("urn:uuid:", "");
-            request = clientRequest("/s-ramp/core/XmlDocument/" + uuid); //$NON-NLS-1$
+            request = clientRequest("/s-ramp/core/XmlDocument/" + uuid);
 			BaseArtifactType artifact = ArtificerAtomUtils.unwrapSrampArtifact(request.get(Entry.class).getEntity());
 			artyMap.put(artifact.getUuid(), artifact);
 		}
@@ -283,18 +283,18 @@ public class BatchResourceTest extends AbstractResourceTest {
 
 		// Assertions for artifact 1 (PO.xsd)
 		BaseArtifactType artifact = artyMap.get(xsdUuid);
-		Assert.assertEquals("PO.xsd", artifact.getName()); //$NON-NLS-1$
+		Assert.assertEquals("PO.xsd", artifact.getName());
 		Assert.assertNull(artifact.getVersion());
 
 		// Assertions for artifact 2 (sample.wsdl)
 		artifact = artyMap.get(wsdlUuid);
-		Assert.assertEquals("sample.wsdl", artifact.getName()); //$NON-NLS-1$
-		Assert.assertEquals("2.0", artifact.getVersion()); //$NON-NLS-1$
+		Assert.assertEquals("sample.wsdl", artifact.getName());
+		Assert.assertEquals("2.0", artifact.getVersion());
 
 		// Assertions for artifact 3 (PO.xml)
 		artifact = artyMap.get(xmlUuid);
-		Assert.assertEquals("PO.xml", artifact.getName()); //$NON-NLS-1$
-		Assert.assertEquals("3.0", artifact.getVersion()); //$NON-NLS-1$
+		Assert.assertEquals("PO.xml", artifact.getName());
+		Assert.assertEquals("3.0", artifact.getVersion());
 	}
 
 	/**
@@ -303,12 +303,12 @@ public class BatchResourceTest extends AbstractResourceTest {
 	 * @throws Exception
 	 */
 	private XmlDocument createXmlArtifact() throws Exception {
-		String artifactFileName = "PO.xml"; //$NON-NLS-1$
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xml";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
 		try {
-			ClientRequest request = clientRequest("/s-ramp/core/XmlDocument"); //$NON-NLS-1$
-			request.header("Slug", artifactFileName); //$NON-NLS-1$
-			request.body("application/xml", contentStream); //$NON-NLS-1$
+			ClientRequest request = clientRequest("/s-ramp/core/XmlDocument");
+			request.header("Slug", artifactFileName);
+			request.body("application/xml", contentStream);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -320,7 +320,7 @@ public class BatchResourceTest extends AbstractResourceTest {
 			Assert.assertEquals(artifactFileName, doc.getName());
 			Long size = doc.getContentSize();
             Assert.assertTrue(size >= 825L);
-			Assert.assertEquals("application/xml", doc.getContentType()); //$NON-NLS-1$
+			Assert.assertEquals("application/xml", doc.getContentType());
 			return doc;
 		} finally {
 			IOUtils.closeQuietly(contentStream);
@@ -333,12 +333,12 @@ public class BatchResourceTest extends AbstractResourceTest {
 	 * @throws Exception
 	 */
 	private WsdlDocument createWsdlArtifact() throws Exception {
-		String artifactFileName = "sample.wsdl"; //$NON-NLS-1$
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "sample.wsdl";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
 		try {
-			ClientRequest request = clientRequest("/s-ramp/wsdl/WsdlDocument"); //$NON-NLS-1$
-			request.header("Slug", artifactFileName); //$NON-NLS-1$
-			request.body("application/xml", contentStream); //$NON-NLS-1$
+			ClientRequest request = clientRequest("/s-ramp/wsdl/WsdlDocument");
+			request.header("Slug", artifactFileName);
+			request.body("application/xml", contentStream);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -348,7 +348,7 @@ public class BatchResourceTest extends AbstractResourceTest {
 			Assert.assertTrue(arty instanceof WsdlDocument);
 			WsdlDocument doc = (WsdlDocument) arty;
 			Assert.assertEquals(artifactFileName, doc.getName());
-			Assert.assertEquals("application/xml", doc.getContentType()); //$NON-NLS-1$
+			Assert.assertEquals("application/xml", doc.getContentType());
 			return doc;
 		} finally {
 			IOUtils.closeQuietly(contentStream);

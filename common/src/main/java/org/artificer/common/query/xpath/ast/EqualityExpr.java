@@ -100,12 +100,12 @@ public class EqualityExpr extends AbstractBinaryExpr<AbstractXPathNode, PrimaryE
 	 * Models the comparison expression's operator.
 	 */
 	public static enum Operator {
-		EQ("="), //$NON-NLS-1$
-		NE("!="), //$NON-NLS-1$
-		LT("<"), //$NON-NLS-1$
-		GT(">"), //$NON-NLS-1$
-		LTE("<="), //$NON-NLS-1$
-		GTE(">="); //$NON-NLS-1$
+		EQ("="),
+		NE("!="),
+		LT("<"),
+		GT(">"),
+		LTE("<="),
+		GTE(">=");
 
 		private String symbol;
 

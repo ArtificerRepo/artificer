@@ -73,12 +73,12 @@ public class OntologySummaryPanel extends FlowPanel implements HasValue<List<Ont
      */
     @PostConstruct
     protected void postConstruct() {
-        setStyleName("ontologies-canvas"); //$NON-NLS-1$
-        header.getElement().setClassName("sramp-ontology-box-header"); //$NON-NLS-1$
+        setStyleName("ontologies-canvas");
+        header.getElement().setClassName("sramp-ontology-box-header");
         header.getElement().setInnerText(i18n.format("ontologies.ontologies"));
-        items.setStyleName("nav"); //$NON-NLS-1$
-        items.addStyleName("nav-pills"); //$NON-NLS-1$
-        items.addStyleName("nav-stacked"); //$NON-NLS-1$
+        items.setStyleName("nav");
+        items.addStyleName("nav-pills");
+        items.addStyleName("nav-stacked");
         
         add(header);
         add(items);
@@ -174,14 +174,14 @@ public class OntologySummaryPanel extends FlowPanel implements HasValue<List<Ont
         OntologySummaryPanelItem oldSelection = selected;
         OntologySummaryPanelItem newSelection = item;
         if (oldSelection != null) {
-            oldSelection.getElement().removeClassName("active"); //$NON-NLS-1$
+            oldSelection.getElement().removeClassName("active");
             oldSelection.hideActions();
         }
         if (oldSelection == newSelection) {
             selected = null;
             SelectionEvent.fire(this, null);
         } else {
-            newSelection.getElement().addClassName("active"); //$NON-NLS-1$
+            newSelection.getElement().addClassName("active");
             selected = newSelection;
             OntologySummaryBean bean = selected.getValue();
             SelectionEvent.fire(this, bean);
@@ -199,7 +199,7 @@ public class OntologySummaryPanel extends FlowPanel implements HasValue<List<Ont
         while (itr.hasNext()) {
             OntologySummaryPanelItem item = (OntologySummaryPanelItem) itr.next();
             if (item.getValue().getUuid() != null && item.getValue().getUuid().equals(uuid)) {
-                item.getElement().addClassName("active"); //$NON-NLS-1$
+                item.getElement().addClassName("active");
                 selected = item;
                 selected.showActions();
                 // no need to re-fire the event

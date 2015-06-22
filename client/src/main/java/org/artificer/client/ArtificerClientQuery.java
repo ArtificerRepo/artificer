@@ -43,7 +43,7 @@ public class ArtificerClientQuery {
     private List<String> replacementParams = new ArrayList<String>();
     private int startIndex = 0;
     private int count = 20;
-    private String orderBy = "name"; //$NON-NLS-1$
+    private String orderBy = "name";
     private boolean ascending = true;
     private Set<String> propertyNames = new HashSet<String>();
 
@@ -63,7 +63,7 @@ public class ArtificerClientQuery {
      * @param param
      */
     public ArtificerClientQuery parameter(String param) {
-        replacementParams.add("'" + param.replace("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        replacementParams.add("'" + param.replace("'", "''") + "'");
         return this;
     }
 
@@ -106,7 +106,7 @@ public class ArtificerClientQuery {
      */
     public ArtificerClientQuery parameter(Date param) {
         String val = ISODateTimeFormat.date().print(new DateTime(param));
-        replacementParams.add("'" + val + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        replacementParams.add("'" + val + "'");
         return this;
     }
 
@@ -117,7 +117,7 @@ public class ArtificerClientQuery {
      */
     public ArtificerClientQuery parameter(Calendar param) {
         String val = ISODateTimeFormat.dateTimeNoMillis().print(new DateTime(param));
-        replacementParams.add("'" + val + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        replacementParams.add("'" + val + "'");
         return this;
     }
 
@@ -207,21 +207,21 @@ public class ArtificerClientQuery {
      */
     private String formatQuery() throws ArtificerClientException {
         StringBuilder builder = new StringBuilder();
-        String [] xpathSegments = queryTemplate.split("\\?"); //$NON-NLS-1$
+        String [] xpathSegments = queryTemplate.split("\\?");
         int paramCounter = 0;
         for (String segment : xpathSegments) {
             builder.append(segment);
             boolean isLastSegment = segment == xpathSegments[xpathSegments.length - 1];
             if (!isLastSegment) {
                 if (paramCounter >= replacementParams.size())
-                    throw new ArtificerClientException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS")); //$NON-NLS-1$
+                    throw new ArtificerClientException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS"));
                 String param = replacementParams.get(paramCounter);
                 builder.append(param);
                 paramCounter++;
             }
         }
         if (replacementParams.size() > paramCounter)
-            throw new ArtificerClientException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS")); //$NON-NLS-1$
+            throw new ArtificerClientException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS"));
 
         return builder.toString();
     }

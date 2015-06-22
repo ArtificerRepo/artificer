@@ -72,7 +72,7 @@ public class UploadOntologyDialog extends ModalDialog {
      */
     @Override
     public void show() {
-        form.setAction(GWT.getModuleBaseURL() + "services/ontologyUpload"); //$NON-NLS-1$
+        form.setAction(GWT.getModuleBaseURL() + "services/ontologyUpload");
         super.show();
     }
 
@@ -103,7 +103,7 @@ public class UploadOntologyDialog extends ModalDialog {
     public String getOntologyUploadedUUID() {
         UploadResult result = formHandler.getUploadResult();
         if (result != null) {
-            return result.get("uuid"); //$NON-NLS-1$
+            return result.get("uuid");
         }
         return null;
     }

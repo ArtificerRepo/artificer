@@ -31,12 +31,12 @@ public final class VdbTranslator {
         /**
          * The translator name attribute identifier.
          */
-        String NAME = "name"; //$NON-NLS-1$
+        String NAME = "name";
 
         /**
          * The translator type attribute identifier.
          */
-        String TYPE = "type"; //$NON-NLS-1$
+        String TYPE = "type";
 
     }
 
@@ -48,7 +48,7 @@ public final class VdbTranslator {
         /**
          * The translator type.
          */
-        String TYPE = "translatorType"; //$NON-NLS-1$
+        String TYPE = "translatorType";
 
     }
 

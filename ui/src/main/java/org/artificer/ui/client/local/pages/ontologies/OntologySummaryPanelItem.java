@@ -85,12 +85,12 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
      */
     @PostConstruct
     protected void postConstruct() {
-        label.setText(""); //$NON-NLS-1$
+        label.setText("");
         sinkEvents(Event.ONCLICK);
 
         downloadButton.setText(i18n.format("ontology-editor.download"));
-        downloadButton.addStyleName("btn-mini"); //$NON-NLS-1$
-        downloadButton.addStyleName("btn"); //$NON-NLS-1$
+        downloadButton.addStyleName("btn-mini");
+        downloadButton.addStyleName("btn");
         downloadButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -98,8 +98,8 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
             }
         });
         deleteButton.setText(i18n.format("ontology-editor.delete"));
-        deleteButton.addStyleName("btn-mini"); //$NON-NLS-1$
-        deleteButton.addStyleName("btn"); //$NON-NLS-1$
+        deleteButton.addStyleName("btn-mini");
+        deleteButton.addStyleName("btn");
         deleteButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -116,7 +116,7 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
         if (DOM.eventGetType(event) == Event.ONCLICK) {
             EventTarget target = event.getEventTarget();
             Element elem = (Element) target.cast();
-            if (elem.getNodeName().toLowerCase().equals("button")) { //$NON-NLS-1$
+            if (elem.getNodeName().toLowerCase().equals("button")) {
                 // an action button was clicked
                 event.preventDefault();
             } else {
@@ -142,7 +142,7 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
     }
     
     protected void onDownload() {
-        String contentUrl = GWT.getModuleBaseURL() + "services/ontologyDownload?uuid=" + value.getUuid(); //$NON-NLS-1$
+        String contentUrl = GWT.getModuleBaseURL() + "services/ontologyDownload?uuid=" + value.getUuid();
         Window.open(contentUrl, "_blank", "enabled");
     }
 
@@ -151,20 +151,20 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
      */
     protected void onDelete() {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
-                i18n.format("ontology-deleting.title"), //$NON-NLS-1$
-                i18n.format("ontology-deleting.message")); //$NON-NLS-1$
+                i18n.format("ontology-deleting.title"),
+                i18n.format("ontology-deleting.message"));
         ontologyService.delete(getValue().getUuid(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(), 
-                        i18n.format("ontology-deleted.title"),  //$NON-NLS-1$
-                        i18n.format("ontology-deleted.message", getValue().getId())); //$NON-NLS-1$
+                        i18n.format("ontology-deleted.title"),
+                        i18n.format("ontology-deleted.message", getValue().getId()));
                 ValueChangeEvent.fire(OntologySummaryPanelItem.this, null);
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        i18n.format("ontology-deleted-error.title"), error); //$NON-NLS-1$
+                        i18n.format("ontology-deleted-error.title"), error);
             }
         });
     }
@@ -220,7 +220,7 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
     private static String createLabel(OntologySummaryBean bean) {
         String label = bean.getBase();
         if (bean.getLabel() != null && bean.getLabel().trim().length() > 0) {
-            label += " (" + bean.getLabel().trim() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            label += " (" + bean.getLabel().trim() + ")";
         }
         return label;
     }

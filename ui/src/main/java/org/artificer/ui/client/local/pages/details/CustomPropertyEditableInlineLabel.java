@@ -44,9 +44,9 @@ public class CustomPropertyEditableInlineLabel extends EditableInlineLabel {
     @Override
     public void setText(String text) {
         if (text == null || text.trim().length() == 0) {
-            super.setText(i18n.format("no-value")); //$NON-NLS-1$
+            super.setText(i18n.format("no-value"));
         } else if (text.length() > 64) {
-            super.setText(text.substring(0, 64) + "..."); //$NON-NLS-1$
+            super.setText(text.substring(0, 64) + "...");
         } else {
             super.setText(text);
         }

@@ -66,36 +66,36 @@ public class App {
         GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
-                GWT.log("Uncaught GWT Error!", e); //$NON-NLS-1$
-                notificationService.sendErrorNotification("Uncaught GWT Error!", e); //$NON-NLS-1$
+                GWT.log("Uncaught GWT Error!", e);
+                notificationService.sendErrorNotification("Uncaught GWT Error!", e);
                 logger.log(Level.SEVERE, "Uncaught GWT Error!", e);
             }
         });
         bus.addLifecycleListener(new BusLifecycleAdapter() {
             @Override
             public void busAssociating(BusLifecycleEvent e) {
-                GWT.log("Bus is associating"); //$NON-NLS-1$
+                GWT.log("Bus is associating");
             }
             @Override
             public void busOnline(BusLifecycleEvent e) {
-                GWT.log("Bus is now online"); //$NON-NLS-1$
+                GWT.log("Bus is now online");
                 if (loggedOutDialog.isAttached()) {
                     Window.Location.reload();
                 }
             }
             @Override
             public void busDisassociating(BusLifecycleEvent e) {
-                GWT.log("Bus is disassociating"); //$NON-NLS-1$
+                GWT.log("Bus is disassociating");
             }
             @Override
             public void busOffline(BusLifecycleEvent e) {
-                GWT.log("Bus is now offline"); //$NON-NLS-1$
+                GWT.log("Bus is now offline");
             }
         });
         bus.addTransportErrorHandler(new TransportErrorHandler() {
             @Override
             public void onError(TransportError error) {
-                GWT.log("Transport error: " + error.getStatusCode()); //$NON-NLS-1$
+                GWT.log("Transport error: " + error.getStatusCode());
                 if (error != null && error.getStatusCode() == 401) {
                     if (!loggedOutDialog.isAttached()) {
                         loggedOutDialog.show();

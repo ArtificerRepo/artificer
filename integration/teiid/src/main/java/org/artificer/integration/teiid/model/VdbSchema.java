@@ -31,47 +31,47 @@ public final class VdbSchema {
         /**
          * The VDB schema/model metadata element identifier. The metadata is optional.
          */
-        String METADATA = "metadata"; //$NON-NLS-1$
+        String METADATA = "metadata";
 
         /**
          * The schema/model metadata type attribute identifier.
          */
-        String METADATA_TYPE = "type"; //$NON-NLS-1$
+        String METADATA_TYPE = "type";
 
         /**
          * The schema/model name attribute identifier.
          */
-        String NAME = "name"; //$NON-NLS-1$
+        String NAME = "name";
 
         /**
          * The schema/model path in the VDB archive or the validation error model object path.
          */
-        String PATH = "path"; //$NON-NLS-1$
+        String PATH = "path";
 
         /**
          * The severity of a schema/model validation error attribute name.
          */
-        String SEVERITY = "severity"; //$NON-NLS-1$
+        String SEVERITY = "severity";
 
         /**
          * The VDB schema/model data source element identifier.
          */
-        String SOURCE = "source"; //$NON-NLS-1$
+        String SOURCE = "source";
 
         /**
          * The schema/model type attribute identifier.
          */
-        String TYPE = "type"; //$NON-NLS-1$
+        String TYPE = "type";
 
         /**
          * A schema/model validation error.
          */
-        String VALIDATION_ERROR = "validation-error"; //$NON-NLS-1$
+        String VALIDATION_ERROR = "validation-error";
 
         /**
          * The schema/model visible attribute identifier.
          */
-        String VISIBLE = "visible"; //$NON-NLS-1$
+        String VISIBLE = "visible";
 
     }
 
@@ -95,52 +95,52 @@ public final class VdbSchema {
         /**
          * The model built-in property.
          */
-        String BUILT_IN = "builtIn"; //$NON-NLS-1$
+        String BUILT_IN = "builtIn";
 
         /**
          * The model checksum property.
          */
-        String CHECKSUM = "checksum"; //$NON-NLS-1$
+        String CHECKSUM = "checksum";
 
         /**
          * The model index name.
          */
-        String INDEX_NAME = "indexName"; //$NON-NLS-1$
+        String INDEX_NAME = "indexName";
 
         /**
          * The model metadata definition.
          */
-        String METADATA = "metadata"; //$NON-NLS-1$
+        String METADATA = "metadata";
 
         /**
          * The metadata type (defaults to 'DDL').
          */
-        String METADATA_TYPE = "metadataType"; //$NON-NLS-1$
+        String METADATA_TYPE = "metadataType";
 
         /**
          * The model class.
          */
-        String MODEL_CLASS = "modelClass"; //$NON-NLS-1$
+        String MODEL_CLASS = "modelClass";
 
         /**
          * The model unique identifier property.
          */
-        String MODEL_UUID = "modelUuid"; //$NON-NLS-1$
+        String MODEL_UUID = "modelUuid";
 
         /**
          * The model path in the VDB archive.
          */
-        String PATH_IN_VDB = "pathInVdb"; //$NON-NLS-1$
+        String PATH_IN_VDB = "pathInVdb";
 
         /**
          * The model type (like physical or virtual).
          */
-        String TYPE = "schemaType"; //$NON-NLS-1$
+        String TYPE = "schemaType";
 
         /**
          * Indicates if the schema/model is visible for user queries.
          */
-        String VISIBLE = "visible"; //$NON-NLS-1$
+        String VISIBLE = "visible";
 
     }
 

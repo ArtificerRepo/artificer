@@ -93,15 +93,15 @@ public class OntologyEditor extends FlowPanel implements HasValue<OntologyBean> 
      */
     @PostConstruct
     protected void postConstruct() {
-        saveButton.setText(i18n.format("ontology-editor.save")); //$NON-NLS-1$
-        saveButton.setStyleName("btn"); //$NON-NLS-1$
-        revertButton.setText(i18n.format("ontology-editor.revert")); //$NON-NLS-1$
-        revertButton.setStyleName("btn"); //$NON-NLS-1$
-        pleaseSelect.setText(i18n.format("ontology-editor.please-select")); //$NON-NLS-1$
-        getElement().setId("ontology-editor"); //$NON-NLS-1$
-        getElement().setClassName("span8"); //$NON-NLS-1$
-        canvas.getElement().setClassName("sramp-ontology-editor-canvas"); //$NON-NLS-1$
-        actions.getElement().setClassName("sramp-ontology-actions"); //$NON-NLS-1$
+        saveButton.setText(i18n.format("ontology-editor.save"));
+        saveButton.setStyleName("btn");
+        revertButton.setText(i18n.format("ontology-editor.revert"));
+        revertButton.setStyleName("btn");
+        pleaseSelect.setText(i18n.format("ontology-editor.please-select"));
+        getElement().setId("ontology-editor");
+        getElement().setClassName("span8");
+        canvas.getElement().setClassName("sramp-ontology-editor-canvas");
+        actions.getElement().setClassName("sramp-ontology-actions");
         actions.add(saveButton);
         actions.add(revertButton);
         add(canvas);
@@ -267,20 +267,20 @@ public class OntologyEditor extends FlowPanel implements HasValue<OntologyBean> 
      */
     public void onSave(ClickEvent event) {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
-                i18n.format("ontology-editor.saving.title"), //$NON-NLS-1$
-                i18n.format("ontology-editor.saving.message")); //$NON-NLS-1$
+                i18n.format("ontology-editor.saving.title"),
+                i18n.format("ontology-editor.saving.message"));
         ontologyService.update(getValue(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(), 
-                        i18n.format("ontology-editor.saved.title"),  //$NON-NLS-1$
-                        i18n.format("ontology-editor.saved.message", getValue().getId())); //$NON-NLS-1$
+                        i18n.format("ontology-editor.saved.title"),
+                        i18n.format("ontology-editor.saved.message", getValue().getId()));
                 setDirty(false);
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        i18n.format("ontology-editor.saved-error.title"), error); //$NON-NLS-1$
+                        i18n.format("ontology-editor.saved-error.title"), error);
             }
         });
     }

@@ -33,15 +33,15 @@ public class ServiceImplementationWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public ServiceImplementationWorkspace(String hrefBase) {
-		super(hrefBase, "ServiceImplementation Model"); //$NON-NLS-1$
+		super(hrefBase, "ServiceImplementation Model");
 	}
 
 	@Override
 	protected void configureWorkspace() {
-        AppCollection serviceImplementationCollection = addCollection("/s-ramp/serviceImplementation", "ServiceImplementation Model Objects", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
-        AppCollection serviceEndpointCollection = addCollection("/s-ramp/serviceImplementation/ServiceEndpoint", "ServiceEndpoint", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection serviceInstanceCollection = addCollection("/s-ramp/serviceImplementation/ServiceInstance", "ServiceInstance", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        AppCollection serviceOperationCollection = addCollection("/s-ramp/serviceImplementation/ServiceOperation", "ServiceOperation", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        AppCollection serviceImplementationCollection = addCollection("/s-ramp/serviceImplementation", "ServiceImplementation Model Objects", MediaType.APPLICATION_ZIP);
+        AppCollection serviceEndpointCollection = addCollection("/s-ramp/serviceImplementation/ServiceEndpoint", "ServiceEndpoint", "");
+        AppCollection serviceInstanceCollection = addCollection("/s-ramp/serviceImplementation/ServiceInstance", "ServiceInstance", "");
+        AppCollection serviceOperationCollection = addCollection("/s-ramp/serviceImplementation/ServiceOperation", "ServiceOperation", "");
 
         addTypeCategory(serviceImplementationCollection, ArtifactTypeEnum.ServiceEndpoint);
         addTypeCategory(serviceImplementationCollection, ArtifactTypeEnum.ServiceInstance);

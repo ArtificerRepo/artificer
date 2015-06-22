@@ -29,7 +29,7 @@ public class ArtificerServerException extends ArtificerException {
 
     private static final long serialVersionUID = 2648287148198104189L;
 
-    private static final Pattern ST_PATTERN = Pattern.compile("([a-zA-Z0-9_\\.]*)\\.([a-zA-Z0-9_\\.]*)\\(([a-zA-Z0-9_\\.]*):([\\d]*)\\)"); //$NON-NLS-1$
+    private static final Pattern ST_PATTERN = Pattern.compile("([a-zA-Z0-9_\\.]*)\\.([a-zA-Z0-9_\\.]*)\\(([a-zA-Z0-9_\\.]*):([\\d]*)\\)");
 
     /**
      * Constructor.
@@ -86,7 +86,7 @@ public class ArtificerServerException extends ArtificerException {
             String className = matcher.group(1);
             String methodName = matcher.group(2);
             String fileName = matcher.group(3);
-            int lineNumber = Integer.parseInt(matcher.group(4) == null ? "0" : matcher.group(4)); //$NON-NLS-1$
+            int lineNumber = Integer.parseInt(matcher.group(4) == null ? "0" : matcher.group(4));
             stElements.add(new StackTraceElement(className, methodName, fileName, lineNumber));
         }
 

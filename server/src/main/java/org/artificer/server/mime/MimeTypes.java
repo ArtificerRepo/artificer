@@ -84,10 +84,10 @@ public class MimeTypes {
         if (artifactType.getArtifactType() == ArtifactTypeEnum.Document
                 || artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedDocument) {
             String ct = getContentType(fileName, stream);
-            return ct == null ? "application/octet-stream" : ct; //$NON-NLS-1$
+            return ct == null ? "application/octet-stream" : ct;
         } else {
             // Everything else is an XML file
-            return "application/xml"; //$NON-NLS-1$
+            return "application/xml";
         }
     }
 

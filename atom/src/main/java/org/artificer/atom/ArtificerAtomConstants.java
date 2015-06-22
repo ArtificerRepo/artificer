@@ -19,11 +19,11 @@ import java.net.URI;
 
 public class ArtificerAtomConstants {
 
-    public static final URI X_S_RAMP_MODEL_URN = URIHelper.create("urn:x-s-ramp:2013:model"); //$NON-NLS-1$
-    public static final String X_S_RAMP_QUERY_RESULTS = "urn:x-s-ramp:2013:query:results"; //$NON-NLS-1$
-    public static final String X_S_RAMP_TYPE = "urn:x-s-ramp:2013:type"; //$NON-NLS-1$
+    public static final URI X_S_RAMP_MODEL_URN = URIHelper.create("urn:x-s-ramp:2013:model");
+    public static final String X_S_RAMP_QUERY_RESULTS = "urn:x-s-ramp:2013:query:results";
+    public static final String X_S_RAMP_TYPE = "urn:x-s-ramp:2013:type";
     public static final URI X_S_RAMP_TYPE_URN = URIHelper.create(X_S_RAMP_TYPE);
-    public static final String X_S_RAMP_KIND = "urn:x-s-ramp:2013:kind"; //$NON-NLS-1$
+    public static final String X_S_RAMP_KIND = "urn:x-s-ramp:2013:kind";
     public static final URI X_S_RAMP_KIND_URN = URIHelper.create(X_S_RAMP_KIND);
 
     private static class URIHelper {

@@ -49,15 +49,15 @@ public abstract class AbstractIntegrationTest {
 
     // Note: Running Arquillian in its as-client mode by leaving off the @Deployment.
 
-    private static final String HOST = System.getProperty("artificer.test.host", "localhost"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String HOST = System.getProperty("artificer.test.host", "localhost");
 
-    private static final int PORT = Integer.parseInt(System.getProperty("artificer.test.port", "8080")); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final int PORT = Integer.parseInt(System.getProperty("artificer.test.port", "8080"));
 
-    private static final String BASE_URL = "http://" + HOST + ":" + PORT + "/artificer-server"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private static final String BASE_URL = "http://" + HOST + ":" + PORT + "/artificer-server";
 
-    protected static final String USERNAME = System.getProperty("artificer.test.username", "admin"); //$NON-NLS-1$ //$NON-NLS-2$
+    protected static final String USERNAME = System.getProperty("artificer.test.username", "admin");
 
-    protected static final String PASSWORD = System.getProperty("artificer.test.password", "artificer1!"); //$NON-NLS-1$ //$NON-NLS-2$
+    protected static final String PASSWORD = System.getProperty("artificer.test.password", "artificer1!");
 
     @After
     public void cleanup() {
@@ -66,7 +66,7 @@ public abstract class AbstractIntegrationTest {
         try {
             ArtificerAtomApiClient client = client();
             // Rather than mess with pagination, just set the count to something sufficiently large.
-            QueryResultSet results = client.query("/s-ramp", 0, 10000, "name", true); //$NON-NLS-1$ //$NON-NLS-2$
+            QueryResultSet results = client.query("/s-ramp", 0, 10000, "name", true);
             for (ArtifactSummary summary : results) {
                 String uuid = summary.getUuid().replace("urn:uuid:", "");
                 if (!summary.isDerived()) {
@@ -75,7 +75,7 @@ public abstract class AbstractIntegrationTest {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
+            fail("Unable to cleanup test artifacts.");
         }
         
         // delete all stored queries
@@ -87,7 +87,7 @@ public abstract class AbstractIntegrationTest {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
+            fail("Unable to cleanup test artifacts.");
         }
 
         // delete all ontologies
@@ -100,7 +100,7 @@ public abstract class AbstractIntegrationTest {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
+            fail("Unable to cleanup test artifacts.");
         }
     }
 

@@ -63,7 +63,7 @@ public class CustomPropertyFilter extends Composite implements HasValue<String> 
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 if (event.getValue() == null) {
-                    GWT.log("Firing null value change event!"); //$NON-NLS-1$
+                    GWT.log("Firing null value change event!");
                     ValueChangeEvent.fire(CustomPropertyFilter.this, null);
                 }
             }
@@ -120,7 +120,7 @@ public class CustomPropertyFilter extends Composite implements HasValue<String> 
      */
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
-        this.label.setValue(propertyName + ":"); //$NON-NLS-1$
+        this.label.setValue(propertyName + ":");
     }
 
 }

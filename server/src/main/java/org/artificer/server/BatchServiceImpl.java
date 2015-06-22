@@ -107,7 +107,7 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
         // Finally, process all the updates.
         for (ArtificerArchiveEntry updateEntry : updates) {
             String path = updateEntry.getPath();
-            String contentId = String.format("<%1$s@package>", path); //$NON-NLS-1$
+            String contentId = String.format("<%1$s@package>", path);
             BaseArtifactType metaData = updateEntry.getMetaData();
             ArtifactType artifactType = ArtifactType.valueOf(metaData);
             metaData = processUpdate(artifactType, metaData);
