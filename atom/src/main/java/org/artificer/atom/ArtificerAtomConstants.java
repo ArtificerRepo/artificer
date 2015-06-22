@@ -21,7 +21,6 @@ public class ArtificerAtomConstants {
 
     public static final URI X_S_RAMP_MODEL_URN = URIHelper.create("urn:x-s-ramp:2013:model"); //$NON-NLS-1$
     public static final String X_S_RAMP_QUERY_RESULTS = "urn:x-s-ramp:2013:query:results"; //$NON-NLS-1$
-    public static final URI X_S_RAMP_QUERY_RESULTS_URN = URIHelper.create(X_S_RAMP_QUERY_RESULTS);
     public static final String X_S_RAMP_TYPE = "urn:x-s-ramp:2013:type"; //$NON-NLS-1$
     public static final URI X_S_RAMP_TYPE_URN = URIHelper.create(X_S_RAMP_TYPE);
     public static final String X_S_RAMP_KIND = "urn:x-s-ramp:2013:kind"; //$NON-NLS-1$
