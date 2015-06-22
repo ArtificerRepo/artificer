@@ -240,6 +240,7 @@ public class ArtificerArtifact implements Serializable {
         this.comments = comments;
     }
 
+    @Field
     public boolean isTrashed() {
         return trashed;
     }

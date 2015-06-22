@@ -17,8 +17,10 @@ package org.artificer.repository.test.hibernate;
 
 import org.artificer.repository.filter.ServletCredentialsFilter;
 import org.artificer.repository.hibernate.HibernateUtil;
+import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.file.FileManagerFactory;
 import org.artificer.repository.test.RepositoryTestProvider;
+import org.hibernate.search.jpa.FullTextEntityManager;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -70,6 +72,11 @@ public class HibernateRepositoryTestProvider implements RepositoryTestProvider {
                 }
                 entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY true").executeUpdate();
                 entityManager.createNativeQuery("SET LOCK_MODE 3").executeUpdate();
+
+                // purge Hibernate Search
+                FullTextEntityManager fullTextEntityManager
+                        = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
+                fullTextEntityManager.purgeAll(ArtificerArtifact.class);
 
                 return null;
             }
