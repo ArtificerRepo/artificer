@@ -184,6 +184,14 @@ public class HibernateEntityToSrampVisitor extends HierarchicalArtifactVisitor {
             }
 
             if (includeAssociations) {
+                // if expanded from a document
+                if (artificerArtifact.isExpandedFromArchive()) {
+                    srampArtifact.getOtherAttributes().put(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME,
+                            artificerArtifact.getExpandedFrom().getUuid());
+                    srampArtifact.getOtherAttributes().put(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME,
+                            artificerArtifact.getExpandedFromArchivePath());
+                }
+
                 // Map in the classifications
                 for (String uri : artificerArtifact.getClassifiers()) {
                     srampArtifact.getClassifiedBy().add(uri);

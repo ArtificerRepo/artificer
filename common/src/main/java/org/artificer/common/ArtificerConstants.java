@@ -57,6 +57,13 @@ public class ArtificerConstants {
     public static final QName ARTIFICER_RELATIONSHIP_GENERIC_QNAME = new QName(ARTIFICER_NS, ARTIFICER_RELATIONSHIP_GENERIC, ARTIFICER_PREFIX);
     public static final QName ARTIFICER_RELATIONSHIP_TYPE_QNAME = new QName(ARTIFICER_NS, ARTIFICER_RELATIONSHIP_TYPE, ARTIFICER_PREFIX);
 
+    public static final String ARTIFICER_EXPANDED_FROM_ARCHIVE = "expanded.from.archive";
+    public static final QName ARTIFICER_EXPANDED_FROM_ARCHIVE_QNAME = new QName(ARTIFICER_NS, ARTIFICER_EXPANDED_FROM_ARCHIVE, ARTIFICER_PREFIX);
+    public static final String ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID = "expanded.from.archive.uuid";
+    public static final QName ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME = new QName(ARTIFICER_NS, ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID, ARTIFICER_PREFIX);
+    public static final String ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH = "expanded.from.archive.path";
+    public static final QName ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME = new QName(ARTIFICER_NS, ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH, ARTIFICER_PREFIX);
+
     // Configuration constants
     public static final String ARTIFICER_CONFIG_FILE_NAME = "artificer.config.file.name";
     public static final String ARTIFICER_CONFIG_FILE_REFRESH = "artificer.config.file.refresh";

@@ -16,12 +16,13 @@
 package org.artificer.repository.hibernate.data;
 
 import org.apache.commons.lang.StringUtils;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.query.RelationshipType;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.artificer.repository.hibernate.HibernateRelationshipFactory;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerRelationship;
-import org.artificer.common.query.RelationshipType;
 import org.artificer.repository.hibernate.entity.ArtificerTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
@@ -107,6 +108,19 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
     protected void visitBase(BaseArtifactType artifact) {
         super.visitBase(artifact);
         try {
+            // if expanded from a document
+            if (artifact.getOtherAttributes().containsKey(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME)) {
+                artificerArtifact.setExpandedFromArchive(true);
+                artificerArtifact.setExpandedFromArchivePath(artifact.getOtherAttributes().get(
+                        ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME));
+                String parentUuid = artifact.getOtherAttributes().get(
+                        ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME);
+                ArtificerArtifact parent = relationshipFactory.createRelationship(parentUuid);
+                artificerArtifact.setExpandedFrom(parent);
+                // TODO: Ensure this actually persists the update!
+                parent.getExpandedArtifacts().add(artificerArtifact);
+            }
+
             updateGenericRelationships(artifact);
         } catch (Exception e) {
             error = e;
