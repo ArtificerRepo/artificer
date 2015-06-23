@@ -15,7 +15,9 @@
  */
 package org.artificer.shell.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerConstants;
 import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
@@ -64,6 +66,10 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 		printProperty(Messages.i18n.format("PrintArtifact.Name"), artifact.getName());
 		printProperty(Messages.i18n.format("PrintArtifact.Version"), artifact.getVersion());
 		printProperty(Messages.i18n.format("PrintArtifact.Derived"), String.valueOf(artifactType.isDerived()));
+		String archiveUuid = artifact.getOtherAttributes().get(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME);
+		if (StringUtils.isNotBlank(archiveUuid)) {
+			printProperty(Messages.i18n.format("PrintArtifact.ExpandedFromArchive"), archiveUuid);
+		}
 		printProperty(Messages.i18n.format("PrintArtifact.CreatedBy"), artifact.getCreatedBy());
 		if (artifact.getCreatedTimestamp() != null)
 			printProperty(Messages.i18n.format("PrintArtifact.CreatedOn"), artifact.getCreatedTimestamp().toXMLFormat());
