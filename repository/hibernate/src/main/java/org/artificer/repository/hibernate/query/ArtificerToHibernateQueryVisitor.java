@@ -159,8 +159,10 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
         totalSize = (Long) entityManager.createQuery(query).getSingleResult();
 
         // Setup the select.  Note that we're only grabbing the fields we need for the summary.
-        query.multiselect(from.get("uuid"), from.get("name"), from.get("description"), from.get("model"), from.get("type"), from.get("derived"),
-                from.get("createdBy").get("lastActionTime"), from.get("createdBy").get("username"), from.get("modifiedBy").get("lastActionTime"))
+        query.multiselect(from.get("uuid"), from.get("name"), from.get("description"), from.get("model"),
+                from.get("type"), from.get("derived"), from.get("expandedFromArchive"),
+                from.get("createdBy").get("lastActionTime"), from.get("createdBy").get("username"),
+                from.get("modifiedBy").get("lastActionTime"))
                 .distinct(true);
 
         if (args.getOrderBy() != null) {
@@ -204,6 +206,15 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
                 if (subartifactSet.getRelationshipPath().getRelationshipType().equalsIgnoreCase("relatedDocument")) {
                     // derivedFrom
                     from = from.join("derivedFrom");
+
+                    // Now add any additional predicates included.
+                    if (subartifactSet.getPredicate() != null) {
+                        subartifactSet.getPredicate().accept(this);
+                    }
+                } else if (subartifactSet.getRelationshipPath().getRelationshipType().equalsIgnoreCase("expandedFromDocument")
+                        || subartifactSet.getRelationshipPath().getRelationshipType().equalsIgnoreCase("expandedFromArchive")) {
+                    // expandedFrom
+                    from = from.join("expandedFrom");
 
                     // Now add any additional predicates included.
                     if (subartifactSet.getPredicate() != null) {
@@ -534,7 +545,17 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
 
             if (node.getRelationshipPath().getRelationshipType().equalsIgnoreCase("relatedDocument")) {
                 // derivedFrom
+                // TODO: Should this really be LEFT?
                 from = from.join("derivedFrom", JoinType.LEFT);
+
+                // Now add any additional predicates included.
+                if (node.getPredicate() != null) {
+                    node.getPredicate().accept(this);
+                }
+            } else if (node.getRelationshipPath().getRelationshipType().equalsIgnoreCase("expandedFromDocument")
+                    || node.getRelationshipPath().getRelationshipType().equalsIgnoreCase("expandedFromArchive")) {
+                // expandedFrom
+                from = from.join("expandedFrom");
 
                 // Now add any additional predicates included.
                 if (node.getPredicate() != null) {

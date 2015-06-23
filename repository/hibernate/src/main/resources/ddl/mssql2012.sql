@@ -10,6 +10,8 @@
         createdByUsername varchar(50),
         derived bit not null,
         description varchar(MAX),
+        expandedFromArchive bit not null,
+        expandedFromArchivePath varchar(255),
         mimeType varchar(100),
         model varchar(255),
         modifiedTime datetime2,
@@ -20,6 +22,7 @@
         uuid char(36),
         version varchar(255),
         derivedFrom_id bigint,
+        expandedFrom_id bigint,
         primary key (id)
     );
 
@@ -290,6 +293,11 @@
     alter table ArtificerArtifact 
         add constraint FK_5he8qx4p9didgdqewhvv0h65e 
         foreign key (derivedFrom_id) 
+        references ArtificerArtifact;
+
+    alter table ArtificerArtifact 
+        add constraint FK_97yivnkksh67qtew2neenft4a 
+        foreign key (expandedFrom_id) 
         references ArtificerArtifact;
 
     alter table ArtificerArtifact_classifiers 

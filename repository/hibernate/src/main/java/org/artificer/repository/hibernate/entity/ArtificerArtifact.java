@@ -121,6 +121,14 @@ public class ArtificerArtifact implements Serializable {
 
     private String contentEncoding;
 
+    private boolean expandedFromArchive;
+
+    private ArtificerArtifact expandedFrom;
+
+    private List<ArtificerArtifact> expandedArtifacts = new ArrayList<>();
+
+    private String expandedFromArchivePath;
+
     @Id
     @GeneratedValue
     public long getId() {
@@ -360,6 +368,40 @@ public class ArtificerArtifact implements Serializable {
 
     public void setContentEncoding(String contentEncoding) {
         this.contentEncoding = contentEncoding;
+    }
+
+    public boolean isExpandedFromArchive() {
+        return expandedFromArchive;
+    }
+
+    public void setExpandedFromArchive(boolean expandedFromArchive) {
+        this.expandedFromArchive = expandedFromArchive;
+    }
+
+    @ManyToOne
+    public ArtificerArtifact getExpandedFrom() {
+        return expandedFrom;
+    }
+
+    public void setExpandedFrom(ArtificerArtifact expandedFrom) {
+        this.expandedFrom = expandedFrom;
+    }
+
+    @OneToMany(mappedBy = "expandedFrom", orphanRemoval = true, cascade = CascadeType.ALL)
+    public List<ArtificerArtifact> getExpandedArtifacts() {
+        return expandedArtifacts;
+    }
+
+    public void setExpandedArtifacts(List<ArtificerArtifact> expandedArtifacts) {
+        this.expandedArtifacts = expandedArtifacts;
+    }
+
+    public String getExpandedFromArchivePath() {
+        return expandedFromArchivePath;
+    }
+
+    public void setExpandedFromArchivePath(String expandedFromArchivePath) {
+        this.expandedFromArchivePath = expandedFromArchivePath;
     }
 
     public final Map<String, String> snapshotProperties() {

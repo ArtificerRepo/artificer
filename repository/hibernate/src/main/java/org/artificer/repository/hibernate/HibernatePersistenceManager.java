@@ -21,7 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
+import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ArtificerException;
+import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerConflictException;
 import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerServerException;
@@ -119,6 +121,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
                     ArtificerArtifact artificerArtifact = SrampToHibernateEntityVisitor.visit(
                                     srampArtifact, artifactType, classificationHelper);
 
+                    // documents
                     if (artifactType.isDocument()) {
                         ArtificerDocumentArtifact artificerDocumentArtifact = (ArtificerDocumentArtifact) artificerArtifact;
                         processDocument(artificerDocumentArtifact, content);
@@ -273,47 +276,56 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
             protected BaseArtifactType doExecute(EntityManager entityManager) throws Exception {
                 ArtificerArtifact artifact = HibernateUtil.getArtifact(uuid, entityManager, false);
 
-                List<Long> targetedArtifacts = new ArrayList<>();
-                targetedArtifacts.add(artifact.getId());
-                for (ArtificerArtifact derivedArtifact : artifact.getDerivedArtifacts()) {
-                    targetedArtifacts.add(derivedArtifact.getId());
-                }
+                deleteArtifact(artifact, force, entityManager);
 
-                if (force) {
-                    // delete all relationships targeting this artifact or its derived artifacts
-                    Query query = entityManager.createQuery(
-                            "SELECT r FROM ArtificerRelationship r INNER JOIN r.targets ts INNER JOIN ts.target t WHERE t.id IN :targetedArtifacts");
-                    query.setParameter("targetedArtifacts", targetedArtifacts);
-                    List<ArtificerRelationship> relationships = query.getResultList();
-                    for (ArtificerRelationship relationship : relationships) {
-                        entityManager.remove(relationship);
-                    }
-                } else {
-                    // if any non-trashed generic/modeled relationships target this artifact or its derived artifacts, exception
-                    Query query = entityManager.createQuery(
-                            "SELECT r FROM ArtificerRelationship r INNER JOIN r.owner o INNER JOIN r.targets ts INNER JOIN ts.target t WHERE o.trashed = false AND t.id IN :targetedArtifacts AND (r.type=:type1 OR r.type=:type2)");
-                    query.setParameter("targetedArtifacts", targetedArtifacts);
-                    query.setParameter("type1", RelationshipType.GENERIC);
-                    query.setParameter("type2", RelationshipType.MODELED);
-                    if (query.getResultList().size() > 0) {
-                        throw ArtificerConflictException.relationshipConstraint(uuid);
-                    }
-                }
-
-                artifact.setTrashed(true);
-                if (ArtificerConfig.isAuditingEnabled()) {
-                    HibernateAuditor.createDeleteEntry(artifact);
-                }
-                for (ArtificerArtifact derivedArtifact : artifact.getDerivedArtifacts()) {
-                    derivedArtifact.setTrashed(true);
-                    if (ArtificerConfig.isAuditingEnabled()) {
-                        HibernateAuditor.createDeleteEntry(derivedArtifact);
-                    }
+                for (ArtificerArtifact expandedArtifact : artifact.getExpandedArtifacts()) {
+                    deleteArtifact(expandedArtifact, force, entityManager);
                 }
 
                 return HibernateEntityToSrampVisitor.visit(artifact, artifactType, true);
             }
         }.execute();
+    }
+
+    private void deleteArtifact(ArtificerArtifact artifact, boolean force, EntityManager entityManager)
+            throws ArtificerException {
+        List<Long> targetedArtifacts = new ArrayList<>();
+        targetedArtifacts.add(artifact.getId());
+        for (ArtificerArtifact derivedArtifact : artifact.getDerivedArtifacts()) {
+            targetedArtifacts.add(derivedArtifact.getId());
+        }
+
+        if (force) {
+            // delete all relationships targeting this artifact or its derived artifacts
+            Query query = entityManager.createQuery(
+                    "SELECT r FROM ArtificerRelationship r INNER JOIN r.targets ts INNER JOIN ts.target t WHERE t.id IN :targetedArtifacts");
+            query.setParameter("targetedArtifacts", targetedArtifacts);
+            List<ArtificerRelationship> relationships = query.getResultList();
+            for (ArtificerRelationship relationship : relationships) {
+                entityManager.remove(relationship);
+            }
+        } else {
+            // if any non-trashed generic/modeled relationships target this artifact or its derived artifacts, exception
+            Query query = entityManager.createQuery(
+                    "SELECT r FROM ArtificerRelationship r INNER JOIN r.owner o INNER JOIN r.targets ts INNER JOIN ts.target t WHERE o.trashed = false AND t.id IN :targetedArtifacts AND (r.type=:type1 OR r.type=:type2)");
+            query.setParameter("targetedArtifacts", targetedArtifacts);
+            query.setParameter("type1", RelationshipType.GENERIC);
+            query.setParameter("type2", RelationshipType.MODELED);
+            if (query.getResultList().size() > 0) {
+                throw ArtificerConflictException.relationshipConstraint(artifact.getUuid());
+            }
+        }
+
+        artifact.setTrashed(true);
+        if (ArtificerConfig.isAuditingEnabled()) {
+            HibernateAuditor.createDeleteEntry(artifact);
+        }
+        for (ArtificerArtifact derivedArtifact : artifact.getDerivedArtifacts()) {
+            derivedArtifact.setTrashed(true);
+            if (ArtificerConfig.isAuditingEnabled()) {
+                HibernateAuditor.createDeleteEntry(derivedArtifact);
+            }
+        }
     }
 
     @Override

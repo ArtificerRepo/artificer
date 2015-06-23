@@ -15,25 +15,32 @@
  */
 package org.artificer.atom.visitors;
 
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.Set;
-
 import org.apache.commons.beanutils.BeanUtils;
-import org.artificer.common.MediaType;
+import org.apache.commons.lang.StringUtils;
 import org.artificer.atom.ArtificerAtomConstants;
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.MediaType;
+import org.artificer.common.visitors.ArtifactVisitorHelper;
+import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
-import org.artificer.atom.ArtificerAtomUtils;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ArtificerModelUtils;
-import org.artificer.common.visitors.ArtifactVisitorHelper;
-import org.artificer.common.visitors.HierarchicalArtifactVisitor;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.Set;
 
 /**
  * Visitor used to convert an artifact to an Atom entry.
@@ -117,7 +124,10 @@ public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisit
 				entry.getAuthors().add(new Person(artifact.getCreatedBy()));
 			if (artifact.getDescription() != null)
 				entry.setSummary(artifact.getDescription());
-			entry.getExtensionAttributes().put(ArtificerConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifactType.isDerived()));
+            entry.getExtensionAttributes().put(ArtificerConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifactType.isDerived()));
+            String archiveUuid = artifact.getOtherAttributes().get(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME);
+            entry.getExtensionAttributes().put(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_QNAME,
+                    String.valueOf(StringUtils.isNotBlank(archiveUuid)));
 
 			atomLink = baseUrl + "/s-ramp/"
 					+ artifactType.getModel() + "/"

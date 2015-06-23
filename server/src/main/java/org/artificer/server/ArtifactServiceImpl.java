@@ -22,6 +22,7 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtifactTypeEnum;
 import org.artificer.common.ArtifactVerifier;
+import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerUserException;
@@ -166,8 +167,10 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
                             subArtifact.setName(subFile.getName());
 
                             // set relevant properties/relationships
-                            ArtificerModelUtils.setCustomProperty(subArtifact, "expanded.from.archive.path", pathInArchive);
-                            ArtificerModelUtils.addGenericRelationship(subArtifact, "expandedFromDocument", artifact.getUuid());
+                            subArtifact.getOtherAttributes().put(
+                                    ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME, artifact.getUuid());
+                            subArtifact.getOtherAttributes().put(
+                                    ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME, pathInArchive);
 
                             creates.add(subArtifact, subArtifactContent, subArtifactContent.getPath());
                         }
