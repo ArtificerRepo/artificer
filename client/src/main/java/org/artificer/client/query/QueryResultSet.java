@@ -172,13 +172,19 @@ public class QueryResultSet implements Iterable<ArtifactSummary> {
         summary.setType(artifactType.getType());
         summary.setDerived(artifactType.isDerived());
         summary.setExtensionAttributes(entry.getExtensionAttributes());
-        Calendar published = Calendar.getInstance();
-        published.setTime(entry.getPublished());
-        summary.setCreatedTimestamp(published);
-        summary.setCreatedBy(entry.getAuthors().get(0).getName());
-        Calendar updated = Calendar.getInstance();
-        published.setTime(entry.getUpdated());
-        summary.setLastModifiedTimestamp(updated);
+		if (entry.getPublished() != null) {
+			Calendar published = Calendar.getInstance();
+			published.setTime(entry.getPublished());
+			summary.setCreatedTimestamp(published);
+		}
+		if (entry.getAuthors() != null && entry.getAuthors().size() > 0) {
+			summary.setCreatedBy(entry.getAuthors().get(0).getName());
+		}
+		if (entry.getUpdated() != null) {
+			Calendar updated = Calendar.getInstance();
+			updated.setTime(entry.getUpdated());
+			summary.setLastModifiedTimestamp(updated);
+		}
         summary.setExpandedFromArchive("true".equals(entry.getExtensionAttributes().get(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_QNAME)));
         return summary;
     }

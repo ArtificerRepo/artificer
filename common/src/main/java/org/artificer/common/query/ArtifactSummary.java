@@ -55,13 +55,17 @@ public class ArtifactSummary implements Serializable {
 
     }
 
-    public ArtifactSummary(String uuid, String name, String description, String model, String type, boolean derived,
-            boolean expandedFromArchive) {
+    public ArtifactSummary(String uuid, String name, String model, String type) {
         this.uuid = uuid;
         this.name = name;
-        this.description = description;
         this.model = model;
         this.type = type;
+    }
+
+    public ArtifactSummary(String uuid, String name, String description, String model, String type, boolean derived,
+            boolean expandedFromArchive) {
+        this(uuid, name, model, type);
+        this.description = description;
         this.derived = derived;
         this.expandedFromArchive = expandedFromArchive;
     }
