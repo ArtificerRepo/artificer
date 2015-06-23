@@ -63,6 +63,18 @@ public class HibernateQueryManager implements QueryManager {
                     reverseRelationships.add(new ReverseRelationship("relatedDocument", RelationshipType.DERIVED, derivedFrom));
                 }
 
+                // As well as expanded artifacts
+                q = entityManager.createQuery(
+                        "SELECT new org.artificer.common.query.ArtifactSummary(a.uuid, a.name, a.model, a.type)" +
+                                " FROM ArtificerArtifact a" +
+                                " INNER JOIN a.expandedFrom a1" +
+                                " WHERE a1.trashed = false AND a1.uuid=:uuid");
+                q.setParameter("uuid", uuid);
+                List<ArtifactSummary> expandedFroms = q.getResultList();
+                for (ArtifactSummary expandedFrom : expandedFroms) {
+                    reverseRelationships.add(new ReverseRelationship("expandedFromArchive", RelationshipType.DERIVED, expandedFrom));
+                }
+
                 return reverseRelationships;
             }
         }.execute();

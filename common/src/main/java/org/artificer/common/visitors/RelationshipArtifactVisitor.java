@@ -15,6 +15,8 @@
  */
 package org.artificer.common.visitors;
 
+import org.apache.commons.lang.StringUtils;
+import org.artificer.common.ArtificerConstants;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
@@ -68,6 +70,12 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     protected void visitBase(BaseArtifactType artifact) {
+        // expansion
+        String archiveUuid = artifact.getOtherAttributes().get(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME);
+        if (StringUtils.isNotBlank(archiveUuid)) {
+            visitRelationship("expandedFromArchive", archiveUuid, false);
+        }
+
         List<Relationship> relationships = artifact.getRelationship();
         if (relationships != null) {
             for (Relationship relationship : relationships) {
@@ -370,6 +378,12 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
         for (Target target : targets) {
             visitRelationship(type, target, generic);
         }
+    }
+
+    protected void visitRelationship(String type, String targetUuid, boolean generic) {
+        Target target = new Target();
+        target.setValue(targetUuid);
+        visitRelationship(type, target, generic);
     }
 
     /**
