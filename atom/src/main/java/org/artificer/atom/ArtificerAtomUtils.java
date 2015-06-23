@@ -191,6 +191,8 @@ public final class ArtificerAtomUtils {
         entry.getCategories().add(category);
 
         entry.getExtensionAttributes().put(ArtificerConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifact.isDerived()));
+        entry.getExtensionAttributes().put(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_QNAME,
+                String.valueOf(artifact.isExpandedFromArchive()));
 
         return entry;
     }

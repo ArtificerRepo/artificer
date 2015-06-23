@@ -57,7 +57,7 @@ public class ArtificerSchemaExporter {
 
         SchemaExport schemaExport = new SchemaExport(cfg);
         schemaExport.setDelimiter(";");
-        schemaExport.setOutputFile("distro/assembly/src/main/resources/ROOT/ddl/" + filename);
+        schemaExport.setOutputFile("repository/hibernate/src/main/resources/ddl/" + filename);
         schemaExport.execute(true, false, false, true);
     }
 }

@@ -41,6 +41,8 @@ public class ArtifactSummary implements Serializable {
 
     private boolean derived;
 
+    private boolean expandedFromArchive;
+
     private Calendar createdTimestamp;
 
     private String createdBy;
@@ -53,18 +55,20 @@ public class ArtifactSummary implements Serializable {
 
     }
 
-    public ArtifactSummary(String uuid, String name, String description, String model, String type, boolean derived) {
+    public ArtifactSummary(String uuid, String name, String description, String model, String type, boolean derived,
+            boolean expandedFromArchive) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.model = model;
         this.type = type;
         this.derived = derived;
+        this.expandedFromArchive = expandedFromArchive;
     }
 
     public ArtifactSummary(String uuid, String name, String description, String model, String type, boolean derived,
-            Calendar createdTimestamp, String createdBy, Calendar lastModifiedTimestamp) {
-        this(uuid, name, description, model, type, derived);
+            boolean expandedFromArchive, Calendar createdTimestamp, String createdBy, Calendar lastModifiedTimestamp) {
+        this(uuid, name, description, model, type, derived, expandedFromArchive);
         this.createdTimestamp = createdTimestamp;
         this.createdBy = createdBy;
         this.lastModifiedTimestamp = lastModifiedTimestamp;
@@ -116,6 +120,14 @@ public class ArtifactSummary implements Serializable {
 
     public void setDerived(boolean derived) {
         this.derived = derived;
+    }
+
+    public boolean isExpandedFromArchive() {
+        return expandedFromArchive;
+    }
+
+    public void setExpandedFromArchive(boolean expandedFromArchive) {
+        this.expandedFromArchive = expandedFromArchive;
     }
 
     public Calendar getCreatedTimestamp() {

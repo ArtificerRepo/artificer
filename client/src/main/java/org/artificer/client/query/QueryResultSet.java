@@ -179,6 +179,7 @@ public class QueryResultSet implements Iterable<ArtifactSummary> {
         Calendar updated = Calendar.getInstance();
         published.setTime(entry.getUpdated());
         summary.setLastModifiedTimestamp(updated);
+        summary.setExpandedFromArchive("true".equals(entry.getExtensionAttributes().get(ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_QNAME)));
         return summary;
     }
 }

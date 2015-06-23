@@ -69,7 +69,7 @@ public abstract class AbstractIntegrationTest {
             QueryResultSet results = client.query("/s-ramp", 0, 10000, "name", true);
             for (ArtifactSummary summary : results) {
                 String uuid = summary.getUuid().replace("urn:uuid:", "");
-                if (!summary.isDerived()) {
+                if (!summary.isDerived() && !summary.isExpandedFromArchive()) {
                     client.deleteArtifact(uuid, summary.getArtifactType(), true);
                 }
             }

@@ -40,10 +40,12 @@ public class ReverseRelationship implements Serializable {
     // The source fields are expanded, rather than directly accepting ArtifactSummary.  We need a constructor to be
     // used for JPQL conversion, which only has the primitives available.
     public ReverseRelationship(String name, RelationshipType type,
-            String sourceUuid, String sourceName, String sourceDescription, String sourceModel, String sourceType, boolean sourceDerived) {
+            String sourceUuid, String sourceName, String sourceDescription, String sourceModel, String sourceType,
+            boolean sourceDerived, boolean sourceExpandedFromArchive) {
         this.name = name;
         this.type = type;
-        sourceArtifact = new ArtifactSummary(sourceUuid, sourceName, sourceDescription, sourceModel, sourceType, sourceDerived);
+        sourceArtifact = new ArtifactSummary(sourceUuid, sourceName, sourceDescription, sourceModel, sourceType,
+                sourceDerived, sourceExpandedFromArchive);
     }
 
     public String getName() {

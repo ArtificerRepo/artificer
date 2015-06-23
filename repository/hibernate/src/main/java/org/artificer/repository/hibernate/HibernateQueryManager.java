@@ -42,7 +42,7 @@ public class HibernateQueryManager implements QueryManager {
             @Override
             protected List<ReverseRelationship> doExecute(EntityManager entityManager) throws Exception {
                 Query q = entityManager.createQuery(
-                        "SELECT new org.artificer.common.query.ReverseRelationship(r.name, r.type, a1.uuid, a1.name, a1.description, a1.model, a1.type, a1.derived)" +
+                        "SELECT new org.artificer.common.query.ReverseRelationship(r.name, r.type, a1.uuid, a1.name, a1.description, a1.model, a1.type, a1.derived, a1.expandedFromArchive)" +
                                 " FROM ArtificerRelationship r" +
                                 " INNER JOIN r.owner a1" +
                                 " INNER JOIN r.targets t" +
@@ -53,7 +53,7 @@ public class HibernateQueryManager implements QueryManager {
 
                 // If the artifact has derived artifacts, also need to include those...
                 q = entityManager.createQuery(
-                        "SELECT new org.artificer.common.query.ArtifactSummary(a.uuid, a.name, a.description, a.model, a.type, a.derived)" +
+                        "SELECT new org.artificer.common.query.ArtifactSummary(a.uuid, a.name, a.description, a.model, a.type, a.derived, a.expandedFromArchive)" +
                                 " FROM ArtificerArtifact a" +
                                 " INNER JOIN a.derivedFrom a1" +
                                 " WHERE a1.trashed = false AND a1.uuid=:uuid");
