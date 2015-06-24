@@ -102,9 +102,15 @@ public class UploadArtifactCommand extends AbstractCommand {
             BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
             IOUtils.closeQuietly(content);
 
-            artifact.setName(name);
-            artifact.setDescription(description);
-            client.updateArtifactMetaData(artifact);
+            if (StringUtils.isNotBlank(name) || StringUtils.isNotBlank(description)) {
+                if (StringUtils.isNotBlank(name)) {
+                    artifact.setName(name);
+                }
+                if (StringUtils.isNotBlank(description)) {
+                    artifact.setDescription(description);
+                }
+                client.updateArtifactMetaData(artifact);
+            }
 
             // Put the artifact in the session as the active artifact
             context(commandInvocation).setCurrentArtifact(artifact);
