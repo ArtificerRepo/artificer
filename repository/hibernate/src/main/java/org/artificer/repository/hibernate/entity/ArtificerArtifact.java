@@ -18,6 +18,8 @@ package org.artificer.repository.hibernate.entity;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.artificer.repository.hibernate.audit.ArtificerAuditEntry;
 import org.artificer.repository.hibernate.query.ArtificerTikaBridge;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.search.annotations.Analyzer;
@@ -63,6 +65,7 @@ import java.util.Set;
         @Index(name = "artifact_type_idx", columnNames = "type"),
         @Index(name = "artifact_model_type_idx", columnNames = {"model", "type"})})
 @Cacheable
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Indexed
 @Analyzer(impl = StandardAnalyzer.class)
 public class ArtificerArtifact implements Serializable {

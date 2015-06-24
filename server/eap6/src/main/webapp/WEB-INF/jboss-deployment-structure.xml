@@ -14,6 +14,7 @@
       <module name="org.slf4j" />
       <module name="org.jboss.staxmapper" />
       <module name="org.hibernate.search.orm" services="export" />
+      <module name="org.infinispan" />
     </dependencies>
     <exclusions>
       <!-- Disable Jettison/Jackson.  Need to provide fasterxml Jackson in order to support annotations (known issue with

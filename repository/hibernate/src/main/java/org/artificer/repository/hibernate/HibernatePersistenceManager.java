@@ -21,21 +21,20 @@ import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
-import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ArtificerException;
-import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerConflictException;
 import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerServerException;
 import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.common.ontology.ArtificerOntologyClass;
+import org.artificer.common.query.RelationshipType;
 import org.artificer.integration.ExtensionFactory;
 import org.artificer.integration.artifactbuilder.ArtifactBuilder;
 import org.artificer.integration.artifactbuilder.RelationshipContext;
 import org.artificer.repository.AbstractPersistenceManager;
 import org.artificer.repository.ClassificationHelper;
-import org.artificer.repository.hibernate.audit.HibernateAuditor;
 import org.artificer.repository.hibernate.audit.ArtificerAuditEntry;
+import org.artificer.repository.hibernate.audit.HibernateAuditor;
 import org.artificer.repository.hibernate.data.HibernateEntityToSrampVisitor;
 import org.artificer.repository.hibernate.data.SrampToHibernateEntityRelationshipsVisitor;
 import org.artificer.repository.hibernate.data.SrampToHibernateEntityVisitor;
@@ -43,9 +42,9 @@ import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerComment;
 import org.artificer.repository.hibernate.entity.ArtificerDocumentArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerRelationship;
-import org.artificer.common.query.RelationshipType;
 import org.artificer.repository.hibernate.entity.ArtificerStoredQuery;
 import org.artificer.repository.hibernate.file.FileManagerFactory;
+import org.hibernate.Session;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
@@ -222,6 +221,8 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
             protected ArtificerArtifact doExecute(EntityManager entityManager) throws Exception {
                 ArtificerArtifact artificerArtifact = HibernateUtil.getArtifact(srampArtifact.getUuid(), entityManager, true);
 
+                HibernateUtil.evict(ArtificerArtifact.class, artificerArtifact.getId(), entityManager);
+
                 HibernateAuditor differ = null;
                 if (ArtificerConfig.isAuditingEnabled()) {
                     differ = new HibernateAuditor(artificerArtifact);
@@ -256,6 +257,8 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
             @Override
             protected BaseArtifactType doExecute(EntityManager entityManager) throws Exception {
                 ArtificerArtifact artifact = HibernateUtil.getArtifact(uuid, entityManager, false);
+
+                HibernateUtil.evict(ArtificerArtifact.class, artifact.getId(), entityManager);
 
                 ArtificerComment comment = new ArtificerComment();
                 comment.setCreatedBy(HibernateEntityFactory.user());
@@ -303,6 +306,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
             List<ArtificerRelationship> relationships = query.getResultList();
             for (ArtificerRelationship relationship : relationships) {
                 entityManager.remove(relationship);
+                HibernateUtil.evict(ArtificerRelationship.class, relationship.getId(), entityManager);
             }
         } else {
             // if any non-trashed generic/modeled relationships target this artifact or its derived artifacts, exception
@@ -317,11 +321,13 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
         }
 
         artifact.setTrashed(true);
+        HibernateUtil.evict(ArtificerArtifact.class, artifact.getId(), entityManager);
         if (ArtificerConfig.isAuditingEnabled()) {
             HibernateAuditor.createDeleteEntry(artifact);
         }
         for (ArtificerArtifact derivedArtifact : artifact.getDerivedArtifacts()) {
             derivedArtifact.setTrashed(true);
+            HibernateUtil.evict(ArtificerArtifact.class, derivedArtifact.getId(), entityManager);
             if (ArtificerConfig.isAuditingEnabled()) {
                 HibernateAuditor.createDeleteEntry(derivedArtifact);
             }
@@ -368,6 +374,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
             @Override
             protected List<ArtificerOntology> doExecute(EntityManager entityManager) throws Exception {
                 Query q = entityManager.createQuery("SELECT DISTINCT o FROM ArtificerOntology o LEFT JOIN FETCH o.rootClasses ORDER BY o.label ASC");
+                q.unwrap(org.hibernate.Query.class).setCacheable(true);
                 return q.getResultList();
             }
         }.execute();
@@ -378,8 +385,11 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
         new HibernateUtil.HibernateTask<Void>() {
             @Override
             protected Void doExecute(EntityManager entityManager) throws Exception {
-                // Set the surrogate ID
                 ArtificerOntology persistedOntology = HibernateUtil.getOntology(ontology.getUuid(), entityManager);
+
+                HibernateUtil.evict(ArtificerOntology.class, ontology.getSurrogateId(), entityManager);
+
+                // Set the surrogate ID
                 ontology.setSurrogateId(persistedOntology.getSurrogateId());
 
                 // Don't trust users to properly set both sides of the association...
@@ -400,6 +410,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
             @Override
             protected Void doExecute(EntityManager entityManager) throws Exception {
                 ArtificerOntology ontology = HibernateUtil.getOntology(uuid, entityManager);
+                HibernateUtil.evict(ArtificerOntology.class, ontology.getSurrogateId(), entityManager);
                 // Orphan removal is not honored by JPQL, so we need to manually delete using #remove.
                 entityManager.remove(ontology);
                 return null;
@@ -441,6 +452,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
                 // The name may have changed, so we need to look it up and modify, rather than just persist
                 // what we're handed.
                 ArtificerStoredQuery artificerStoredQuery = HibernateUtil.getStoredQuery(queryName, entityManager);
+                HibernateUtil.evict(ArtificerStoredQuery.class, artificerStoredQuery.getQueryName(), entityManager);
                 HibernateEntityFactory.processStoredQuery(artificerStoredQuery, srampStoredQuery);
                 entityManager.merge(artificerStoredQuery);
                 return null;
@@ -464,8 +476,9 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
         return new HibernateUtil.HibernateTask<List<StoredQuery>>() {
             @Override
             protected List<StoredQuery> doExecute(EntityManager entityManager) throws Exception {
-                List<ArtificerStoredQuery> storedQueries
-                        = entityManager.createQuery("FROM ArtificerStoredQuery asq ORDER BY asq.queryName ASC").getResultList();
+                Query q = entityManager.createQuery("FROM ArtificerStoredQuery asq ORDER BY asq.queryName ASC");
+                q.unwrap(org.hibernate.Query.class).setCacheable(true);
+                List<ArtificerStoredQuery> storedQueries = q.getResultList();
                 return HibernateEntityFactory.storedQueries(storedQueries);
             }
         }.execute();
@@ -483,6 +496,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
                 }
 
                 entityManager.remove(storedQuery);
+                HibernateUtil.evict(ArtificerStoredQuery.class, storedQuery.getQueryName(), entityManager);
 
                 return null;
             }

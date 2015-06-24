@@ -15,6 +15,8 @@
  */
 package org.artificer.repository.hibernate.entity;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
@@ -34,6 +36,7 @@ import java.util.List;
 @Table(appliesTo = "ArtificerStoredQuery", indexes = {
         @Index(name = "storedquery_name_idx", columnNames = "queryName")})
 @Cacheable
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class ArtificerStoredQuery implements Serializable {
 
     private String queryName;
