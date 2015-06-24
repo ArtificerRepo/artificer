@@ -179,6 +179,8 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
         TypedQuery q = entityManager.createQuery(query);
         args.applyPaging(q);
 
+        q.unwrap(org.hibernate.Query.class).setCacheable(true);
+
         return q.getResultList();
     }
 

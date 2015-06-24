@@ -58,16 +58,18 @@ Hibernate Configuration
 
 For detailed information of what's possible, please see the Hibernate docs themselves.  However, a few things to highlight:
 
-* Second level entity caching is disabled by default.  Due to the nature of Artificer, where usage is typically focused
-on large-scale queries, this caching can actually be a bit of a hindrance.  However, if you work repeatedly with
-single artifacts, this may be beneficial in some contexts.  See the 'hibernate.cache.*' properties in artificer.properties.
+* Query caching and Infinispan second-level entity caching are both enabled by default.  This drastically reduces
+processing time for repeated queries, relationship creation
+(when uploading large archives of artifacts or highly derived documents), etc.  We essentially lean on the default
+"hibernate" cache available in EAP and Wildfly.  However, as mentioned above, feel free to tweak the 'hibernate.cache.*'
+settings in `artificer.properties` as needed.
 * By default, we use Lucene filesystem indexes with Hibernate Search.  This is also highly configurable and can use
 any number of backends.  See the 'hibernate.search.*' properties in artificer.properties.  Note one property in
 particular: 'hibernate.search.default.indexBase'.  By default, we use a relative path: 'lucene/indexes'.  However,
 that's completely dependent on the location from which you start the application server.  Most users will probably
 need to change this path to something more permanent (and one which you have adequate permissions).
 * Also with Hibernate Search, many usages could benefit from hibernate-search-infinispan, which introduces in-memory
-index caching (clusterable, etc.).  This is also disabled by default, but can be set with the correct properties
+index caching (clusterable, etc.).  This is currently disabled by default, but can be set with the correct properties
 and including the hibernate-search-infinispan JAR.
 See https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-UsingtheInfinispansecondlevelcache
 for more info.

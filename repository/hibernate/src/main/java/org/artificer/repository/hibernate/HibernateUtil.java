@@ -26,6 +26,7 @@ import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerStoredQuery;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.hibernate.ejb.HibernatePersistence;
 import org.hibernate.engine.spi.SessionImplementor;
 
@@ -33,6 +34,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.io.Serializable;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -85,6 +87,8 @@ public class HibernateUtil {
                 }
                 throw new ArtificerServerException(t);
             } finally {
+//                entityManager.unwrap(Session.class).getSessionFactory().getStatistics().logSummary();
+
                 if (entityManager != null) {
                     entityManager.close();
                 }
@@ -205,6 +209,7 @@ public class HibernateUtil {
     public static ArtificerArtifact getArtifact(String uuid, EntityManager entityManager, boolean fullFetch) throws ArtificerException {
         Query q = entityManager.createQuery("FROM ArtificerArtifact a WHERE a.trashed = false AND a.uuid = :uuid");
         q.setParameter("uuid", uuid);
+        q.unwrap(org.hibernate.Query.class).setCacheable(true);
         ArtificerArtifact artifact;
         try {
             artifact = (ArtificerArtifact) q.getSingleResult();
@@ -225,6 +230,7 @@ public class HibernateUtil {
     public static ArtificerOntology getOntology(String uuid, EntityManager entityManager) throws ArtificerException {
         Query q = entityManager.createQuery("FROM ArtificerOntology a WHERE a.uuid = :uuid");
         q.setParameter("uuid", uuid);
+        q.unwrap(org.hibernate.Query.class).setCacheable(true);
         ArtificerOntology ontology;
         try {
             ontology = (ArtificerOntology) q.getSingleResult();
@@ -241,6 +247,10 @@ public class HibernateUtil {
             throw ArtificerNotFoundException.storedQueryNotFound(queryName);
         }
         return storedQuery;
+    }
+
+    public static void evict(Class clazz, Serializable id, EntityManager entityManager) {
+        entityManager.unwrap(Session.class).getSessionFactory().getCache().evictEntity(clazz, id);
     }
 
     /**

@@ -54,6 +54,7 @@ public class HibernateAuditManager implements AuditManager {
                 Query q = entityManager.createQuery(
                         "SELECT au FROM ArtificerAuditEntry au WHERE au.uuid=:uuid ORDER BY au.id DESC");
                 q.setParameter("uuid", auditEntryUuid);
+                q.unwrap(org.hibernate.Query.class).setCacheable(true);
                 try {
                     ArtificerAuditEntry auditEntry = (ArtificerAuditEntry) q.getSingleResult();
                     return HibernateAuditor.auditEntry(auditEntry);
@@ -73,12 +74,14 @@ public class HibernateAuditManager implements AuditManager {
                     Query q = entityManager.createQuery(
                             "SELECT au FROM ArtificerAuditEntry au INNER JOIN au.artifact a WHERE a.uuid=:uuid ORDER BY au.id DESC");
                     q.setParameter("uuid", artifactUuid);
+                    q.unwrap(org.hibernate.Query.class).setCacheable(true);
                     args.applyPaging(q);
                     List<ArtificerAuditEntry> auditEntries = q.getResultList();
 
                     q = entityManager.createQuery(
                             "SELECT count(au) FROM ArtificerAuditEntry au INNER JOIN au.artifact a WHERE a.uuid=:uuid");
                     q.setParameter("uuid", artifactUuid);
+                    q.unwrap(org.hibernate.Query.class).setCacheable(true);
                     args.applyPaging(q);
                     long totalSize = (Long) q.getSingleResult();
 
@@ -106,12 +109,14 @@ public class HibernateAuditManager implements AuditManager {
                     Query q = entityManager.createQuery(
                             "SELECT au FROM ArtificerAuditEntry au WHERE au.modifiedBy.username=:username ORDER BY au.id DESC");
                     q.setParameter("username", username);
+                    q.unwrap(org.hibernate.Query.class).setCacheable(true);
                     args.applyPaging(q);
                     List<ArtificerAuditEntry> auditEntries = q.getResultList();
 
                     q = entityManager.createQuery(
                             "SELECT count(au) FROM ArtificerAuditEntry au WHERE au.modifiedBy.username=:username");
                     q.setParameter("username", username);
+                    q.unwrap(org.hibernate.Query.class).setCacheable(true);
                     args.applyPaging(q);
                     long totalSize = (Long) q.getSingleResult();
 
