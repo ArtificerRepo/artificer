@@ -49,6 +49,7 @@ public class HibernateQueryManager implements QueryManager {
                                 " INNER JOIN t.target a2" +
                                 " WHERE a1.trashed = false AND a2.uuid=:uuid");
                 q.setParameter("uuid", uuid);
+                q.unwrap(org.hibernate.Query.class).setCacheable(true);
                 List<ReverseRelationship> reverseRelationships = q.getResultList();
 
                 // If the artifact has derived artifacts, also need to include those...
@@ -58,6 +59,7 @@ public class HibernateQueryManager implements QueryManager {
                                 " INNER JOIN a.derivedFrom a1" +
                                 " WHERE a1.trashed = false AND a1.uuid=:uuid");
                 q.setParameter("uuid", uuid);
+                q.unwrap(org.hibernate.Query.class).setCacheable(true);
                 List<ArtifactSummary> derivedFroms = q.getResultList();
                 for (ArtifactSummary derivedFrom : derivedFroms) {
                     reverseRelationships.add(new ReverseRelationship("relatedDocument", RelationshipType.DERIVED, derivedFrom));
