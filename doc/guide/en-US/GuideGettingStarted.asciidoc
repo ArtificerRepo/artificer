@@ -116,7 +116,7 @@ should see the GUI dashboard and be able to navigate to either the Artifacts or 
 
 [[figure-gs-screenshot-of-the-artificer-ui]]
 .Welcome screen of the artificer-ui.
-image::images/srampui.png[Screenshot of the artificer-ui]
+image::artificer-ui.png[Screenshot of the artificer-ui]
 
 You can click on `Artifacts` and see a list of files related to the Artificer default workflows.
 
