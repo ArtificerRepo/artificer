@@ -18,29 +18,9 @@ package org.artificer.ui.client.shared.beans;
 /**
  * The origin of the artifact.
  *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 public enum ArtifactOriginEnum {
 
-    any, primary, derived;
-
-    /**
-     * Creates an origin enum given three booleans (any, primary, derived).  The first of these
-     * that is true will win out.  This method is useful in the UI, where the value is displayed
-     * as three radio buttons.
-     * @param any
-     * @param primary
-     * @param derived
-     */
-    public static ArtifactOriginEnum valueOf(Boolean any, Boolean primary, Boolean derived) {
-        if (any)
-            return ArtifactOriginEnum.any;
-        if (primary)
-            return ArtifactOriginEnum.primary;
-        if (derived)
-            return ArtifactOriginEnum.derived;
-        // Return null here - unspecified behavior.
-        return null;
-    }
-
+    ALL, PRIMARY_ORIGINAL, PRIMARY_EXPANDED, DERIVED
 }

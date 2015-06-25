@@ -113,6 +113,7 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "contentEncoding"), "contentEncoding");
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "extendedType"), "extendedType");
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "derived"), "derived");
+        corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "expandedFromArchive"), "expandedFromArchive");
     }
 
     private static final Map<String, String> orderByMap = new HashMap<String, String>();
