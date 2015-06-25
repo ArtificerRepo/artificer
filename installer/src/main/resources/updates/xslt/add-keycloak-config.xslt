@@ -62,6 +62,26 @@
     </xsl:element>
   </xsl:template>
 
+  <!-- In EAP 6.4, Keycloak needs this.  Otherwise, the console is flooded with warning messages. -->
+  <xsl:template match="*[name()='profile']/*[name()='subsystem'][namespace-uri(.) = 'urn:jboss:domain:logging:1.5']">
+    <xsl:variable name="currentNS" select="namespace-uri(.)" />
+    <xsl:element name="subsystem" namespace="{$currentNS}">
+      <xsl:apply-templates select="@*|node()|text()" />
+      <xsl:element name="logger" namespace="{$currentNS}">
+        <xsl:attribute name="category">org.jboss.resteasy.core.ResourceLocator</xsl:attribute>
+        <xsl:element name="level" namespace="{$currentNS}">
+          <xsl:attribute name="name">ERROR</xsl:attribute>
+        </xsl:element>
+      </xsl:element>
+      <xsl:element name="logger" namespace="{$currentNS}">
+        <xsl:attribute name="category">org.jboss.resteasy.resteasy_jaxrs.i18n</xsl:attribute>
+        <xsl:element name="level" namespace="{$currentNS}">
+          <xsl:attribute name="name">ERROR</xsl:attribute>
+        </xsl:element>
+      </xsl:element>
+    </xsl:element>
+  </xsl:template>
+
   <!-- Copy everything else. -->
   <xsl:template match="@*|node()|text()">
     <xsl:copy>
