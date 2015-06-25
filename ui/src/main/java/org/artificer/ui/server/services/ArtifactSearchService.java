@@ -18,12 +18,11 @@ package org.artificer.ui.server.services;
 import org.apache.commons.lang3.StringUtils;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.client.ArtificerClientQuery;
-import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.query.ArtifactSummary;
 import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
-import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
 import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
 import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
 import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
@@ -169,10 +168,16 @@ public class ArtifactSearchService implements IArtifactSearchService {
             criteria.add("@lastModifiedBy = '" + filters.getLastModifiedBy() + "'");
         }
         // Origin
-        if (filters.getOrigin() == ArtifactOriginEnum.primary) {
-            criteria.add("@derived = 'false'");
-        } else if (filters.getOrigin() == ArtifactOriginEnum.derived) {
-            criteria.add("@derived = 'true'");
+        switch (filters.getOrigin()) {
+            case PRIMARY_ORIGINAL:
+                criteria.add("@derived = 'false' and @expandedFromArchive = 'false'");
+                break;
+            case PRIMARY_EXPANDED:
+                criteria.add("@derived = 'false' and @expandedFromArchive = 'true'");
+                break;
+            case DERIVED:
+                criteria.add("@derived = 'true'");
+                break;
         }
         // Classifiers
         if (hasClassifiers(filters)) {

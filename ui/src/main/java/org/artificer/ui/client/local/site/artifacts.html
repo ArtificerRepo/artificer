@@ -80,18 +80,12 @@
                           </div>
                           <div class="controls controls-row">
                             <label class="sramp-filter-label" data-i18n-key="origin">Origin</label>
-                            <label class="radio offset1">
-                              <input data-field="originAny" type="radio" name="origin" id="origin-any" value="" checked="checked"></input>
-                              <span data-i18n-key="any">Any</span>
-                            </label>
-                            <label class="radio offset1">
-                              <input data-field="originPrimary" type="radio" name="origin" id="origin-primary" value="primary"></input>
-                              <span data-i18n-key="primary">Primary</span>
-                            </label>
-                            <label class="radio offset1">
-                              <input data-field="originDerived" type="radio" name="origin" id="origin-derived" value="derived"></input>
-                              <span data-i18n-key="derived">Derived</span>
-                            </label>
+                            <select data-field="originSelect" data-role="dummy" class="span12">
+                              <option>All</option>
+                              <option>Primary (Original)</option>
+                              <option>Primary (Expanded From Archive)</option>
+                              <option>Derived</option>
+                            </select>
                           </div>
                           <div class="controls">
                             <label class="sramp-filter-label" data-i18n-key="name">Name</label>

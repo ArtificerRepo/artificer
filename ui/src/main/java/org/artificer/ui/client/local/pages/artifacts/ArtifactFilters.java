@@ -15,6 +15,8 @@
  */
 package org.artificer.ui.client.local.pages.artifacts;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -23,14 +25,15 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import org.artificer.ui.client.local.ClientMessages;
 import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
 import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.DateBox;
-import org.overlord.commons.gwt.client.local.widgets.RadioButton;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -48,6 +51,9 @@ import javax.inject.Inject;
 public class ArtifactFilters extends Composite implements HasValue<ArtifactFilterBean> {
 
     private ArtifactFilterBean currentState = new ArtifactFilterBean();
+
+    @Inject
+    protected ClientMessages i18n;
 
     @Inject @DataField
     protected TextBox keywords;
@@ -83,11 +89,7 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
 
     // Origin
     @Inject @DataField
-    protected RadioButton originAny;
-    @Inject @DataField
-    protected RadioButton originPrimary;
-    @Inject @DataField
-    protected RadioButton originDerived;
+    protected ListBox originSelect;
 
     @Inject @DataField
     protected Button clearAllFilters;
@@ -114,7 +116,6 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
     @SuppressWarnings("unchecked")
     @PostConstruct
     protected void postConstruct() {
-        originPrimary.setValue(true);
         ClickHandler clearFilterHandler = new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -129,9 +130,9 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
                 onFilterValueChange();
             }
         };
-        ClickHandler clickHandler = new ClickHandler() {
+        ChangeHandler changeHandler = new ChangeHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onChange(ChangeEvent event) {
                 onFilterValueChange();
             }
         };
@@ -145,11 +146,14 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
         dateModifiedTo.addValueChangeHandler(valueChangeHandler);
         createdBy.addValueChangeHandler(valueChangeHandler);
         lastModifiedBy.addValueChangeHandler(valueChangeHandler);
-        originAny.addClickHandler(clickHandler);
-        originPrimary.addClickHandler(clickHandler);
-        originDerived.addClickHandler(clickHandler);
         classifierFilters.addValueChangeHandler(valueChangeHandler);
         customPropertyFilters.addValueChangeHandler(valueChangeHandler);
+
+        originSelect.addItem(i18n.format("artifacts.all"), ArtifactOriginEnum.ALL.name());
+        originSelect.addItem(i18n.format("artifacts.primary-original"), ArtifactOriginEnum.PRIMARY_ORIGINAL.name());
+        originSelect.addItem(i18n.format("artifacts.primary-expanded"), ArtifactOriginEnum.PRIMARY_EXPANDED.name());
+        originSelect.addItem(i18n.format("artifacts.derived"), ArtifactOriginEnum.DERIVED.name());
+        originSelect.addChangeHandler(changeHandler);
     }
 
     /**
@@ -167,7 +171,7 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
             .setDateModifiedTo(dateModifiedTo.getDateValue())
             .setCreatedBy(createdBy.getValue())
             .setLastModifiedBy(lastModifiedBy.getValue())
-            .setOrigin(ArtifactOriginEnum.valueOf(originAny.getValue(), originPrimary.getValue(), originDerived.getValue()))
+            .setOrigin(ArtifactOriginEnum.valueOf(originSelect.getSelectedValue()))
             .setClassifiers(classifierFilters.getValue())
             .setCustomProperties(customPropertyFilters.getValue());
 
@@ -222,13 +226,19 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
         dateModifiedFrom.setDateValue(value.getDateModifiedFrom() == null ? null : value.getDateModifiedFrom());
         dateModifiedTo.setDateValue(value.getDateModifiedTo() == null ? null : value.getDateModifiedTo());
         createdBy.setValue(value.getCreatedBy() == null ? "" : value.getCreatedBy());
-        lastModifiedBy.setValue(value.getLastModifiedBy() == null ? "" : value.getLastModifiedBy());
-        if (value.getOrigin() == ArtifactOriginEnum.any) {
-            originAny.setValue(true);
-        } else if (value.getOrigin() == ArtifactOriginEnum.derived) {
-            originDerived.setValue(true);
-        } else {
-            originPrimary.setValue(true);
+        switch (value.getOrigin()) {
+            case ALL:
+                originSelect.setSelectedIndex(0);
+                break;
+            case PRIMARY_ORIGINAL:
+                originSelect.setSelectedIndex(1);
+                break;
+            case PRIMARY_EXPANDED:
+                originSelect.setSelectedIndex(2);
+                break;
+            case DERIVED:
+                originSelect.setSelectedIndex(3);
+                break;
         }
         classifierFilters.setValue(value.getClassifiers());
         customPropertyFilters.setValue(value.getCustomProperties());
