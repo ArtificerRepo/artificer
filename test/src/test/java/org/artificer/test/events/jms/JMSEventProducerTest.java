@@ -235,12 +235,12 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
         try {
             return subscribe(WILDFLY_INITIAL_CONTEXT_FACTORY, WILDFLY_PROVIDER_URL, WILDFLY_CONNECTIONFACTORY_JNDI, WILDFLY_TOPIC_JNDI, lock);
         } catch (Exception e) {
-          e.printStackTrace();
+//          e.printStackTrace();
         }
         try {
             return subscribe(EAP_INITIAL_CONTEXT_FACTORY, EAP_PROVIDER_URL, EAP_CONNECTIONFACTORY_JNDI, EAP_TOPIC_JNDI, lock);
         } catch (Exception e) {
-          e.printStackTrace();
+//          e.printStackTrace();
         }
         fail("Could not create a JMS client.");
         return null;
