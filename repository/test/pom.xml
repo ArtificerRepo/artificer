@@ -44,6 +44,11 @@
       <artifactId>shrinkwrap-impl-base</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Apache Commons -->
     <dependency>
