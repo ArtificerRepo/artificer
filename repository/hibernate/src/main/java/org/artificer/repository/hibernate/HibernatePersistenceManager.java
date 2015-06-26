@@ -373,8 +373,10 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
         return new HibernateUtil.HibernateTask<List<ArtificerOntology>>() {
             @Override
             protected List<ArtificerOntology> doExecute(EntityManager entityManager) throws Exception {
-                Query q = entityManager.createQuery("SELECT DISTINCT o FROM ArtificerOntology o LEFT JOIN FETCH o.rootClasses ORDER BY o.label ASC");
-                q.unwrap(org.hibernate.Query.class).setCacheable(true);
+                Query q = entityManager.createQuery("SELECT DISTINCT o FROM ArtificerOntology o JOIN FETCH o.rootClasses ORDER BY o.label ASC");
+                // TODO: Until https://hibernate.atlassian.net/browse/HHH-1523, JOIN FETCH cannot be used in
+                // conjunction with the query cache + 2LC!
+//                q.unwrap(org.hibernate.Query.class).setCacheable(true);
                 return q.getResultList();
             }
         }.execute();

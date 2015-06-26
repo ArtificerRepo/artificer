@@ -45,8 +45,9 @@ public class HibernateRepositoryTestProvider implements RepositoryTestProvider {
         System.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
         System.setProperty("hibernate.connection.url", "jdbc:h2:mem:dbHibernateTest;DB_CLOSE_DELAY=-1;MVCC=true");
         System.setProperty("hibernate.connection.username", "sa");
-        System.setProperty("hibernate.cache.use_second_level_cache", "false");
-        System.setProperty("hibernate.cache.use_query_cache", "false");
+        System.setProperty("hibernate.cache.use_second_level_cache", "true");
+        System.setProperty("hibernate.cache.region.factory_class", "org.hibernate.testing.cache.CachingRegionFactory");
+        System.setProperty("hibernate.cache.use_query_cache", "true");
         System.setProperty("hibernate.search.default.directory_provider", "ram");
 //        System.setProperty("hibernate.show_sql", "true");
         if (extraProperties != null) {
