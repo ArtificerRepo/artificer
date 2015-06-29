@@ -101,24 +101,22 @@
     <!-- Artificer only libraries (not in BOM) -->
     <version.commons-beanutils>1.8.2</version.commons-beanutils>
     <version.org.apache.bcel>5.2</version.org.apache.bcel>
-    <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
     <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
-    <version.org.jboss.errai>3.1.2.Final</version.org.jboss.errai>
-    <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
-    <version.org.overlord.overlord-commons>3.1.0-SNAPSHOT</version.org.overlord.overlord-commons>
-    <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
-    <version.org.keycloak>1.2.0.Final</version.org.keycloak>
     <version.org.jboss.aesh>0.61</version.org.jboss.aesh>
+    <version.org.jboss.errai>3.1.2.Final</version.org.jboss.errai>
     <version.org.jboss.shrinkwrap>1.2.2</version.org.jboss.shrinkwrap>
+    <version.org.keycloak>1.2.0.Final</version.org.keycloak>
+    <version.org.overlord.overlord-commons>3.1.0.Final</version.org.overlord.overlord-commons>
+    <version.org.reflections>0.9.9</version.org.reflections>
+    <version.org.switchyard>2.0.0.Final</version.org.switchyard>
 
     <!-- BOM Overrides -->
-    <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
     <version.org.apache.httpcomponents.httpclient>4.2.1</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.2.1</version.org.apache.httpcomponents.httpcore>
-    <!--<version.org.jboss.resteasy>3.0.8.Final</version.org.jboss.resteasy>-->
     <version.org.codehaus.plexus>3.0.17</version.org.codehaus.plexus>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
     <version.org.hibernate>4.2.18.Final</version.org.hibernate>
+    <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
   </properties>
 
   <build>
@@ -533,11 +531,6 @@
 
       <!-- Apache Commons -->
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${version.org.apache.commons.commons-lang3}</version>
-      </dependency>
-      <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils-core</artifactId>
         <version>${version.commons-beanutils}</version>
@@ -644,12 +637,6 @@
         <version>2.3.8</version>
       </dependency>
 
-      <dependency>
-        <groupId>jstl</groupId>
-        <artifactId>jstl</artifactId>
-        <version>1.2</version>
-      </dependency>
-
       <!-- KeyCloak -->
       <dependency>
         <groupId>org.keycloak</groupId>
@@ -685,11 +672,6 @@
         <version>${version.org.jboss.aesh}</version>
       </dependency>
       <dependency>
-        <groupId>com.datastax.cassandra</groupId>
-        <artifactId>cassandra-driver-core</artifactId>
-        <version>1.0.4</version>
-      </dependency>
-      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-nop</artifactId>
         <version>${version.org.slf4j}</version>
@@ -698,16 +680,6 @@
         <groupId>javax.jms</groupId>
         <artifactId>jms</artifactId>
         <version>1.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-container-default</artifactId>
-        <version>${version.org.codehaus.plexus.eap.integration}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpmime</artifactId>
-        <version>${version.org.apache.httpcomponents.httpmime}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -720,14 +692,9 @@
         <version>${version.org.apache.httpcomponents.httpcore}</version>
       </dependency>
       <dependency>
-        <groupId>javax.security.jacc</groupId>
-        <artifactId>javax.security.jacc-api</artifactId>
-        <version>1.4</version>
-      </dependency>
-      <dependency>
         <groupId>org.reflections</groupId>
         <artifactId>reflections</artifactId>
-        <version>0.9.9</version>
+        <version>${version.org.reflections}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -753,19 +720,6 @@
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-impl-base</artifactId>
         <version>${version.org.jboss.shrinkwrap}</version>
-      </dependency>
-
-      <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
-      <dependency>
-        <groupId>org.jboss.spec.javax.annotation</groupId>
-        <artifactId>jboss-annotations-api_1.1_spec</artifactId>
-        <version>1.0.1.Final</version>
-      </dependency>
-      <!-- Import the JSF API, we use provided scope as the API is included in JBoss AS 7 -->
-      <dependency>
-        <groupId>org.jboss.spec.javax.faces</groupId>
-        <artifactId>jboss-jsf-api_2.1_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec}</version>
       </dependency>
       
       <!-- Jetty (dev server) -->
@@ -842,6 +796,7 @@
         <version>${version.com.google.gwt}</version>
       </dependency>
 
+      <!-- RESTEasy -->
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
@@ -891,11 +846,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
