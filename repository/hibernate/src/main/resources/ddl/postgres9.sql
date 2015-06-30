@@ -204,15 +204,15 @@
         attributes_id int8 not null
     );
 
-    create index artifact_uuid_idx on ArtificerArtifact (uuid);
+    create index artifact_uuid_idx on ArtificerArtifact (uuid, trashed);
 
-    create index artifact_name_idx on ArtificerArtifact (name);
+    create index artifact_name_idx on ArtificerArtifact (name, trashed);
 
-    create index artifact_model_idx on ArtificerArtifact (model);
+    create index artifact_model_idx on ArtificerArtifact (model, trashed);
 
-    create index artifact_type_idx on ArtificerArtifact (type);
+    create index artifact_type_idx on ArtificerArtifact (type, trashed);
 
-    create index artifact_model_type_idx on ArtificerArtifact (model, type);
+    create index artifact_model_type_idx on ArtificerArtifact (model, type, trashed);
 
     create index relationship_name_idx on ArtificerRelationship (name);
 
