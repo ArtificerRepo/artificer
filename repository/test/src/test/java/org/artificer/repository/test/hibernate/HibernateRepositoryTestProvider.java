@@ -18,8 +18,10 @@ package org.artificer.repository.test.hibernate;
 import org.artificer.repository.filter.ServletCredentialsFilter;
 import org.artificer.repository.hibernate.HibernateUtil;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
+import org.artificer.repository.hibernate.entity.ArtificerProperty;
 import org.artificer.repository.hibernate.file.FileManagerFactory;
 import org.artificer.repository.test.RepositoryTestProvider;
+import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 
 import javax.persistence.EntityManager;
@@ -60,31 +62,37 @@ public class HibernateRepositoryTestProvider implements RepositoryTestProvider {
         FileManagerFactory.reset();
 
         ServletCredentialsFilter.setUsername("junituser");
-
-        new HibernateUtil.HibernateTask<Void>() {
-            @Override
-            protected Void doExecute(EntityManager entityManager) throws Exception {
-                // H2 specific
-                entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
-                entityManager.createNativeQuery("SET LOCK_MODE 0").executeUpdate();
-                List<Object[]> tables = entityManager.createNativeQuery("SHOW TABLES").getResultList();
-                for (Object[] table : tables) {
-                    entityManager.createNativeQuery("TRUNCATE TABLE " + table[0]).executeUpdate();
-                }
-                entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY true").executeUpdate();
-                entityManager.createNativeQuery("SET LOCK_MODE 3").executeUpdate();
-
-                // purge Hibernate Search
-                FullTextEntityManager fullTextEntityManager
-                        = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
-                fullTextEntityManager.purgeAll(ArtificerArtifact.class);
-
-                return null;
-            }
-        }.execute();
     }
 
     @Override
     public void after() throws Exception {
+		new HibernateUtil.HibernateTask<Void>() {
+			@Override
+			protected Void doExecute(EntityManager entityManager) throws Exception {
+				// H2 specific
+				entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+				entityManager.createNativeQuery("SET LOCK_MODE 0").executeUpdate();
+				List<Object[]> tables = entityManager.createNativeQuery("SHOW TABLES").getResultList();
+				for (Object[] table : tables) {
+					entityManager.createNativeQuery("TRUNCATE TABLE " + table[0]).executeUpdate();
+				}
+				entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY true").executeUpdate();
+				entityManager.createNativeQuery("SET LOCK_MODE 3").executeUpdate();
+
+				// purge caches
+				entityManager.unwrap(Session.class).getSessionFactory().getCache().evictCollectionRegions();
+				entityManager.unwrap(Session.class).getSessionFactory().getCache().evictEntityRegions();
+				entityManager.unwrap(Session.class).getSessionFactory().getCache().evictQueryRegions();
+
+				// purge Hibernate Search
+				FullTextEntityManager fullTextEntityManager
+						= org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
+				fullTextEntityManager.purgeAll(ArtificerProperty.class);
+				fullTextEntityManager.purgeAll(ArtificerArtifact.class);
+				fullTextEntityManager.getSearchFactory().optimize();
+
+				return null;
+			}
+		}.execute();
     }
 }
