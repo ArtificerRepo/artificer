@@ -68,6 +68,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
+import javax.persistence.EntityManager;
 import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -82,20 +83,22 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
 
     private final ArtificerArtifact artificerArtifact;
     private final HibernateRelationshipFactory relationshipFactory;
+	private final EntityManager entityManager;
 
     public static void visit(BaseArtifactType srampArtifact, ArtificerArtifact artificerArtifact,
-            HibernateRelationshipFactory relationshipFactory) throws Exception {
+            HibernateRelationshipFactory relationshipFactory, EntityManager entityManager) throws Exception {
         SrampToHibernateEntityRelationshipsVisitor visitor = new SrampToHibernateEntityRelationshipsVisitor(
-                artificerArtifact, relationshipFactory);
+                artificerArtifact, relationshipFactory, entityManager);
         ArtifactVisitorHelper.visitArtifact(visitor, srampArtifact);
 
         visitor.throwError();
     }
 
     public SrampToHibernateEntityRelationshipsVisitor(ArtificerArtifact artificerArtifact,
-            HibernateRelationshipFactory relationshipFactory) {
+            HibernateRelationshipFactory relationshipFactory, EntityManager entityManager) {
         this.artificerArtifact = artificerArtifact;
         this.relationshipFactory = relationshipFactory;
+		this.entityManager = entityManager;
 
         // To make this simple, first bulk-delete all relationships under this artifact.
         artificerArtifact.getRelationships().clear();
@@ -115,7 +118,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
                         ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME));
                 String parentUuid = artifact.getOtherAttributes().get(
                         ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME);
-                ArtificerArtifact parent = relationshipFactory.createRelationship(parentUuid);
+                ArtificerArtifact parent = relationshipFactory.createRelationship(parentUuid, entityManager);
                 artificerArtifact.setExpandedFrom(parent);
                 // TODO: Ensure this actually persists the update!
                 parent.getExpandedArtifacts().add(artificerArtifact);
@@ -637,7 +640,7 @@ public class SrampToHibernateEntityRelationshipsVisitor extends HierarchicalArti
 
     private void createTarget(ArtificerRelationship artificerRelationship, Target target) throws Exception {
         ArtificerTarget artificerTarget = new ArtificerTarget();
-        artificerTarget.setTarget(relationshipFactory.createRelationship(target.getValue()));
+        artificerTarget.setTarget(relationshipFactory.createRelationship(target.getValue(), entityManager));
 
         // Use reflection to get the 'artifact type' enum attribute found on
         // most (all?) targets.  Unfortunately, the method and field are

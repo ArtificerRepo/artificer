@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Brett Meyer.
@@ -139,16 +140,19 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
             BaseArtifactType artifact = artifactType.newArtifactInstance();
             artifact.setName(fileName);
 
+			PersistenceManager persistenceManager = persistenceManager();
+
             if (archiveContext != null) {
                 // If it's an archive, expand it and upload through a batch (necessary for adequate relationship processing).
 
-                // First, upload the archive artifact.  At least the UUID is necessary for the
-                // expandedFromDocument relationship.
-                PersistenceManager persistenceManager = persistenceManager();
-                artifact = persistenceManager.persistArtifact(artifact, content);
+                // The parent UUID is necessary for the expandedFromDocument relationship.
+                String parentUuid = UUID.randomUUID().toString();
+				artifact.setUuid(parentUuid);
 
-                // Then, expand (building up a batch).
-                BatchCreate creates = new BatchCreate();
+				BatchCreate creates = new BatchCreate();
+				creates.add(artifact, content, fileName);
+
+                // Then, expand (building up the batch).
                 // Set the artifact in the context for the type detectors to use.
                 archiveContext.setArchiveArtifactType(artifactType);
                 Collection<File> subFiles = archiveContext.expand();
@@ -168,7 +172,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
 
                             // set relevant properties/relationships
                             subArtifact.getOtherAttributes().put(
-                                    ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME, artifact.getUuid());
+                                    ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_UUID_QNAME, parentUuid);
                             subArtifact.getOtherAttributes().put(
                                     ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME, pathInArchive);
 
@@ -177,7 +181,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
                     }
                 }
                 // Persist the batch.
-                creates.execute(persistenceManager());
+                creates.execute(persistenceManager);
             } else {
                 // Else, simple upload.
                 artifact = doUpload(artifact, content, artifactType);

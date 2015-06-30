@@ -25,25 +25,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * During batch or derivation processing, it's useful to map UUIDs to artifacts, in memory.  This prevents a bunch
+ * of needless trips to the DB to repeatedly lookup, for example, artifacts-by-UUID for use in relationship
+ * target creation.
+ *
+ * Note that this should be used only once per batch or primary+derivation upload process.  Do not allow it to
+ * hang out in memory, permanently!
+ *
  * @author Brett Meyer.
  */
 public class HibernateRelationshipFactory {
-
-    private final EntityManager entityManager;
 
     // Optimization.  When a new artifact is (derived and) stored, track the S-RAMP UUIDs
     // and entities here.  When creating the actual relationships, this saves *many* needless queries.
     private final Map<String, ArtificerArtifact> entities = new HashMap<>();
 
-    /**
-     * Constructor.
-     * @param entityManager
-     */
-    public HibernateRelationshipFactory(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    public ArtificerArtifact createRelationship(String uuid) throws ArtificerException {
+    public ArtificerArtifact createRelationship(String uuid, EntityManager entityManager) throws ArtificerException {
         try {
             ArtificerArtifact entity;
             if (entities.containsKey(uuid)) {
