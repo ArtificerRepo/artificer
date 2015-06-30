@@ -59,11 +59,12 @@ import java.util.Set;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(appliesTo = "ArtificerArtifact", indexes = {
-        @Index(name = "artifact_uuid_idx", columnNames = "uuid"),
-        @Index(name = "artifact_name_idx", columnNames = "name"),
-        @Index(name = "artifact_model_idx", columnNames = "model"),
-        @Index(name = "artifact_type_idx", columnNames = "type"),
-        @Index(name = "artifact_model_type_idx", columnNames = {"model", "type"})})
+		// Note that the indexes all include 'trashed', since 'trashed=false' is used on all queries.
+		@Index(name = "artifact_uuid_idx", columnNames = {"uuid", "trashed"}),
+        @Index(name = "artifact_name_idx", columnNames = {"name", "trashed"}),
+        @Index(name = "artifact_model_idx", columnNames = {"model", "trashed"}),
+        @Index(name = "artifact_type_idx", columnNames = {"type", "trashed"}),
+        @Index(name = "artifact_model_type_idx", columnNames = {"model", "type", "trashed"})})
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Indexed
