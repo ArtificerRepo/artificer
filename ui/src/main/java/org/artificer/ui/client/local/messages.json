@@ -66,7 +66,7 @@
   "artifacts.to" : "to",
   "artifacts.type" : "Type",
   "artifacts.uuid" : "UUID",
-  "artifacts.add-relationship-instructions" : "Creating a new relationship ({0}).  Artifact search results include checkboxes -- click them to add the artifact as a target of the new relationship.  When finished, click 'Save'.",
+  "artifacts.add-relationship-instructions" : "Creating a new relationship ({0}).  Artifact search results include checkboxes -- click them to add the artifact as a target of the new relationship.  When finished, click 'Save Relationship'.",
   "artifact-details.add-property" : "Add Property",
   "artifact-details.breadcrumb.artifact-details" : "Artifact Details",
   "artifact-details.breadcrumb.artifacts" : "Artifacts",
