@@ -71,7 +71,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
 
     @Override
     public List<Object> persistBatch(List<BatchItem> items) throws ArtificerException {
-        List<Object> rval = new ArrayList<Object>(items.size());
+        List<Object> rval = new ArrayList<>(items.size());
 		HibernateRelationshipFactory relationshipFactory = new HibernateRelationshipFactory();
         for (BatchItem item : items) {
             try {

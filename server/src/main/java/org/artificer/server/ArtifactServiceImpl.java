@@ -23,7 +23,6 @@ import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtifactTypeEnum;
 import org.artificer.common.ArtifactVerifier;
 import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
@@ -47,6 +46,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -122,16 +122,34 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         try {
             content = new ArtifactContent(fileName, is);
             if (ExtensionFactory.isArchive(content)) {
+				// Artifact is an archive.  Create the context used throughout the process.
                 archiveContext = ArchiveContext.createArchiveContext(content);
 
                 if (artifactType == null) {
+					// Attempt to auto-detect the archive type.
                     artifactType = ExtensionFactory.detect(content, archiveContext);
                 }
             } else {
                 if (artifactType == null) {
+					// Attempt to auto-detect the artifact type.
                     artifactType = ExtensionFactory.detect(content);
                 }
             }
+
+			if (artifactType == null) {
+				// Early exit.  No detector wanted it, and we don't return general Documents.
+				return null;
+			}
+
+			if (artifactType.isDerived()) {
+				throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
+			}
+
+			if (!artifactType.isDocument()) {
+				throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE"));
+			}
+
+			PersistenceManager persistenceManager = persistenceManager();
 
             // Important to do this *after* creating ArtifactContent.  Tika does not clone the InputStream!
             String mimeType = MimeTypes.determineMimeType(fileName, content.getInputStream(), artifactType);
@@ -140,19 +158,16 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
             BaseArtifactType artifact = artifactType.newArtifactInstance();
             artifact.setName(fileName);
 
-			PersistenceManager persistenceManager = persistenceManager();
+			BatchCreate creates = new BatchCreate();
 
-            if (archiveContext != null) {
+			if (archiveContext != null) {
                 // If it's an archive, expand it and upload through a batch (necessary for adequate relationship processing).
 
-                // The parent UUID is necessary for the expandedFromDocument relationship.
-                String parentUuid = UUID.randomUUID().toString();
+				// The parent UUID is necessary for the expandedFromDocument relationship.
+				String parentUuid = UUID.randomUUID().toString();
 				artifact.setUuid(parentUuid);
 
-				BatchCreate creates = new BatchCreate();
-				creates.add(artifact, content, fileName);
-
-                // Then, expand (building up the batch).
+                // Expand (building up the batch).
                 // Set the artifact in the context for the type detectors to use.
                 archiveContext.setArchiveArtifactType(artifactType);
                 Collection<File> subFiles = archiveContext.expand();
@@ -180,12 +195,19 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
                         }
                     }
                 }
-                // Persist the batch.
-                creates.execute(persistenceManager);
-            } else {
-                // Else, simple upload.
-                artifact = doUpload(artifact, content, artifactType);
             }
+
+			// Persist the primary artifact or archive.
+			artifact = persistenceManager.persistArtifact(artifact, content);
+			doUploadEvent(artifact);
+
+			// Persist the batch, if there was one.
+			List<Object> subArtifacts = creates.execute(persistenceManager);
+			for (Object subArtifact : subArtifacts) {
+				if (subArtifact instanceof BaseArtifactType) {
+					doUploadEvent((BaseArtifactType) subArtifact);
+				}
+			}
 
             return artifact;
         } finally {
@@ -197,6 +219,13 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
             }
         }
     }
+
+	private void doUploadEvent(BaseArtifactType artifact) {
+		Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+		for (EventProducer eventProducer : eventProducers) {
+			eventProducer.artifactCreated(artifact);
+		}
+	}
 
     @Override
     public BaseArtifactType upload(String model, String type, String fileName, byte[] contentBytes)
@@ -213,33 +242,6 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     public BaseArtifactType upload(ArtifactType artifactType, String fileName, byte[] contentBytes)
             throws Exception {
         return upload(artifactType, fileName, new ByteArrayInputStream(contentBytes));
-    }
-
-    private BaseArtifactType doUpload(BaseArtifactType artifact, ArtifactContent content,
-            ArtifactType artifactType) throws Exception {
-        if (artifactType == null) {
-            // Early exit.  No detector wanted it, and we don't return general Documents.
-            return null;
-        }
-
-        if (artifactType.isDerived()) {
-            throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
-        }
-
-        PersistenceManager persistenceManager = persistenceManager();
-        // store the content
-        if (!ArtificerModelUtils.isDocumentArtifact(artifact)) {
-            throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE"));
-        }
-
-        artifact = persistenceManager.persistArtifact(artifact, content);
-
-        Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
-        for (EventProducer eventProducer : eventProducers) {
-            eventProducer.artifactCreated(artifact);
-        }
-
-        return artifact;
     }
 
     @Override

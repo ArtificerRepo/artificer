@@ -43,8 +43,8 @@ public class ArchiveExpansionTest extends AbstractNoAuditingPersistenceTest {
         GenericArchive archive = ShrinkWrap.create(GenericArchive.class, "test.zip");
         URL xsdUrl = this.getClass().getResource("/sample-files/wsdl/jcr-sample-externalrefs.xsd");
         URL wsdlUrl = this.getClass().getResource("/sample-files/wsdl/jcr-sample-externalrefs.wsdl");
-        archive.add(new UrlAsset(xsdUrl), "foo/path");
-        archive.add(new UrlAsset(wsdlUrl), "foo/path");
+        archive.add(new UrlAsset(xsdUrl), "foo/path/jcr-sample-externalrefs.xsd");
+        archive.add(new UrlAsset(wsdlUrl), "foo/path/jcr-sample-externalrefs.wsdl");
         InputStream is = new ZipExporterImpl(archive).exportAsInputStream();
 
         // persist everything, emulating what ArtifactServiceImpl would do
