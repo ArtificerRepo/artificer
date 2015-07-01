@@ -392,12 +392,12 @@ public class ArtificerAtomApiClient {
 	 */
 	public BaseArtifactType uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws ArtificerClientException, ArtificerServerException {
-        if (artifactType == null) {
-            return uploadArtifact(content, artifactFileName);
-        }
+		if (artifactType == null) {
+			return uploadArtifact(content, artifactFileName);
+		}
 
 		assertFeatureEnabled(artifactType);
-        ClientResponse<Entry> response = null;
+		ClientResponse<Entry> response = null;
 		try {
 			String type = artifactType.getType();
 			String atomUrl = String.format("%1$s/%2$s/%3$s", srampEndpoint,
@@ -414,39 +414,104 @@ public class ArtificerAtomApiClient {
 			throw e;
 		} catch (Throwable e) {
 			throw new ArtificerClientException(e);
-        } finally {
-            closeQuietly(response);
+		} finally {
+			closeQuietly(response);
 		}
 	}
 
-    /**
-     * Creates a new artifact in the repository by uploading a document.  The document will
-     * become the core of a new S-RAMP artifact.
-     *
-     * @param content
-     * @param artifactFileName
-     * @throws ArtificerClientException
-     * @throws ArtificerServerException
-     */
-    public BaseArtifactType uploadArtifact(InputStream content, String artifactFileName)
-            throws ArtificerClientException, ArtificerServerException {
-        ClientResponse<Entry> response = null;
-        try {
-            ClientRequest request = createClientRequest(srampEndpoint + "/autodetect");
-            request.header("Slug", artifactFileName);
-            request.body("application/octet-stream", content);
+	/**
+	 * Creates a new artifact in the repository by uploading a document.  The document will
+	 * become the core of a new S-RAMP artifact.  The artifact content is assumed to be available to the server,
+	 * so the absolute path is provided (instead of the content itself).
+	 *
+	 * @param artifactType
+	 * @param path
+	 * @throws ArtificerClientException
+	 * @throws ArtificerServerException
+	 */
+	public BaseArtifactType uploadArtifact(ArtifactType artifactType, String path)
+			throws ArtificerClientException, ArtificerServerException {
+		if (artifactType == null) {
+			return uploadArtifact(path);
+		}
 
-            response = request.post(Entry.class);
-            Entry entry = response.getEntity();
-            return ArtificerAtomUtils.unwrapSrampArtifact(entry);
-        } catch (ArtificerServerException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new ArtificerClientException(e);
-        } finally {
-            closeQuietly(response);
-        }
-    }
+		assertFeatureEnabled(artifactType);
+		ClientResponse<Entry> response = null;
+		try {
+			String type = artifactType.getType();
+			String atomUrl = String.format("%1$s/%2$s/%3$s", srampEndpoint,
+					artifactType.getArtifactType().getModel(), type);
+			ClientRequest request = createClientRequest(atomUrl);
+			request.body(MediaType.TEXT_PLAIN, path);
+
+			response = request.post(Entry.class);
+			Entry entry = response.getEntity();
+			return ArtificerAtomUtils.unwrapSrampArtifact(artifactType, entry);
+		} catch (ArtificerServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new ArtificerClientException(e);
+		} finally {
+			closeQuietly(response);
+		}
+	}
+
+	/**
+	 * Creates a new artifact in the repository by uploading a document.  The document will
+	 * become the core of a new S-RAMP artifact.  The artifact content is assumed to be available to the server,
+	 * so the absolute path is provided (instead of the content itself).
+	 *
+	 * @param path
+	 * @throws ArtificerClientException
+	 * @throws ArtificerServerException
+	 */
+	public BaseArtifactType uploadArtifact(String path)
+			throws ArtificerClientException, ArtificerServerException {
+		ClientResponse<Entry> response = null;
+		try {
+			ClientRequest request = createClientRequest(srampEndpoint + "/autodetect");
+			request.body(MediaType.TEXT_PLAIN, path);
+
+			response = request.post(Entry.class);
+			Entry entry = response.getEntity();
+			return ArtificerAtomUtils.unwrapSrampArtifact(entry);
+		} catch (ArtificerServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new ArtificerClientException(e);
+		} finally {
+			closeQuietly(response);
+		}
+	}
+
+	/**
+	 * Creates a new artifact in the repository by uploading a document.  The document will
+	 * become the core of a new S-RAMP artifact.
+	 *
+	 * @param content
+	 * @param artifactFileName
+	 * @throws ArtificerClientException
+	 * @throws ArtificerServerException
+	 */
+	public BaseArtifactType uploadArtifact(InputStream content, String artifactFileName)
+			throws ArtificerClientException, ArtificerServerException {
+		ClientResponse<Entry> response = null;
+		try {
+			ClientRequest request = createClientRequest(srampEndpoint + "/autodetect");
+			request.header("Slug", artifactFileName);
+			request.body("application/octet-stream", content);
+
+			response = request.post(Entry.class);
+			Entry entry = response.getEntity();
+			return ArtificerAtomUtils.unwrapSrampArtifact(entry);
+		} catch (ArtificerServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new ArtificerClientException(e);
+		} finally {
+			closeQuietly(response);
+		}
+	}
 
 	/**
      * Creates a new artifact in the repository by uploading a document.  The document will

@@ -59,6 +59,10 @@ public class UploadArtifactCommand extends AbstractCommand {
             description = "Artifact type")
     private String type;
 
+    @Option(name = "local", hasValue = false, required = false,
+            description = "Use if the file is reachable by the Artificer server, through its absolute path (local file, network storage, etc.).  Reduces HTTP overhead.")
+    private boolean local;
+
     @Option(name = "name", hasValue = true, required = false,
             description = "Artifact name")
     private String name;
@@ -78,20 +82,6 @@ public class UploadArtifactCommand extends AbstractCommand {
         ArtificerAtomApiClient client = client(commandInvocation);
         InputStream content = null;
         try {
-
-            File file = new File(filePath);
-            if (file.exists()) {
-                content = FileUtils.openInputStream(file);
-            } else {
-                URL url = this.getClass().getClassLoader().getResource(filePath);
-                if (url != null) {
-                    commandInvocation.getShell().out().println(Messages.i18n.format("Upload.InvalidArgMsg.LocalFile"));
-                    content = url.openStream();
-                } else {
-                    commandInvocation.getShell().out().println(Messages.i18n.format("Upload.InvalidArgMsg.LocalFile"));
-                    return CommandResult.FAILURE;
-                }
-            }
             ArtifactType artifactType = null;
             if (StringUtils.isNotBlank(type)) {
                 artifactType = ArtifactType.valueOf(type);
@@ -99,8 +89,38 @@ public class UploadArtifactCommand extends AbstractCommand {
                     artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
                 }
             }
-            BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
-            IOUtils.closeQuietly(content);
+
+            File file = new File(filePath);
+            BaseArtifactType artifact;
+            if (local) {
+                String path;
+                if (file.exists()) {
+                    path = file.getAbsolutePath();
+                } else {
+                    URL url = this.getClass().getClassLoader().getResource(filePath);
+                    if (url != null) {
+                        path = url.getPath();
+                    } else {
+                        commandInvocation.getShell().out().println(Messages.i18n.format("Upload.InvalidArgMsg.LocalFile"));
+                        return CommandResult.FAILURE;
+                    }
+                }
+                artifact = client.uploadArtifact(artifactType, path);
+            } else {
+                if (file.exists()) {
+                    content = FileUtils.openInputStream(file);
+                } else {
+                    URL url = this.getClass().getClassLoader().getResource(filePath);
+                    if (url != null) {
+                        content = url.openStream();
+                    } else {
+                        commandInvocation.getShell().out().println(Messages.i18n.format("Upload.InvalidArgMsg.LocalFile"));
+                        return CommandResult.FAILURE;
+                    }
+                }
+                artifact = client.uploadArtifact(artifactType, content, file.getName());
+                IOUtils.closeQuietly(content);
+            }
 
             if (StringUtils.isNotBlank(name) || StringUtils.isNotBlank(description)) {
                 if (StringUtils.isNotBlank(name)) {
