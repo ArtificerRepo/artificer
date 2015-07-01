@@ -59,6 +59,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -145,6 +147,36 @@ public class ArtifactResource extends AbstractResource {
     }
 
     /**
+     * Atom POST to upload an artifact to the repository. The artifact content is assumed to be available to the server,
+     * so the absolute path is provided (instead of the content itself).
+     *
+     * @param model
+     * @param type
+     * @param path
+     * @throws org.artificer.atom.err.ArtificerAtomException
+     */
+    @POST
+    @Path("{model}/{type}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public Entry create(@Context HttpServletRequest request, @PathParam("model") String model,
+            @PathParam("type") String type, String path)
+            throws ArtificerAtomException {
+        InputStream is = null;
+        try {
+            File file = new File(path);
+            is = new FileInputStream(file);
+            BaseArtifactType artifact = artifactService.upload(model, type, file.getName(), is);
+            return wrapArtifact(artifact, request);
+        } catch (Exception e) {
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e);
+            throw new ArtificerAtomException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    /**
      * S-RAMP atom POST to upload an artifact to the repository. The artifact content should be POSTed raw.  This
      * endpoint does *not* require the model/type to be provided.  Instead, @link{ArtifactTypeDetector} is called
      * to automatically identify the type.
@@ -167,6 +199,33 @@ public class ArtifactResource extends AbstractResource {
                 throw ArtificerUserException.filenameRequired();
             }
             BaseArtifactType artifact = artifactService.upload(fileName, is);
+            return wrapArtifact(artifact, request);
+        } catch (Exception e) {
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e);
+            throw new ArtificerAtomException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    /**
+     * Same as {@link #create(javax.servlet.http.HttpServletRequest, String, String, String)}, but using
+     * type autodetection.
+     *
+     * @param path
+     * @throws org.artificer.atom.err.ArtificerAtomException
+     */
+    @POST
+    @Path("autodetect")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public Entry create(@Context HttpServletRequest request, String path)
+            throws ArtificerAtomException {
+        InputStream is = null;
+        try {
+            File file = new File(path);
+            is = new FileInputStream(file);
+            BaseArtifactType artifact = artifactService.upload(file.getName(), is);
             return wrapArtifact(artifact, request);
         } catch (Exception e) {
             logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e);
