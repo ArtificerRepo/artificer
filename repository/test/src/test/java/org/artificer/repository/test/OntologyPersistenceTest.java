@@ -50,6 +50,14 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	Assert.assertEquals(ontology.getLabel(), actual.getLabel());
     	Assert.assertEquals(ontology.getComment(), actual.getComment());
     	Assert.assertEquals(ontology.getId(), actual.getId());
+
+		// Ensure querying also works.
+		actual = persistenceManager.getOntologies().get(0);
+		Assert.assertEquals(ontology.getUuid(), actual.getUuid());
+		Assert.assertEquals(ontology.getBase(), actual.getBase());
+		Assert.assertEquals(ontology.getLabel(), actual.getLabel());
+		Assert.assertEquals(ontology.getComment(), actual.getComment());
+		Assert.assertEquals(ontology.getId(), actual.getId());
     }
 
     @Test
