@@ -20,6 +20,7 @@ import org.artificer.repository.PersistenceManager;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,7 +40,7 @@ public class BatchCreate {
     }
 
     public List<Object> execute(PersistenceManager persistenceManager) throws Exception {
-        return persistenceManager.persistBatch(batchItems);
+		return batchItems.isEmpty() ? Collections.EMPTY_LIST : persistenceManager.persistBatch(batchItems);
     }
 
     public List<PersistenceManager.BatchItem> getBatchItems() {

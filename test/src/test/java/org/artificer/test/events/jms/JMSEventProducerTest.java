@@ -16,9 +16,14 @@
 package org.artificer.test.events.jms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jboss.shrinkwrap.api.GenericArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.UrlAsset;
+import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.common.ArtifactType;
@@ -41,6 +46,8 @@ import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.xml.namespace.QName;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -77,7 +84,7 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
     
     @Test
     public void testArtifactTopic() throws Exception {
-        textMessages = new ArrayList<TextMessage>();
+        textMessages = new ArrayList<>();
         
         // 3 == create, update, delete
         final CountDownLatch lock = new CountDownLatch(3);
@@ -146,6 +153,55 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
         
         connection.close();
     }
+
+	@Test
+	public void testArchiveArtifactTopics() throws Exception {
+		textMessages = new ArrayList<>();
+
+		// 1 for the primary archive, 2 for the primary artifacts within it
+		final CountDownLatch lock = new CountDownLatch(3);
+
+		Connection connection = subscribe(lock);
+
+		// build an archive with shrinkwrap
+		GenericArchive archive = ShrinkWrap.create(GenericArchive.class, "test.zip");
+		URL subArtifact1 = this.getClass().getResource("/sample-files/core/PO.xml");
+		URL subArtifact2 = this.getClass().getResource("/sample-files/core/PO.xml");
+		archive.add(new UrlAsset(subArtifact1), "foo/path/PO1.xml");
+		archive.add(new UrlAsset(subArtifact2), "foo/path/PO2.xml");
+		InputStream is = new ZipExporterImpl(archive).exportAsInputStream();
+
+		// create
+		ArtificerAtomApiClient client = client();
+		client.uploadArtifact(ArtifactType.ExtendedArtifactType("FooArchive"), is, "test.zip");
+
+		lock.await(10000, TimeUnit.MILLISECONDS);
+
+		assertEquals(3, textMessages.size());
+
+		findMessage("test.zip", ArtifactType.ExtendedDocument("FooArchive"));
+		findMessage("PO1.xml", ArtifactType.XmlDocument());
+		findMessage("PO2.xml", ArtifactType.XmlDocument());
+
+		connection.close();
+	}
+
+	private boolean findMessage(String name, ArtifactType artifactType) throws Exception {
+		for (TextMessage textMessage : textMessages) {
+			assertNotNull(textMessage);
+			assertEquals("artificer:artifactCreated", textMessage.getJMSType());
+			assertTrue(textMessage.getText() != null && textMessage.getText().length() > 0);
+			if (textMessage.getText().contains(name)) {
+				BaseArtifactType eventArtifact = new ObjectMapper().readValue(textMessage.getText(),
+						artifactType.newArtifactInstance().getClass());
+				assertNotNull(eventArtifact);
+				assertEquals(name, eventArtifact.getName());
+				assertEquals(artifactType.getArtifactType().getApiType(), eventArtifact.getArtifactType());
+				return true;
+			}
+		}
+		return false;
+	}
     
     @Test
     public void testOntologyTopic() throws Exception {
