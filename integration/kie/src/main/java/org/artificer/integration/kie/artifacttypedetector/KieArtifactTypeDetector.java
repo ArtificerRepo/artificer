@@ -57,9 +57,6 @@ public class KieArtifactTypeDetector extends AbstractArtifactTypeDetector {
             if (filename.endsWith(".bpmn") || filename.endsWith(".bpmn2") || filename.endsWith(".drl")) {
                 return true;
             }
-            if (filename.endsWith(".xml")) {
-
-            }
         }
         return super.allowExpansionFromArchive(content, archiveContext);
     }

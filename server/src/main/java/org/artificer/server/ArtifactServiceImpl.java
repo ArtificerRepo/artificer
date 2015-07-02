@@ -202,10 +202,12 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
 			doUploadEvent(artifact);
 
 			// Persist the batch, if there was one.
-			List<Object> subArtifacts = creates.execute(persistenceManager);
-			for (Object subArtifact : subArtifacts) {
-				if (subArtifact instanceof BaseArtifactType) {
-					doUploadEvent((BaseArtifactType) subArtifact);
+			List<Object> results = creates.execute(persistenceManager);
+			for (Object result : results) {
+				if (result instanceof BaseArtifactType) {
+					doUploadEvent((BaseArtifactType) result);
+				} else if (result instanceof Exception) {
+					throw((Exception) result);
 				}
 			}
 
