@@ -91,16 +91,11 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
 
         // Now, send the creates to the persistence manager in a batch and process the responses.
         List<PersistenceManager.BatchItem> createItems = batchCreates.getBatchItems();
-        List<Object> batchResponses = batchCreates.execute(persistenceManager);
+        List<BaseArtifactType> batchResponses = batchCreates.execute(persistenceManager);
         for (int i = 0; i < createItems.size(); i++) {
             PersistenceManager.BatchItem bi = createItems.get(i);
-            Object response = batchResponses.get(i);
-            if (response instanceof BaseArtifactType) {
-                BaseArtifactType artifact = (BaseArtifactType) response;
-                batchResult.getCreates().put(bi.batchItemId, artifact);
-            } else if (response instanceof Exception) {
-                batchResult.getErrors().put(bi.batchItemId, (Exception) response);
-            }
+			BaseArtifactType artifact = batchResponses.get(i);
+            batchResult.getCreates().put(bi.batchItemId, artifact);
         }
         batchCreates.cleanup();
 
@@ -150,7 +145,6 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
      * Process the case where we want to update the artifact's meta-data.
      * @param artifactType the artifact type
      * @param metaData the artifact meta-data
-     * @param content the artifact content
      * @return BaseArtifactType
      * @throws Exception
      */

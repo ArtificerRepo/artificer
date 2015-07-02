@@ -39,7 +39,7 @@ public class BatchCreate {
         batchItems.add(bi);
     }
 
-    public List<Object> execute(PersistenceManager persistenceManager) throws Exception {
+    public List<BaseArtifactType> execute(PersistenceManager persistenceManager) throws Exception {
 		return batchItems.isEmpty() ? Collections.EMPTY_LIST : persistenceManager.persistBatch(batchItems);
     }
 

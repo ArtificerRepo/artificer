@@ -18,8 +18,8 @@ package org.artificer.repository.hibernate;
 import org.artificer.common.query.ArtifactSummary;
 import org.artificer.integration.artifactbuilder.RelationshipContext;
 import org.artificer.repository.hibernate.query.HibernateQuery;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
+import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.Map;
 
@@ -29,6 +29,12 @@ import java.util.Map;
  * @author Brett Meyer
  */
 public class HibernateRelationshipContext implements RelationshipContext {
+
+	private final EntityManager entityManager;
+
+	public HibernateRelationshipContext(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
     /**
      * @see org.artificer.integration.artifactbuilder.RelationshipContext#findArtifacts(String, String, java.util.Map)
@@ -51,7 +57,7 @@ public class HibernateRelationshipContext implements RelationshipContext {
         }
         builder.append("]");
 
-        HibernateQuery query = new HibernateQuery(builder.toString());
+        HibernateQuery query = new HibernateQuery(builder.toString(), entityManager);
         return query.executeQuery().getResults();
     }
 

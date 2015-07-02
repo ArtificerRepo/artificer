@@ -117,10 +117,6 @@ public class BatchResource extends AbstractResource {
                 Entry atomEntry = visitor.getAtomEntry();
                 addUpdatedPart(output, batchItemId, atomEntry);
             }
-            
-            for (String batchItemId : batchResult.getErrors().keySet()) {
-                addErrorPart(output, batchItemId, batchResult.getErrors().get(batchItemId));
-            }
 
             return output;
         } catch (ArtificerServerException e) {
@@ -162,19 +158,5 @@ public class BatchResource extends AbstractResource {
         createdResponse.setBody(atomEntry, MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
         output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
     }
-
-	/**
-	 * Writes an error part to the batch response.  This takes the form of an HTTP response
-	 * bean with the appropriate headers and the error stack trace as the data.
-	 * @param output
-	 * @param contentId
-	 * @param error
-	 */
-	private void addErrorPart(MultipartOutput output, String contentId, Exception error) {
-        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
-        ArtificerAtomException e = new ArtificerAtomException(error);
-        errorResponse.setBody(e, MediaType.APPLICATION_ARTIFICER_SERVER_EXCEPTION_TYPE);
-        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
-	}
 
 }
