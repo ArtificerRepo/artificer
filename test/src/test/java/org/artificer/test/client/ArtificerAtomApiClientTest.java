@@ -528,60 +528,6 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
     }
 
 	/**
-	 * Test method for {@link org.artificer.client.ArtificerAtomApiClient#uploadBatch(org.artificer.atom.archive.ArtificerArchive)}.
-	 */
-	@Test
-	public void testArchiveUploadWithError() throws Exception {
-		// First, create an s-ramp archive
-		ArtificerArchive archive = null;
-		InputStream is1 = null;
-		InputStream is2 = null;
-		try {
-			archive = new ArtificerArchive();
-
-			String artifactFileName = "PO.xsd";
-			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-			BaseArtifactType metaData = new XsdDocument();
-			metaData.setName("PO.xsd");
-			metaData.setVersion("1.1");
-			metaData.setDescription("This is a test description (XSD).");
-			archive.addEntry("schemas/PO.xsd", metaData, is1);
-
-			artifactFileName = "PO.xml";
-			metaData = new XsdDocument();
-			metaData.setName("PO.xml");
-			metaData.setVersion("1.2");
-			metaData.setDescription("This is a test description (XML).");
-			archive.addEntry("core/PO.xml", metaData, null);
-		} catch (Exception e) {
-			ArtificerArchive.closeQuietly(archive);
-			throw e;
-		} finally {
-			IOUtils.closeQuietly(is1);
-			IOUtils.closeQuietly(is2);
-		}
-
-		try {
-			// Now use the s-ramp atom api client to upload the s-ramp archive
-			ArtificerAtomApiClient client = client();
-			Map<String, ?> results = client.uploadBatch(archive);
-			Assert.assertEquals(2, results.size());
-			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd"));
-			Assert.assertTrue(results.keySet().contains("core/PO.xml"));
-
-			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd");
-			Assert.assertNotNull(xsdDoc);
-			Assert.assertEquals("PO.xsd", xsdDoc.getName());
-			Assert.assertEquals("1.1", xsdDoc.getVersion());
-
-			Exception xmlError = (Exception) results.get("core/PO.xml");
-			Assert.assertNotNull(xmlError);
-		} finally {
-			ArtificerArchive.closeQuietly(archive);
-		}
-	}
-
-	/**
      * Test method for {@link org.artificer.client.ArtificerAtomApiClient#uploadOntology(InputStream)}.
      */
     @Test

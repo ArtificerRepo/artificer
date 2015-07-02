@@ -33,13 +33,13 @@ import java.util.Map;
 public interface PersistenceManager extends AbstractManager {
 
     /**
-     * Persists a batch of artifacts.  For each item in the batch, either a {@link BaseArtifactType}
-     * or {@link org.artificer.common.ArtificerException} is returned in the result list.  Note that any content streams
+     * Persists a batch of artifacts.  For each item in the batch, a {@link BaseArtifactType}
+     * is returned in the result list.  Note that any content streams
      * provided in the list of batch items will be closed.
      * @param items
      * @throws org.artificer.common.ArtificerException
      */
-    public List<Object> persistBatch(List<BatchItem> items) throws ArtificerException;
+    public List<BaseArtifactType> persistBatch(List<BatchItem> items) throws ArtificerException;
 
     /**
      * Persists a single artifact.
