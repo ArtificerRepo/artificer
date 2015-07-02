@@ -40,6 +40,7 @@ public abstract class AbstractArtifactTypeDetector implements ArtifactTypeDetect
             return true;
         }
         if (content.getFilename().endsWith(".xml") && !content.getFilename().equals("pom.xml")) {
+			// XML files, but not POMs
             return true;
         }
         return false;
