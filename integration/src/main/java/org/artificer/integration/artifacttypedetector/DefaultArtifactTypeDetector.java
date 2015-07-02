@@ -35,9 +35,13 @@ public class DefaultArtifactTypeDetector extends AbstractArtifactTypeDetector {
             return ArtifactType.XsdDocument();
         } else if (filename.endsWith(".wspolicy")) {
             return ArtifactType.PolicyDocument();
-        } else {
+        } else if (!isArchive(content)) {
+			// Don't allow archives within archives to become documents!  Only process if explicitly OK'd by another
+			// detector (JavaArtifactTypeDetector, etc.).
             return ArtifactType.Document();
-        }
+        } else {
+			return null;
+		}
     }
 
     @Override
