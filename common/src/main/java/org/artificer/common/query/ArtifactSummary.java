@@ -19,7 +19,6 @@ import org.artificer.common.ArtifactType;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,7 +48,7 @@ public class ArtifactSummary implements Serializable {
 
     private Calendar lastModifiedTimestamp;
 
-    private Map<Serializable, Serializable> extensionAttributes = new HashMap<>();
+    private Map<Serializable, Serializable> extensionAttributes;
 
     public ArtifactSummary() {
 
@@ -163,7 +162,7 @@ public class ArtifactSummary implements Serializable {
     }
 
     public Serializable getExtensionAttribute(Serializable key) {
-        return extensionAttributes.get(key);
+        return extensionAttributes == null ? null : extensionAttributes.get(key);
     }
 
     public void setExtensionAttributes(Map<Serializable, Serializable> extensionAttributes) {
