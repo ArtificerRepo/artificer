@@ -49,9 +49,10 @@ approach.  However, this is configurable at runtime.  See the 'artificer.file.st
 (values: 'blob' or 'filesystem').  If you use the filesystem, also include a path with the
 'artificer.file.storage.filesystem.path' property -- all content will be stored there.
 
-Although JDBC Blobs are the default (purely because they're convenient), most databases have fairly restrictive size
-limits.  Even more importantly, there are many vertical and horizontal performance considerations when dealing with
-larger files.  For most use cases, we'd actually recommend using the filesystem.
+Although JDBC Blobs are the default (purely because they're convenient), many databases have fairly restrictive size
+limits.  Even more importantly, there are some vertical and horizontal performance considerations when dealing with
+larger files (ex: writing the Blob can take a lot of heap space, depending on the JDBC driver).
+For use cases that involve large file sizes, we'd actually recommend using the filesystem.
 
 Hibernate Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~
