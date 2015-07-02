@@ -41,6 +41,12 @@ public class HibernateQuery extends AbstractArtificerQueryImpl {
 	private static final Logger LOG = LoggerFactory.getLogger(HibernatePersistenceManager.class);
 
 	/**
+	 * If this query should be run using an existing EntityManager, set this.  Otherwise, the query will run in
+	 * its own EntityManager and transaction.
+	 */
+	private EntityManager entityManager = null;
+
+	/**
 	 * Constructor.
 	 * @param xpathTemplate
 	 * @param args
@@ -53,32 +59,44 @@ public class HibernateQuery extends AbstractArtificerQueryImpl {
         super(xpathTemplate, new ArtificerQueryArgs());
     }
 
+	public HibernateQuery(String xpathTemplate, EntityManager entityManager) {
+		this(xpathTemplate);
+		this.entityManager = entityManager;
+	}
+
 	@Override
 	protected PagedResult<ArtifactSummary> executeQuery(final Query queryModel) throws ArtificerException {
 		try {
-            return new HibernateUtil.HibernateTask<PagedResult<ArtifactSummary>>() {
-                @Override
-                protected PagedResult<ArtifactSummary> doExecute(EntityManager entityManager) throws Exception {
-                    ArtificerToHibernateQueryVisitor visitor = new ArtificerToHibernateQueryVisitor(entityManager,
-                            (ClassificationHelper) RepositoryProviderFactory.persistenceManager());
-                    queryModel.accept(visitor);
-
-                    long startTime = System.currentTimeMillis();
-                    List<ArtifactSummary> artifacts = visitor.query(args);
-                    long totalSize = visitor.getTotalSize();
-                    long endTime = System.currentTimeMillis();
-
-                    LOG.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
-
-                    return new PagedResult<>(artifacts, xpathTemplate, totalSize, args);
-                }
-            }.execute();
-
+			if (entityManager != null) {
+				return executeQuery(queryModel, entityManager);
+			} else {
+				return new HibernateUtil.HibernateTask<PagedResult<ArtifactSummary>>() {
+					@Override
+					protected PagedResult<ArtifactSummary> doExecute(EntityManager entityManager) throws Exception {
+						return executeQuery(queryModel, entityManager);
+					}
+				}.execute();
+			}
 		} catch (ArtificerException e) {
             throw e;
 		} catch (Throwable t) {
 			throw new QueryExecutionException(t);
 		}
+	}
+
+	private PagedResult<ArtifactSummary> executeQuery(final Query queryModel, EntityManager entityManager) throws Exception {
+		ArtificerToHibernateQueryVisitor visitor = new ArtificerToHibernateQueryVisitor(entityManager,
+				(ClassificationHelper) RepositoryProviderFactory.persistenceManager());
+		queryModel.accept(visitor);
+
+		long startTime = System.currentTimeMillis();
+		List<ArtifactSummary> artifacts = visitor.query(args);
+		long totalSize = visitor.getTotalSize();
+		long endTime = System.currentTimeMillis();
+
+		LOG.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
+
+		return new PagedResult<>(artifacts, xpathTemplate, totalSize, args);
 	}
 
 }

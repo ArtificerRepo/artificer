@@ -53,16 +53,9 @@ public class BatchPersistenceTest extends AbstractNoAuditingPersistenceTest {
 	    item = createBatchItem("/sample-files/batch/simple-2.txt", new Document(), BaseArtifactEnum.DOCUMENT);
         items.add(item);
 
-        List<Object> response = persistenceManager.persistBatch(items);
-        for (Object object : response) {
-            if (object instanceof Exception) {
-                ((Exception) object).printStackTrace();
-            }
-            Assert.assertTrue(object instanceof BaseArtifactType);
-        }
-
-        BaseArtifactType simple1 = (BaseArtifactType) response.get(0);
-        BaseArtifactType simple2 = (BaseArtifactType) response.get(1);
+        List<BaseArtifactType> response = persistenceManager.persistBatch(items);
+        BaseArtifactType simple1 = response.get(0);
+        BaseArtifactType simple2 = response.get(1);
 
 		Assert.assertEquals("simple-1.txt", simple1.getName());
         Assert.assertEquals("simple-2.txt", simple2.getName());
@@ -76,10 +69,7 @@ public class BatchPersistenceTest extends AbstractNoAuditingPersistenceTest {
         item = createBatchItem("/sample-files/wsdl/jcr-sample-externalrefs.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT);
         items.add(item);
 
-        List<Object> response = persistenceManager.persistBatch(items);
-        for (Object object : response) {
-            Assert.assertTrue(object instanceof BaseArtifactType);
-        }
+        List<BaseArtifactType> response = persistenceManager.persistBatch(items);
 
         XsdDocument xsd = (XsdDocument) response.get(0);
         Assert.assertNotNull(xsd);

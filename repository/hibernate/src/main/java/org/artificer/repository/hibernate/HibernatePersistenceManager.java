@@ -70,18 +70,26 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
     }
 
     @Override
-    public List<Object> persistBatch(List<BatchItem> items) throws ArtificerException {
-        List<Object> rval = new ArrayList<>(items.size());
-		HibernateRelationshipFactory relationshipFactory = new HibernateRelationshipFactory();
-        for (BatchItem item : items) {
-            try {
-                BaseArtifactType artifact = persistArtifact(item.baseArtifactType, item.content, relationshipFactory);
-                rval.add(artifact);
-            } catch (Throwable t) {
-                rval.add(t);
-            }
-        }
-        return rval;
+    public List<BaseArtifactType> persistBatch(final List<BatchItem> items) throws ArtificerException {
+		try {
+			return new HibernateUtil.HibernateTask<List<BaseArtifactType>>() {
+				@Override
+				protected List<BaseArtifactType> doExecute(EntityManager entityManager) throws Exception {
+					HibernateRelationshipFactory relationshipFactory = new HibernateRelationshipFactory();
+					List<BaseArtifactType> rval = new ArrayList<>(items.size());
+					for (BatchItem item : items) {
+						BaseArtifactType artifact = doPersistArtifact(item.baseArtifactType, item.content,
+								relationshipFactory, entityManager);
+						rval.add(artifact);
+					}
+					return rval;
+				}
+			}.execute();
+		} catch (ArtificerException ae) {
+			throw ae;
+		} catch (Throwable t) {
+			throw new ArtificerServerException(t);
+		}
     }
 
     @Override
@@ -92,104 +100,107 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
 
 	private BaseArtifactType persistArtifact(final BaseArtifactType srampArtifact, final ArtifactContent content,
 			final HibernateRelationshipFactory relationshipFactory) throws ArtificerException {
-		final ArtifactType artifactType = ArtifactType.valueOf(srampArtifact);
-
 		try {
-			ArtificerArtifact artificerArtifact = new HibernateUtil.HibernateTask<ArtificerArtifact>() {
+			return new HibernateUtil.HibernateTask<BaseArtifactType>() {
 				@Override
-				protected ArtificerArtifact doExecute(EntityManager entityManager) throws Exception {
-					if (StringUtils.isBlank(srampArtifact.getUuid())) {
-						srampArtifact.setUuid(UUID.randomUUID().toString());
-					} else {
-						// TODO: ugh -- ugly
-						try {
-							HibernateUtil.getArtifact(srampArtifact.getUuid(), entityManager, false);
-							throw ArtificerConflictException.artifactConflict(srampArtifact.getUuid());
-						} catch (ArtificerNotFoundException e) {
-							// do nothing
-						}
-					}
-
-					List<ArtifactBuilder> artifactBuilders = ExtensionFactory.createArtifactBuilders(
-							srampArtifact, content);
-
-					// First, need to run the artifact builders to both set metadata on srampArtifact, as well as create
-					// the derived artifacts
-					List<BaseArtifactType> derivedSrampArtifacts = new ArrayList<>();
-					for (ArtifactBuilder artifactBuilder : artifactBuilders) {
-						artifactBuilder.buildArtifacts(srampArtifact, content);
-						derivedSrampArtifacts.addAll(artifactBuilder.getDerivedArtifacts());
-					}
-
-					// S-RAMP -> Hibernate
-					ArtificerArtifact artificerArtifact = SrampToHibernateEntityVisitor.visit(
-							srampArtifact, artifactType, classificationHelper);
-
-					// documents
-					if (artifactType.isDocument()) {
-						ArtificerDocumentArtifact artificerDocumentArtifact = (ArtificerDocumentArtifact) artificerArtifact;
-						processDocument(artificerDocumentArtifact, content);
-						if (content != null) {
-							// sets info on the artifact, so call prior to persisting
-							FileManagerFactory.getInstance().write(artificerDocumentArtifact, content, entityManager);
-						}
-					}
-
-					// persist and track the primary
-					entityManager.persist(artificerArtifact);
-					relationshipFactory.trackEntity(artificerArtifact.getUuid(), artificerArtifact);
-
-					Map<BaseArtifactType, ArtificerArtifact> artificerDerivedArtifacts = new HashMap<>();
-					for (BaseArtifactType derivedSrampArtifact : derivedSrampArtifacts) {
-						// persist and track each derived
-						ArtifactType derivedSrampArtifactType = ArtifactType.valueOf(derivedSrampArtifact);
-						ArtificerArtifact artificerDerivedArtifact = SrampToHibernateEntityVisitor.visit(
-								derivedSrampArtifact, derivedSrampArtifactType, classificationHelper);
-
-						// Handle derivation here, rather than in the relationship visitor, in case it's an *extended*
-						// derived artifact (ie, no 'relatedDocument' field).
-						artificerDerivedArtifact.setDerived(true);
-						artificerDerivedArtifact.setDerivedFrom(artificerArtifact);
-						artificerArtifact.getDerivedArtifacts().add(artificerDerivedArtifact);
-
-						artificerDerivedArtifacts.put(derivedSrampArtifact, artificerDerivedArtifact);
-						entityManager.persist(artificerDerivedArtifact);
-						relationshipFactory.trackEntity(artificerDerivedArtifact.getUuid(), artificerDerivedArtifact);
-					}
-
-					// build the relationships
-					RelationshipContext relationshipContext = new HibernateRelationshipContext();
-					for (ArtifactBuilder artifactBuilder : artifactBuilders) {
-						artifactBuilder.buildRelationships(relationshipContext);
-					}
-
-					// S-RAMP relationships -> Hibernate relationships
-					SrampToHibernateEntityRelationshipsVisitor.visit(srampArtifact, artificerArtifact,
-							relationshipFactory, entityManager);
-					for (BaseArtifactType derivedSrampArtifact : artificerDerivedArtifacts.keySet()) {
-						ArtificerArtifact artificerDerivedArtifact = artificerDerivedArtifacts.get(derivedSrampArtifact);
-						SrampToHibernateEntityRelationshipsVisitor.visit(derivedSrampArtifact, artificerDerivedArtifact,
-								relationshipFactory, entityManager);
-					}
-
-					// auditing
-					if (ArtificerConfig.isAuditingEnabled()) {
-						entityManager.persist(HibernateAuditor.createAddEntry(artificerArtifact));
-						for (ArtificerArtifact derivedArtifact : artificerDerivedArtifacts.values()) {
-							entityManager.persist(HibernateAuditor.createAddEntry(derivedArtifact));
-						}
-					}
-
-					return artificerArtifact;
+				protected BaseArtifactType doExecute(EntityManager entityManager) throws Exception {
+					return doPersistArtifact(srampArtifact, content, relationshipFactory, entityManager);
 				}
 			}.execute();
-
-			return HibernateEntityToSrampVisitor.visit(artificerArtifact, artifactType, true);
 		} catch (ArtificerException ae) {
 			throw ae;
 		} catch (Throwable t) {
 			throw new ArtificerServerException(t);
 		}
+	}
+
+	private BaseArtifactType doPersistArtifact(final BaseArtifactType srampArtifact, final ArtifactContent content,
+			final HibernateRelationshipFactory relationshipFactory, EntityManager entityManager) throws Exception {
+		final ArtifactType artifactType = ArtifactType.valueOf(srampArtifact);
+
+		if (StringUtils.isBlank(srampArtifact.getUuid())) {
+			srampArtifact.setUuid(UUID.randomUUID().toString());
+		} else {
+			// TODO: ugh -- ugly
+			try {
+				HibernateUtil.getArtifact(srampArtifact.getUuid(), entityManager, false);
+				throw ArtificerConflictException.artifactConflict(srampArtifact.getUuid());
+			} catch (ArtificerNotFoundException e) {
+				// do nothing
+			}
+		}
+
+		List<ArtifactBuilder> artifactBuilders = ExtensionFactory.createArtifactBuilders(
+				srampArtifact, content);
+
+		// First, need to run the artifact builders to both set metadata on srampArtifact, as well as create
+		// the derived artifacts
+		List<BaseArtifactType> derivedSrampArtifacts = new ArrayList<>();
+		for (ArtifactBuilder artifactBuilder : artifactBuilders) {
+			artifactBuilder.buildArtifacts(srampArtifact, content);
+			derivedSrampArtifacts.addAll(artifactBuilder.getDerivedArtifacts());
+		}
+
+		// S-RAMP -> Hibernate
+		ArtificerArtifact artificerArtifact = SrampToHibernateEntityVisitor.visit(
+				srampArtifact, artifactType, classificationHelper);
+
+		// documents
+		if (artifactType.isDocument()) {
+			ArtificerDocumentArtifact artificerDocumentArtifact = (ArtificerDocumentArtifact) artificerArtifact;
+			processDocument(artificerDocumentArtifact, content);
+			if (content != null) {
+				// sets info on the artifact, so call prior to persisting
+				FileManagerFactory.getInstance().write(artificerDocumentArtifact, content, entityManager);
+			}
+		}
+
+		// persist and track the primary
+		entityManager.persist(artificerArtifact);
+		relationshipFactory.trackEntity(artificerArtifact.getUuid(), artificerArtifact);
+
+		Map<BaseArtifactType, ArtificerArtifact> artificerDerivedArtifacts = new HashMap<>();
+		for (BaseArtifactType derivedSrampArtifact : derivedSrampArtifacts) {
+			// persist and track each derived
+			ArtifactType derivedSrampArtifactType = ArtifactType.valueOf(derivedSrampArtifact);
+			ArtificerArtifact artificerDerivedArtifact = SrampToHibernateEntityVisitor.visit(
+					derivedSrampArtifact, derivedSrampArtifactType, classificationHelper);
+
+			// Handle derivation here, rather than in the relationship visitor, in case it's an *extended*
+			// derived artifact (ie, no 'relatedDocument' field).
+			artificerDerivedArtifact.setDerived(true);
+			artificerDerivedArtifact.setDerivedFrom(artificerArtifact);
+			artificerArtifact.getDerivedArtifacts().add(artificerDerivedArtifact);
+
+			artificerDerivedArtifacts.put(derivedSrampArtifact, artificerDerivedArtifact);
+			entityManager.persist(artificerDerivedArtifact);
+			relationshipFactory.trackEntity(artificerDerivedArtifact.getUuid(), artificerDerivedArtifact);
+		}
+
+		// build the relationships
+		RelationshipContext relationshipContext = new HibernateRelationshipContext(entityManager);
+		for (ArtifactBuilder artifactBuilder : artifactBuilders) {
+			artifactBuilder.buildRelationships(relationshipContext);
+		}
+
+		// S-RAMP relationships -> Hibernate relationships
+		SrampToHibernateEntityRelationshipsVisitor.visit(srampArtifact, artificerArtifact,
+				relationshipFactory, entityManager);
+		for (BaseArtifactType derivedSrampArtifact : artificerDerivedArtifacts.keySet()) {
+			ArtificerArtifact artificerDerivedArtifact = artificerDerivedArtifacts.get(derivedSrampArtifact);
+			SrampToHibernateEntityRelationshipsVisitor.visit(derivedSrampArtifact, artificerDerivedArtifact,
+					relationshipFactory, entityManager);
+		}
+
+		// auditing
+		if (ArtificerConfig.isAuditingEnabled()) {
+			entityManager.persist(HibernateAuditor.createAddEntry(artificerArtifact));
+			for (ArtificerArtifact derivedArtifact : artificerDerivedArtifacts.values()) {
+				entityManager.persist(HibernateAuditor.createAddEntry(derivedArtifact));
+			}
+		}
+
+		return HibernateEntityToSrampVisitor.visit(artificerArtifact, artifactType, true);
 	}
 
     @Override

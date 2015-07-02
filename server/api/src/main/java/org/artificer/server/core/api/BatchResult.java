@@ -36,11 +36,6 @@ public class BatchResult implements Serializable {
      */
     private Map<String, BaseArtifactType> updates = new HashMap<String, BaseArtifactType>();
 
-    /**
-     * Exceptions thrown as result of the batch execution.  Key: "batchId", based off of the path in the batch.
-     */
-    private Map<String, Exception> errors = new HashMap<String, Exception>();
-
     public Map<String, BaseArtifactType> getCreates() {
         return creates;
     }
@@ -55,13 +50,5 @@ public class BatchResult implements Serializable {
 
     public void setUpdates(Map<String, BaseArtifactType> updates) {
         this.updates = updates;
-    }
-
-    public Map<String, Exception> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(Map<String, Exception> errors) {
-        this.errors = errors;
     }
 }
