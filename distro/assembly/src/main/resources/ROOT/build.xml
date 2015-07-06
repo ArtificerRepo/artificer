@@ -12,7 +12,7 @@
   <property name="s-ramp-distro.rootdir" location="." />
   <property name="s-ramp-distro.bindir" location="${s-ramp-distro.rootdir}/bin" />
   <property name="s-ramp-distro.libdir" location="${s-ramp-distro.rootdir}/lib" />
-  <property name="s-ramp-distro.overlord-commons-ant.jar" location="${s-ramp-distro.bindir}/overlord-commons-ant-${version.org.overlord.overlord-commons}.jar" />
+  <property name="s-ramp-distro.overlord-commons-ant.jar" value="${s-ramp-distro.bindir}/overlord-commons-ant-${version.org.overlord.overlord-commons}.jar;${s-ramp-distro.libdir}/commons-lang.jar;${s-ramp-distro.libdir}/picketbox.jar" />
   <property name="s-ramp-distro.s-ramp-installer.jar" location="${s-ramp-distro.bindir}/artificer-installer-${project.version}.jar" />
   <property name="s-ramp-distro.overlord-commons-installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${version.org.overlord.overlord-commons}.jar" />
   <property name="s-ramp-distro.overlord-commons-codec.jar" location="${s-ramp-distro.bindir}/overlord-commons-codec-${version.org.overlord.overlord-commons}.jar" />
