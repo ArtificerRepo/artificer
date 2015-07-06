@@ -25,20 +25,20 @@
     <echo message="#######################################################" />
     <echo message=" " />
     <echo message=" Choose from one of the following options." />
-    <echo message="    1. Install into WildFly 8" />
-    <echo message="    2. Install into JBoss EAP 6.4" />
+    <echo message="    1. Install into WildFly 9" />
+    <!--<echo message="    2. Install into JBoss EAP 6.4" />-->
     <echo message=" " />
     <input message="Choice: " addproperty="s-ramp-distro.choices.platform" />
 
-    <condition property="s-ramp-distro.choices.platform.jboss-wildfly-8">
+    <condition property="s-ramp-distro.choices.platform.jboss-wildfly-9">
       <equals arg1="${s-ramp-distro.choices.platform}" arg2="1" />
     </condition>
-    <condition property="s-ramp-distro.choices.platform.jboss-eap-6">
-      <equals arg1="${s-ramp-distro.choices.platform}" arg2="2" />
-    </condition>
+    <!--<condition property="s-ramp-distro.choices.platform.jboss-eap-6">-->
+      <!--<equals arg1="${s-ramp-distro.choices.platform}" arg2="2" />-->
+    <!--</condition>-->
 
-    <antcall target="install-jboss-wildfly-8-wrapper" />
-    <antcall target="install-jboss-eap-6-wrapper" />
+    <antcall target="install-jboss-wildfly-9-wrapper" />
+    <!--<antcall target="install-jboss-eap-6-wrapper" />-->
   </target>
 
   <target name="extract-installer">
@@ -48,81 +48,84 @@
     <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
   </target>
 
-  <!-- Install into WildFly 8 -->
-  <target name="install-jboss-wildfly-8-wrapper" if="s-ramp-distro.choices.platform.jboss-wildfly-8">
+  <!-- Install into WildFly 9 -->
+  <target name="install-jboss-wildfly-9-wrapper" if="s-ramp-distro.choices.platform.jboss-wildfly-9">
     <echo message=" " />
     <echo message="#######################################################" />
-    <echo message="# Installing Artificer into WildFly 8 (great choice!).     #" />
+    <echo message="# Installing Artificer into WildFly 9 (great choice!).#" />
     <echo message="#######################################################" />
     <echo message=" " />
-    <echo message=" Please tell us where WildFly 8 is located (full path)." />
+    <echo message=" Please tell us where WildFly 9 is located (full path)." />
     <echo message=" " />
-    <input message="Path to WildFly 8: " addproperty="s-ramp-distro.choices.platform.jboss-wildfly-8.path" />
+    <input message="Path to WildFly 9: " addproperty="s-ramp-distro.choices.platform.jboss-wildfly-9.path" />
 
-    <antcall target="install-jboss-wildfly-8" />
+    <antcall target="install-jboss-wildfly-9" />
   </target>
 
-  <target name="install-jboss-wildfly-8" depends="extract-installer">
-    <condition property="s-ramp-distro.choices.platform.jboss-wildfly-8.path.valid">
-      <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-wildfly-8.path}" />
+  <target name="install-jboss-wildfly-9" depends="extract-installer">
+    <condition property="s-ramp-distro.choices.platform.jboss-wildfly-9.path.valid">
+      <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-wildfly-9.path}" />
     </condition>
-    <fail message="Failed to find WildFly 8 at: ${s-ramp-distro.choices.platform.jboss-wildfly-8.path}"
-          unless="s-ramp-distro.choices.platform.jboss-wildfly-8.path.valid" />
-    <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-wildfly-8.path} " />
+    <fail message="Failed to find WildFly 9 at: ${s-ramp-distro.choices.platform.jboss-wildfly-9.path}"
+          unless="s-ramp-distro.choices.platform.jboss-wildfly-9.path.valid" />
+    <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-wildfly-9.path} " />
 
-    <echo message="s-ramp-distro.choices.platform.jboss-wildfly-8.path: ${s-ramp-distro.choices.platform.jboss-wildfly-8.path}"/>
+    <echo message="s-ramp-distro.choices.platform.jboss-wildfly-9.path: ${s-ramp-distro.choices.platform.jboss-wildfly-9.path}"/>
 
     <!-- Call the Artificer installer -->
     <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install"
          dir="${s-ramp-distro.s-ramp-installer.dir}">
-      <property name="appserver.id" value="jboss-wildfly-8" />
+      <property name="appserver.id" value="jboss-wildfly-9" />
       <property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />
-      <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jboss-wildfly-8.path}" />
+      <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jboss-wildfly-9.path}" />
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/artificer-server-wildfly8-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/artificer-ui-wildfly8-${s-ramp.version}.war" />
-      <property name="keycloak.overlay.zip" location="${s-ramp-distro.bindir}/keycloak-server-overlay-${version.org.keycloak}.zip" />
+      <property name="keycloak.server.zip" location="${s-ramp-distro.bindir}/keycloak-server-overlay-${version.org.keycloak}.zip" />
+      <property name="keycloak.adapter.zip" location="${s-ramp-distro.bindir}/keycloak-wf9-adapter-dist-${version.org.keycloak}.zip" />
     </ant>
   </target>
+
 
   <!-- Install into EAP 6 -->
-  <target name="install-jboss-eap-6-wrapper" if="s-ramp-distro.choices.platform.jboss-eap-6">
-    <echo message=" " />
-    <echo message="#######################################################" />
-    <echo message="# Installing Artificer into EAP 6.4 (great choice!).     #" />
-    <echo message="#######################################################" />
-    <echo message=" " />
-    <echo message=" Please tell us where JBoss EAP 6.4 is located (full path)." />
-    <echo message=" " />
-    <input message="Path to EAP 6.4: " addproperty="s-ramp-distro.choices.platform.jboss-eap-6.path" />
+  <!--<target name="install-jboss-eap-6-wrapper" if="s-ramp-distro.choices.platform.jboss-eap-6">-->
+    <!--<echo message=" " />-->
+    <!--<echo message="#######################################################" />-->
+    <!--<echo message="# Installing Artificer into EAP 6.4 (great choice!).     #" />-->
+    <!--<echo message="#######################################################" />-->
+    <!--<echo message=" " />-->
+    <!--<echo message=" Please tell us where JBoss EAP 6.4 is located (full path)." />-->
+    <!--<echo message=" " />-->
+    <!--<input message="Path to EAP 6.4: " addproperty="s-ramp-distro.choices.platform.jboss-eap-6.path" />-->
 
-    <antcall target="install-jboss-eap-6" />
-  </target>
+    <!--<antcall target="install-jboss-eap-6" />-->
+  <!--</target>-->
 
-  <target name="install-jboss-eap-6" depends="extract-installer">
-    <condition property="s-ramp-distro.choices.platform.jboss-eap-6.path.valid">
-      <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />
-    </condition>
-    <fail message="Failed to find JBoss EAP 6.4 at: ${s-ramp-distro.choices.platform.jboss-eap-6.path}"
-              unless="s-ramp-distro.choices.platform.jboss-eap-6.path.valid" />
-    <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-eap-6.path} " />
-    
-    <echo message="s-ramp-distro.choices.platform.jboss-eap-6.path: ${s-ramp-distro.choices.platform.jboss-eap-6.path}"/>
-    <!-- Find the specific version -->
-    <loadfile property="eap-version" srcFile="${s-ramp-distro.choices.platform.jboss-eap-6.path}/version.txt"/>
-    <echo message="eap-version: ${eap-version}"/>
+  <!--<target name="install-jboss-eap-6" depends="extract-installer">-->
+    <!--<condition property="s-ramp-distro.choices.platform.jboss-eap-6.path.valid">-->
+      <!--<available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />-->
+    <!--</condition>-->
+    <!--<fail message="Failed to find JBoss EAP 6.4 at: ${s-ramp-distro.choices.platform.jboss-eap-6.path}"-->
+              <!--unless="s-ramp-distro.choices.platform.jboss-eap-6.path.valid" />-->
+    <!--<echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-eap-6.path} " />-->
+    <!---->
+    <!--<echo message="s-ramp-distro.choices.platform.jboss-eap-6.path: ${s-ramp-distro.choices.platform.jboss-eap-6.path}"/>-->
+    <!--&lt;!&ndash; Find the specific version &ndash;&gt;-->
+    <!--<loadfile property="eap-version" srcFile="${s-ramp-distro.choices.platform.jboss-eap-6.path}/version.txt"/>-->
+    <!--<echo message="eap-version: ${eap-version}"/>-->
 
-    <!-- Call the Artificer installer -->
-    <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
-         dir="${s-ramp-distro.s-ramp-installer.dir}">
-      <property name="appserver.id" value="jboss-eap-6" />
-      <property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />
-      <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />
-      <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
-      <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/artificer-server-eap6-${s-ramp.version}.war" />
-      <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/artificer-ui-eap6-${s-ramp.version}.war" />
-      <property name="keycloak.overlay.zip" location="${s-ramp-distro.bindir}/keycloak-server-overlay-${version.org.keycloak}.zip" />
-    </ant>
-  </target>
+    <!--&lt;!&ndash; Call the Artificer installer &ndash;&gt;-->
+    <!--<ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" -->
+         <!--dir="${s-ramp-distro.s-ramp-installer.dir}">-->
+      <!--<property name="appserver.id" value="jboss-eap-6" />-->
+      <!--<property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />-->
+      <!--<property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />-->
+      <!--<property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />-->
+      <!--<property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/artificer-server-eap6-${s-ramp.version}.war" />-->
+      <!--<property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/artificer-ui-eap6-${s-ramp.version}.war" />-->
+      <!--<property name="keycloak.server.zip" location="${s-ramp-distro.bindir}/keycloak-server-overlay-eap6-${version.org.keycloak}.zip" />-->
+      <!--<property name="keycloak.adapter.zip" location="${s-ramp-distro.bindir}/keycloak-eap6-adapter-dist-${version.org.keycloak}.zip" />-->
+    <!--</ant>-->
+  <!--</target>-->
   
 </project>

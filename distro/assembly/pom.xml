@@ -37,21 +37,21 @@
     </dependency>
 
     <!-- Artificer WARs -->
-    <dependency>
-      <groupId>org.artificer</groupId>
-      <artifactId>artificer-server-eap6</artifactId>
-      <type>war</type>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.artificer</groupId>-->
+      <!--<artifactId>artificer-server-eap6</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.artificer</groupId>
       <artifactId>artificer-server-wildfly8</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
-      <groupId>org.artificer</groupId>
-      <artifactId>artificer-ui-eap6</artifactId>
-      <type>war</type>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.artificer</groupId>-->
+      <!--<artifactId>artificer-ui-eap6</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.artificer</groupId>
       <artifactId>artificer-ui-wildfly8</artifactId>
@@ -146,8 +146,27 @@
           <groupId>org.wildfly</groupId>
           <artifactId>wildfly-dist</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-feature-pack</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.keycloak</groupId>-->
+      <!--<artifactId>keycloak-server-overlay-eap6</artifactId>-->
+      <!--<type>zip</type>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-wf9-adapter-dist</artifactId>
+      <type>zip</type>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.keycloak</groupId>-->
+      <!--<artifactId>keycloak-eap6-adapter-dist</artifactId>-->
+      <!--<type>zip</type>-->
+    <!--</dependency>-->
 
     <!-- ant -->
     <dependency>

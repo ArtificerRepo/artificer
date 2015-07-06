@@ -13,7 +13,8 @@
   <property name="appserver.id" value="" />
   <property name="s-ramp.install.dir" location="" />
   <property name="s-ramp.appserver.dir" location="" />
-  <property name="keycloak.overlay.zip" location="" />
+  <property name="keycloak.server.zip" location="" />
+  <property name="keycloak.adapter.zip" location="" />
   <!-- ****************************************************** -->
 
   <!-- Install Artificer -->

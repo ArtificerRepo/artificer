@@ -17,7 +17,7 @@ install:
   - mvn -version -B
 
 script:
-  - mvn -fae install -Pgenerate-docs,wildfly8-integration-test | grep -vF "Downloading:" | grep -vF "Downloaded:"
+  - mvn -fae install -Pgenerate-docs,wildfly9-integration-test | grep -vF "Downloading:" | grep -vF "Downloaded:"
 
 after_success:
   - test "${TRAVIS_PULL_REQUEST}" = "false" && mvn -s .travis.maven.settings.xml -DskipTests=true deploy

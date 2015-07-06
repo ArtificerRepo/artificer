@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="S-RAMP Integration Tests: Setup">
 
-  <property name="filename.eap64" value="jboss-eap-6.4.0.zip" />
-  <property name="dir.eap64" value="jboss-eap-6.4" />
+  <!--<property name="filename.eap64" value="jboss-eap-6.4.0.zip" />-->
+  <!--<property name="dir.eap64" value="jboss-eap-6.4" />-->
 
-  <property name="filename.wildfly8" value="wildfly-8.2.0.Final.zip" />
-  <property name="download.url.wildfly8"
-            value="http://download.jboss.org/wildfly/8.2.0.Final/${filename.wildfly8}" />
-  <property name="dir.wildfly8" value="wildfly-8.2.0.Final" />
+  <property name="filename.wildfly9" value="wildfly-9.0.0.Final.zip" />
+  <property name="download.url.wildfly9"
+            value="http://download.jboss.org/wildfly/9.0.0.Final/${filename.wildfly9}" />
+  <property name="dir.wildfly9" value="wildfly-9.0.0.Final" />
 
-  <target name="install-eap64">
-    <!-- TODO: Fail is the ZIP isn't in the root? -->
-    <property name="name" value="JBoss EAP 6.4" />
-    <property name="filename" value="${filename.eap64}" />
-    <property name="dir" value="${project.build.directory}/${dir.eap64}" />
-    <antcall target="install" />
-  </target>
+  <!--<target name="install-eap64">-->
+    <!--<property name="name" value="JBoss EAP 6.4" />-->
+    <!--<property name="filename" value="${filename.eap64}" />-->
+    <!--<property name="dir" value="${project.build.directory}/${dir.eap64}" />-->
+    <!--<antcall target="install" />-->
+  <!--</target>-->
 
-  <target name="install-wildfly8">
-    <property name="name" value="WildFly 8.2" />
-    <property name="filename" value="${filename.wildfly8}" />
-    <property name="dir" value="${project.build.directory}/${dir.wildfly8}" />
-    <property name="download.url" value="${download.url.wildfly8}" />
+  <target name="install-wildfly9">
+    <property name="name" value="WildFly 9.0" />
+    <property name="filename" value="${filename.wildfly9}" />
+    <property name="dir" value="${project.build.directory}/${dir.wildfly9}" />
+    <property name="download.url" value="${download.url.wildfly9}" />
     <antcall target="install" />
   </target>
 

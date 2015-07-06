@@ -34,7 +34,6 @@
                 <exclude>WEB-INF/lib/apache-mime4j-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
-                <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-io-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
                 <exclude>WEB-INF/lib/dom4j-*.jar</exclude>

@@ -8,7 +8,7 @@
   </parent>
   <artifactId>artificer-ui-wildfly8</artifactId>
   <packaging>war</packaging>
-  <name>Artificer UI: Web App (WildFly 8)</name>
+  <name>Artificer UI: Web App (WildFly)</name>
   
   <dependencies>
     <!-- The base WAR being extended -->
@@ -34,7 +34,6 @@
                 <exclude>WEB-INF/lib/apache-mime4j-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
-                <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-io-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
                 <exclude>WEB-INF/lib/dom4j-*.jar</exclude>

@@ -8,7 +8,7 @@
   </parent>
   <artifactId>artificer-server-wildfly8</artifactId>
   <packaging>war</packaging>
-  <name>Artificer Server (WildFly 8)</name>
+  <name>Artificer Server (WildFly)</name>
   
   <dependencies>
     <!-- The base WAR being extended -->
@@ -31,7 +31,6 @@
               <artifactId>artificer-server</artifactId>
               <excludes>
                 <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
-                <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-io-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
                 <exclude>WEB-INF/lib/hibernate-*.jar</exclude>

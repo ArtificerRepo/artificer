@@ -178,99 +178,109 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>eap64-integration-test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <skipTests>false</skipTests>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-test-resources</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap64" />
-                    <ant antfile="${basedir}/src/test/resources/install-artificer.xml" target="install-artificer-eap64" />
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <arquillian.launch>eap64</arquillian.launch>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencyManagement>
-        <dependencies>
-          <!-- Override transitive dependencies - a few are different in the techpreview repo. -->
-          <dependency>
-            <groupId>org.jboss.as</groupId>
-            <artifactId>jboss-as-controller</artifactId>
-            <version>7.5.0.Final-redhat-17</version>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-arquillian-container-managed</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.artificer</groupId>
-          <artifactId>artificer-server-eap6</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.artificer</groupId>
-          <artifactId>artificer-ui-eap6</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.hornetq</groupId>
-          <artifactId>hornetq-jms-client</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-server-overlay</artifactId>
-          <type>zip</type>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jboss-modules</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.wildfly</groupId>
-              <artifactId>wildfly-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-      </dependencies>
-    </profile>
+    <!--<profile>-->
+      <!--<id>eap64-integration-test</id>-->
+      <!--<build>-->
+        <!--<plugins>-->
+          <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-surefire-plugin</artifactId>-->
+            <!--<configuration>-->
+              <!--<skipTests>false</skipTests>-->
+            <!--</configuration>-->
+          <!--</plugin>-->
+          <!--<plugin>-->
+            <!--<artifactId>maven-antrun-plugin</artifactId>-->
+            <!--<executions>-->
+              <!--<execution>-->
+                <!--<phase>generate-test-resources</phase>-->
+                <!--<goals>-->
+                  <!--<goal>run</goal>-->
+                <!--</goals>-->
+                <!--<configuration>-->
+                  <!--<tasks>-->
+                    <!--<ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap64" />-->
+                    <!--<ant antfile="${basedir}/src/test/resources/install-artificer.xml" target="install-artificer-eap64" />-->
+                  <!--</tasks>-->
+                <!--</configuration>-->
+              <!--</execution>-->
+            <!--</executions>-->
+          <!--</plugin>-->
+          <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-surefire-plugin</artifactId>-->
+            <!--<configuration>-->
+              <!--<systemPropertyVariables>-->
+                <!--<arquillian.launch>eap64</arquillian.launch>-->
+              <!--</systemPropertyVariables>-->
+            <!--</configuration>-->
+          <!--</plugin>-->
+        <!--</plugins>-->
+      <!--</build>-->
+      <!--<dependencyManagement>-->
+        <!--<dependencies>-->
+          <!--&lt;!&ndash; Override transitive dependencies - a few are different in the techpreview repo. &ndash;&gt;-->
+          <!--<dependency>-->
+            <!--<groupId>org.jboss.as</groupId>-->
+            <!--<artifactId>jboss-as-controller</artifactId>-->
+            <!--<version>7.5.0.Final-redhat-17</version>-->
+          <!--</dependency>-->
+        <!--</dependencies>-->
+      <!--</dependencyManagement>-->
+      <!--<dependencies>-->
+        <!--<dependency>-->
+          <!--<groupId>org.jboss.as</groupId>-->
+          <!--<artifactId>jboss-as-arquillian-container-managed</artifactId>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.artificer</groupId>-->
+          <!--<artifactId>artificer-server-eap6</artifactId>-->
+          <!--<type>war</type>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.artificer</groupId>-->
+          <!--<artifactId>artificer-ui-eap6</artifactId>-->
+          <!--<type>war</type>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.hornetq</groupId>-->
+          <!--<artifactId>hornetq-jms-client</artifactId>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.keycloak</groupId>-->
+          <!--<artifactId>keycloak-server-overlay-eap6</artifactId>-->
+          <!--<type>zip</type>-->
+          <!--<scope>test</scope>-->
+          <!--<exclusions>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-jboss-modules</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.wildfly</groupId>-->
+              <!--<artifactId>wildfly-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.wildfly</groupId>-->
+              <!--<artifactId>wildfly-feature-pack</artifactId>-->
+            <!--</exclusion>-->
+          <!--</exclusions>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.keycloak</groupId>-->
+          <!--<artifactId>keycloak-eap6-adapter-dist</artifactId>-->
+          <!--<type>zip</type>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+      <!--</dependencies>-->
+    <!--</profile>-->
 
     <profile>
-      <id>wildfly8-integration-test</id>
+      <id>wildfly9-integration-test</id>
       <build>
         <plugins>
           <plugin>
@@ -290,8 +300,8 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-wildfly8" />
-                    <ant antfile="${basedir}/src/test/resources/install-artificer.xml" target="install-artificer-wildfly8" />
+                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-wildfly9" />
+                    <ant antfile="${basedir}/src/test/resources/install-artificer.xml" target="install-artificer-wildfly9" />
                   </tasks>
                 </configuration>
               </execution>
@@ -302,7 +312,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <systemPropertyVariables>
-                <arquillian.launch>wildfly8</arquillian.launch>
+                <arquillian.launch>wildfly9</arquillian.launch>
               </systemPropertyVariables>
             </configuration>
           </plugin>
@@ -318,33 +328,33 @@
           <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-jms-client-bom</artifactId>
-            <version>8.2.0.Final</version>
+            <version>9.0.0.Final</version>
             <type>pom</type>
           </dependency>
           <dependency>
             <groupId>org.jboss.xnio</groupId>
             <artifactId>xnio-api</artifactId>
-            <version>3.3.0.Final</version>
+            <version>3.3.1.Final</version>
           </dependency>
           <dependency>
             <groupId>org.jboss.xnio</groupId>
             <artifactId>xnio-nio</artifactId>
-            <version>3.3.0.Final</version>
+            <version>3.3.1.Final</version>
           </dependency>
           <dependency>
             <groupId>org.hornetq</groupId>
             <artifactId>hornetq-core-client</artifactId>
-            <version>2.4.5.Final</version>
+            <version>2.4.7.Final</version>
           </dependency>
           <dependency>
             <groupId>org.hornetq</groupId>
             <artifactId>hornetq-jms-client</artifactId>
-            <version>2.4.5.Final</version>
+            <version>2.4.7.Final</version>
           </dependency>
           <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-remote-naming</artifactId>
-            <version>2.0.1.Final</version>
+            <version>2.0.4.Final</version>
           </dependency>
         </dependencies>
       </dependencyManagement>
@@ -386,7 +396,17 @@
               <groupId>org.wildfly</groupId>
               <artifactId>wildfly-dist</artifactId>
             </exclusion>
+            <exclusion>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-feature-pack</artifactId>
+            </exclusion>
           </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-wf9-adapter-dist</artifactId>
+          <type>zip</type>
+          <scope>test</scope>
         </dependency>
       </dependencies>
     </profile>

@@ -4,8 +4,7 @@ Migration Guides
 0.x -> 1.0
 ~~~~~~~~~~
 
-* Support for Jetty, Tomcat, Fuse/Fabric/OSGi, and EAP 6.0-6.3 has been dropped.  Attention is now solely on WildFly 8
-and EAP 6.4.  (If any of these are truly a need by community users, we'd love to https://developer.jboss.org/en/artificer[hear from you]!)
+* Support for Jetty, Tomcat, Fuse/Fabric/OSGi, EAP 6.x has been dropped.  Attention is now solely on WildFly 9.
 * We've switched from JCR storage to RDBMS (JPA).  Therefore, out of the box, Artificer 1.0 will
 not work with existing Overlord S-RAMP 0.x repository data.  An automated migration script is relatively easy to create.
 Please https://developer.jboss.org/en/artificer[contact us] if this would be helpful!

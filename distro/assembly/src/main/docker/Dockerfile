@@ -1,6 +1,6 @@
 # This Dockerfile is purely for development and testing!
 
-FROM jboss/wildfly:8.2.0.Final
+FROM jboss/wildfly:9.0.1.Final
 
 RUN $JBOSS_HOME/bin/add-user.sh admin artificer1! --silent
 
@@ -13,7 +13,7 @@ COPY artificer.zip /tmp/
 RUN cd /tmp \
     && bsdtar -xf /tmp/artificer.zip \
     && cd artificer \
-    && ./install.sh -Ds-ramp-distro.choices.platform=1 -Ds-ramp-distro.choices.platform.jboss-wildfly-8.path=$JBOSS_HOME -Dejb-jms.password=artificer1! \
+    && ./install.sh -Ds-ramp-distro.choices.platform=1 -Ds-ramp-distro.choices.platform.jboss-wildfly-9.path=$JBOSS_HOME -Dejb-jms.password=artificer1! \
     && cp artificer-realm.json $JBOSS_HOME \
     && cd .. \
     && rm -rf artificer \

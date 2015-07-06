@@ -151,8 +151,8 @@
   </security-constraint>
 
   <login-config>
-    <auth-method>BASIC</auth-method>
-    <realm-name>artificer</realm-name>
+    <auth-method>KEYCLOAK</auth-method>
+    <realm-name>this is ignored currently</realm-name>
   </login-config>
 
   <security-role>

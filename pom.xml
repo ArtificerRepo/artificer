@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
-    <version>6.0.0.CR27</version>
+    <version>6.0.0.CR28</version>
   </parent>
 
   <groupId>org.artificer</groupId>
@@ -104,17 +104,22 @@
     <version.org.jboss.aesh>0.62</version.org.jboss.aesh>
     <version.org.jboss.errai>3.1.2.Final</version.org.jboss.errai>
     <version.org.jboss.shrinkwrap>1.2.2</version.org.jboss.shrinkwrap>
-    <version.org.keycloak>1.2.0.Final</version.org.keycloak>
+    <version.org.keycloak>1.4.0.Final</version.org.keycloak>
     <version.org.overlord.overlord-commons>3.1.0.Final</version.org.overlord.overlord-commons>
     <version.org.switchyard>2.0.0.Final</version.org.switchyard>
+    <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.0.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
+    <version.com.zaxxer>2.3.9</version.com.zaxxer>
 
     <!-- BOM Overrides -->
     <version.org.apache.httpcomponents.httpclient>4.2.1</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.2.1</version.org.apache.httpcomponents.httpcore>
     <version.org.codehaus.plexus>3.0.17</version.org.codehaus.plexus>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
-    <version.org.hibernate>4.2.18.Final</version.org.hibernate>
-    <version.org.jboss.as>7.5.2.Final-redhat-2</version.org.jboss.as>
+    <version.org.hibernate>4.3.10.Final</version.org.hibernate>
+    <version.org.hibernate.search>5.2.0.Final</version.org.hibernate.search>
+    <version.org.apache.lucene>4.10.4</version.org.apache.lucene>
+    <version.org.hibernate.commons.annotations>4.0.5.Final</version.org.hibernate.commons.annotations>
+    <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
   </properties>
 
   <build>
@@ -335,12 +340,12 @@
         <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
-      <dependency>
-        <groupId>org.artificer</groupId>
-        <artifactId>artificer-server-eap6</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.artificer</groupId>-->
+        <!--<artifactId>artificer-server-eap6</artifactId>-->
+        <!--<version>${project.version}</version>-->
+        <!--<type>war</type>-->
+      <!--</dependency>-->
       <dependency>
         <groupId>org.artificer</groupId>
         <artifactId>artificer-server-wildfly8</artifactId>
@@ -364,12 +369,12 @@
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
-      <dependency>
-        <groupId>org.artificer</groupId>
-        <artifactId>artificer-ui-eap6</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.artificer</groupId>-->
+        <!--<artifactId>artificer-ui-eap6</artifactId>-->
+        <!--<version>${project.version}</version>-->
+        <!--<type>war</type>-->
+      <!--</dependency>-->
       <dependency>
         <groupId>org.artificer</groupId>
         <artifactId>artificer-ui-wildfly8</artifactId>
@@ -605,6 +610,11 @@
 
       <!-- Hibernate -->
       <dependency>
+        <groupId>org.hibernate.javax.persistence</groupId>
+        <artifactId>hibernate-jpa-2.1-api</artifactId>
+        <version>${version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api}</version>
+      </dependency>
+      <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
         <version>${version.org.hibernate}</version>
@@ -620,14 +630,39 @@
         <version>${version.org.hibernate}</version>
       </dependency>
       <dependency>
+        <groupId>org.hibernate.common</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+        <version>${version.org.hibernate.commons.annotations}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-engine</artifactId>
+        <version>${version.org.hibernate.search}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-orm</artifactId>
+        <version>${version.org.hibernate.search}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers</artifactId>
+        <artifactId>lucene-core</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
         <version>${version.org.apache.lucene}</version>
       </dependency>
       <dependency>
         <groupId>com.zaxxer</groupId>
         <artifactId>HikariCP-java6</artifactId>
-        <version>2.3.8</version>
+        <version>${version.com.zaxxer}</version>
       </dependency>
 
       <!-- KeyCloak -->
@@ -642,6 +677,24 @@
         <version>${version.org.keycloak}</version>
         <type>zip</type>
       </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.keycloak</groupId>-->
+        <!--<artifactId>keycloak-server-overlay-eap6</artifactId>-->
+        <!--<version>${version.org.keycloak}</version>-->
+        <!--<type>zip</type>-->
+      <!--</dependency>-->
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-wf9-adapter-dist</artifactId>
+        <version>${version.org.keycloak}</version>
+        <type>zip</type>
+      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.keycloak</groupId>-->
+        <!--<artifactId>keycloak-eap6-adapter-dist</artifactId>-->
+        <!--<version>${version.org.keycloak}</version>-->
+        <!--<type>zip</type>-->
+      <!--</dependency>-->
 
       <!-- Third party libraries -->
       <dependency>
@@ -884,12 +937,12 @@
     <module>repository/test</module>
     <module>server</module>
     <module>server/api</module>
-    <module>server/eap6</module>
+    <!--<module>server/eap6</module>-->
     <module>server/wildfly8</module>
     <module>shell</module>
     <module>test</module>
     <module>ui</module>
-    <module>ui/eap6</module>
+    <!--<module>ui/eap6</module>-->
     <module>ui/wildfly8</module>
   </modules>
   

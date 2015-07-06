@@ -27,10 +27,8 @@
     <echo>----------------------------------</echo>
     <echo>Installing KeyCloak</echo>
     <echo>----------------------------------</echo>
-    <unzip src="${keycloak.overlay.zip}" dest="${s-ramp.appserver.dir}"/>
-    <copy todir="${s-ramp.appserver.dir}/standalone/configuration" >
-      <fileset dir="${s-ramp.updates.dir}/configuration" />
-    </copy>
+    <unzip src="${keycloak.server.zip}" dest="${s-ramp.appserver.dir}"/>
+    <unzip src="${keycloak.adapter.zip}" dest="${s-ramp.appserver.dir}"/>
 
     <echo>-----------------------------------</echo>
     <echo>Deploying Artificer and Artificer UI</echo>
@@ -45,6 +43,9 @@
     <echo>-----------------------------------</echo>
     <echo>Configuring Artificer</echo>
     <echo>-----------------------------------</echo>
+    <copy todir="${s-ramp.appserver.dir}/standalone/configuration" >
+      <fileset dir="${s-ramp.updates.dir}/configuration" />
+    </copy>
     <antcall target="config-jboss-eap-6" />
 
     <echo message=" " />

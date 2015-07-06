@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Install Artificer into WildFly 8" default="install">
+<project name="Install Artificer into WildFly 9" default="install">
 
   <taskdef name="inputPassword" classname="org.overlord.commons.ant.user.JbossGetPassword" classpath="${overlord-commons.ant.jar}"/>
 
-  <!-- Configure properties for WildFly 8 -->
-  <target name="properties-jboss-wildfly-8">
+  <!-- Configure properties for WildFly 9 -->
+  <target name="properties-jboss-wildfly-9">
     <property name="s-ramp.updates.dir" location="${basedir}/updates" />
   
     <property name="s-ramp.jboss.bin.dir" location="${s-ramp.appserver.dir}/bin" />
@@ -13,24 +13,22 @@
     <property name="s-ramp.jboss.module.path" location="${s-ramp.appserver.dir}/modules" />
     <property name="s-ramp.jboss.deployments.dir" location="${s-ramp.appserver.dir}/standalone/deployments" />
 
-    <property name="s-ramp.s-ramp-server.war.path" location="bin/artificer-server-wildfly8-${s-ramp.version}.war" />
-    <property name="s-ramp.s-ramp-ui.war.path" location="bin/artificer-ui-wildfly8-${s-ramp.version}.war" />
+    <property name="s-ramp.s-ramp-server.war.path" location="bin/artificer-server-wildfly9-${s-ramp.version}.war" />
+    <property name="s-ramp.s-ramp-ui.war.path" location="bin/artificer-ui-wildfly9-${s-ramp.version}.war" />
   </target>
 
   <!-- Install Artificer -->
-  <target name="install" depends="properties-jboss-wildfly-8">
+  <target name="install" depends="properties-jboss-wildfly-9">
     <echo message=" " />
     <echo message="#############################################" />
-    <echo message="# Installing Artificer into WildFly 8. #" />
+    <echo message="# Installing Artificer into WildFly 9.      #" />
     <echo message="#############################################" />
 
     <echo>----------------------------------</echo>
     <echo>Installing KeyCloak</echo>
     <echo>----------------------------------</echo>
-    <unzip src="${keycloak.overlay.zip}" dest="${s-ramp.appserver.dir}"/>
-    <copy todir="${s-ramp.appserver.dir}/standalone/configuration" >
-      <fileset dir="${s-ramp.updates.dir}/configuration" />
-    </copy>
+    <unzip src="${keycloak.server.zip}" dest="${s-ramp.appserver.dir}"/>
+    <unzip src="${keycloak.adapter.zip}" dest="${s-ramp.appserver.dir}"/>
 
     <echo>-----------------------------------</echo>
     <echo>Deploying Artificer and Artificer UI</echo>
@@ -45,7 +43,10 @@
     <echo>-----------------------------------</echo>
     <echo>Configuring Artificer</echo>
     <echo>-----------------------------------</echo>
-    <antcall target="config-jboss-wildfly-8" />
+    <copy todir="${s-ramp.appserver.dir}/standalone/configuration" >
+      <fileset dir="${s-ramp.updates.dir}/configuration" />
+    </copy>
+    <antcall target="config-jboss-wildfly-9" />
 
     <echo message=" " />
     <echo message="########" />
@@ -55,8 +56,8 @@
   </target>
   
 
-  <!-- Configure WildFly 8 -->
-  <target name="config-jboss-wildfly-8" depends="password-prompt">
+  <!-- Configure WildFly 9 -->
+  <target name="config-jboss-wildfly-9" depends="password-prompt">
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full-ha.xml" />

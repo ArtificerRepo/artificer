@@ -13,8 +13,7 @@ downloading!  This distribution comes with the following:
 5) src - all of the Artificer source code, in a number of "-sources" JARs.
 6) build.xml - an Ant script that will install and configure Artificer into
    one of:
-   B) WildFly 8
-   B) JBoss EAP 6
+   A) WildFly 9
 7) ddl/*.sql - DDL SQL scripts for creating the necessary DB tables, constraints, and indexes.
 
 
@@ -35,8 +34,7 @@ Run './install.sh' or 'install.bat'.  Alternatively, if you have Apache Ant 1.7 
 
 The installer will ask you to choose a runtime platform.  Currently the following platforms are supported:
 
-* WildFly 8
-* JBoss EAP 6.4
+* WildFly 9
 
 Simply follow the installer instructions to install onto the platform of your choice.  We recommend installing
 into a clean version of whatever platform you choose, to minimize the risk of colliding with other projects.

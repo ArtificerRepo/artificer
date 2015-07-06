@@ -103,7 +103,8 @@
     <dependencySet>
       <outputDirectory>bin</outputDirectory>
       <includes>
-        <include>org.keycloak:keycloak-server-overlay:zip</include>
+        <include>org.keycloak:keycloak-server-overlay*:zip</include>
+        <include>org.keycloak:keycloak-*-adapter-dist:zip</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>

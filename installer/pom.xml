@@ -19,21 +19,21 @@
     </dependency>
     
     <!-- Artificer -->
-    <dependency>
-      <groupId>org.artificer</groupId>
-      <artifactId>artificer-server-eap6</artifactId>
-      <type>war</type>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.artificer</groupId>-->
+      <!--<artifactId>artificer-server-eap6</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.artificer</groupId>
       <artifactId>artificer-server-wildfly8</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
-      <groupId>org.artificer</groupId>
-      <artifactId>artificer-ui-eap6</artifactId>
-      <type>war</type>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.artificer</groupId>-->
+      <!--<artifactId>artificer-ui-eap6</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.artificer</groupId>
       <artifactId>artificer-ui-wildfly8</artifactId>
@@ -42,11 +42,11 @@
   </dependencies>
 
   <profiles>
-    <!-- ***************************************** -->
-    <!-- Profile to *test* installing into WildFly 8 -->
-    <!-- ***************************************** -->
+    <!-- ******************************************* -->
+    <!-- Profile to *test* installing into WildFly 9 -->
+    <!-- ******************************************* -->
     <profile>
-      <id>test-install-wildfly8</id>
+      <id>test-install-wildfly9</id>
       <dependencies>
         <dependency>
           <groupId>org.keycloak</groupId>
@@ -61,7 +61,16 @@
               <groupId>org.wildfly</groupId>
               <artifactId>wildfly-dist</artifactId>
             </exclusion>
+            <exclusion>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-feature-pack</artifactId>
+            </exclusion>
           </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-wf9-adapter-dist</artifactId>
+          <type>zip</type>
         </dependency>
         <dependency>
           <groupId>org.overlord</groupId>
@@ -87,13 +96,13 @@
             </dependencies>
             <executions>
               <execution>
-                <id>install-wildfly8</id>
+                <id>install-wildfly9</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
-                    <property name="appserver.id" value="jboss-wildfly-8" />
+                    <property name="appserver.id" value="jboss-wildfly-9" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/wildfly-8.2.0.Final" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/wildfly-9.0.0.Final" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
@@ -103,13 +112,14 @@
                     <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-wildfly8.war.path}" />
 
                     <property file="build.properties" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/wildfly-8.2.0.Final.zip" />
+                    <property name="s-ramp.appserver.zip" value="${basedir}/wildfly-9.0.0.Final.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
 
-                    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}" />
+                    <property name="keycloak.server.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}" />
+                    <property name="keycloak.adapter.zip" location="${maven.dependency.org.keycloak.keycloak-wf9-adapter-dist.zip.path}" />
 
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
@@ -129,87 +139,97 @@
     <!-- ***************************************** -->
     <!-- Profile to *test* installing into EAP 6.4 -->
     <!-- ***************************************** -->
-    <profile>
-      <id>test-install-eap64</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-server-overlay</artifactId>
-          <type>zip</type>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jboss-modules</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.wildfly</groupId>
-              <artifactId>wildfly-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-ant</artifactId>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-trax</artifactId>
-                <version>1.6.5</version>
-              </dependency>
-              <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>2.7.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>install-eap64</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <property name="appserver.id" value="jboss-eap-6" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.4" />
+    <!--<profile>-->
+      <!--<id>test-install-eap64</id>-->
+      <!--<dependencies>-->
+        <!--<dependency>-->
+          <!--<groupId>org.keycloak</groupId>-->
+          <!--<artifactId>keycloak-server-overlay-eap6</artifactId>-->
+          <!--<type>zip</type>-->
+          <!--<exclusions>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-jboss-modules</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.wildfly</groupId>-->
+              <!--<artifactId>wildfly-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.wildfly</groupId>-->
+              <!--<artifactId>wildfly-feature-pack</artifactId>-->
+            <!--</exclusion>-->
+          <!--</exclusions>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.keycloak</groupId>-->
+          <!--<artifactId>keycloak-eap6-adapter-dist</artifactId>-->
+          <!--<type>zip</type>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.overlord</groupId>-->
+          <!--<artifactId>overlord-commons-ant</artifactId>-->
+        <!--</dependency>-->
+      <!--</dependencies>-->
+      <!--<build>-->
+        <!--<plugins>-->
+          <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-antrun-plugin</artifactId>-->
+            <!--<dependencies>-->
+              <!--<dependency>-->
+                <!--<groupId>ant</groupId>-->
+                <!--<artifactId>ant-trax</artifactId>-->
+                <!--<version>1.6.5</version>-->
+              <!--</dependency>-->
+              <!--<dependency>-->
+                <!--<groupId>xalan</groupId>-->
+                <!--<artifactId>xalan</artifactId>-->
+                <!--<version>2.7.1</version>-->
+              <!--</dependency>-->
+            <!--</dependencies>-->
+            <!--<executions>-->
+              <!--<execution>-->
+                <!--<id>install-eap64</id>-->
+                <!--<phase>install</phase>-->
+                <!--<configuration>-->
+                  <!--<tasks>-->
+                    <!--<property name="appserver.id" value="jboss-eap-6" />-->
+                    <!--<property name="s-ramp.install.dir" value="${project.build.directory}" />-->
+                    <!--<property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.4" />-->
 
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <!--&lt;!&ndash; Overlord Commons Installer and Dependencies &ndash;&gt;-->
+                    <!--<property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>-->
 
-                    <!-- Artificer WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
+                    <!--&lt;!&ndash; Artificer WARs &ndash;&gt;-->
+                    <!--<property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />-->
+                    <!--<property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />-->
 
-                    <property file="build.properties" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.4.0.zip" />
-                    <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
+                    <!--<property file="build.properties" />-->
+                    <!--<property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.4.0.zip" />-->
+                    <!--<unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />-->
+                    <!--<chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">-->
+                      <!--<include name="*.sh" />-->
+                    <!--</chmod>-->
 
-                    <property name="keycloak.overlay.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay.zip.path}" />
+                    <!--<property name="keycloak.server.zip" location="${maven.dependency.org.keycloak.keycloak-server-overlay-eap6.zip.path}" />-->
+                    <!--<property name="keycloak.adapter.zip" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />-->
 
-                    <!-- Call the installer -->
-                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
-                      <target name="install" />
-                    </ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
+                    <!--&lt;!&ndash; Call the installer &ndash;&gt;-->
+                    <!--<ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">-->
+                      <!--<target name="install" />-->
+                    <!--</ant>-->
+                  <!--</tasks>-->
+                <!--</configuration>-->
+                <!--<goals>-->
+                  <!--<goal>run</goal>-->
+                <!--</goals>-->
+              <!--</execution>-->
+            <!--</executions>-->
+          <!--</plugin>-->
+        <!--</plugins>-->
+      <!--</build>-->
+    <!--</profile>-->
   </profiles>
 
 </project>
