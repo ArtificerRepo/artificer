@@ -30,6 +30,18 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -55,7 +67,7 @@
                 <packages>org.artificer.shell.api*</packages>
               </group>
             </groups>
-            <additionalparam>-Xdoclint:none</additionalparam>
+            <additionalparam>${javadoc.opts}</additionalparam>
           </configuration>
         </plugin>
       </plugins>
