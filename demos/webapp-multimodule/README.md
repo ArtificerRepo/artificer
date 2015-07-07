@@ -31,24 +31,38 @@ There are two things to note here.  First and foremost, the web project depends 
 
 # Note About Authentication
 
-Be aware that you must supply the maven build with credentials for your Artificer repository.  This
-can be done by adding a section to your settings.xml file (or by providing a custom settings.xml
-on the mvn command line using the '-s' argument).
+Whenever the Artificer Maven integration features are used, you will need to provide valid authentication credentials
+in the Maven settings.xml file. However, the typical "username" and "password" values are not sufficient, since they are
+ignored during artifact retrieval (ie, GET calls to the repo). Instead, you must explicitly define the BASIC
+authentication header value. Unfortunately, this also means you have to manually Base64 encode the value. For example,
+"Basic admin:artificer1!" becomes "Basic YWRtaW46YXJ0aWZpY2VyMSE=".
 
-For more information see:  http://maven.apache.org/settings.html
+It’s a pain, but at least as of Maven 3.0.5, it’s the best option we could find (PLEASE correct us if we’re wrong!).
 
-Your settings.xml file should contain two additional server entries in the servers section:
+So, using that, your settings.xml file should contain two additional server entries in the servers section:
 
     <server>
-      <id>local-artificer-repo</id>
-      <username>admin</username>
-      <password>PASSWORD</password>
-    </server>
-    <server>
-      <id>local-artificer-repo-snapshots</id>
-      <username>admin</username>
-      <password>PASSWORD</password>
-    </server>
+	  <id>local-artificer-repo</id>
+	  <configuration>
+		<httpHeaders>
+		  <property>
+			<name>Authorization</name>
+			<value>Basic YWRtaW46YXJ0aWZpY2VyMSE=</value>
+		  </property>
+		</httpHeaders>
+	  </configuration>
+	</server>
+	<server>
+	  <id>local-artificer-repo-snapshots</id>
+	  <configuration>
+		<httpHeaders>
+		  <property>
+			<name>Authorization</name>
+			<value>Basic YWRtaW46YXJ0aWZpY2VyMSE=</value>
+		  </property>
+		</httpHeaders>
+	  </configuration>
+	</server>
 
 # Results of the Deploy
 
