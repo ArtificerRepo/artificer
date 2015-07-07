@@ -7,6 +7,8 @@ echo ""
 read -p "Release version: " RELEASE_VERSION
 read -p "New development version: " DEV_VERSION
 read -p "Full path to your private key: " KEYFILE
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+echo ""
 
 mvn versions:set -DnewVersion=$RELEASE_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;
@@ -16,7 +18,7 @@ mvn clean install -Pgenerate-docs
 
 git add .
 git commit -m "Prepare for release $RELEASE_VERSION"
-git push origin master
+git push origin $BRANCH
 
 git tag -a -m "Tagging release $RELEASE_VERSION" artificer-$RELEASE_VERSION
 git push origin artificer-$RELEASE_VERSION
@@ -28,4 +30,4 @@ mvn versions:set -DnewVersion=$DEV_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;
 git add .
 git commit -m "Update to next development version: $DEV_VERSION"
-git push origin master
+git push origin $BRANCH
