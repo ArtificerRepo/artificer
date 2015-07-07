@@ -53,7 +53,7 @@ public class GetContentCommand extends AbstractCommand {
 	private String feedIndex;
 
 	@Option(name = "outputFile", hasValue = true, required = true, completer = Completer.class,
-			description = "Output file path")
+			description = "Output file or directory path")
 	private String outputFilePath;
 
 	@Override
@@ -69,15 +69,17 @@ public class GetContentCommand extends AbstractCommand {
 		}
 
 		File outFile = new File(outputFilePath);
-		if (outFile.isFile()) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("GetContent.OutputFileExists", outFile.getCanonicalPath()));
-			return CommandResult.FAILURE;
-		} else if (outFile.isDirectory()) {
+		if (outFile.isDirectory()) {
 			String fileName = artifact.getName();
 			outFile = new File(outFile, fileName);
 		}
-		if (outFile.getParentFile() != null)
-		    outFile.getParentFile().mkdirs();
+		if (outFile.getParentFile() != null) {
+			outFile.getParentFile().mkdirs();
+		}
+		if (outFile.exists()) {
+			outFile.delete();
+		}
+
 
 		InputStream artifactContent = null;
 		OutputStream outputStream = null;
