@@ -38,7 +38,7 @@ import java.util.List;
  */
 public abstract class AbstractCommand implements Command<CommandInvocation> {
 
-    @Option(shortName = 'h', name = "help", hasValue = false, required = false,
+    @Option(shortName = 'h', name = "help", hasValue = false, required = false, overrideRequired = true,
             description = "Display help")
     private boolean help;
 
