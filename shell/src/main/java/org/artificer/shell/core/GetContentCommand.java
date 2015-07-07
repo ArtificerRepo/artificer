@@ -41,7 +41,10 @@ import java.io.OutputStream;
  * @author eric.wittmann@redhat.com
  */
 @CommandDefinition(name = "getContent",
-		description = "The \"getContent\" command downloads the file content for a single artifact from the Artificer repository.  The artifact can be identified either by its unique Artificer uuid or else by an index into the most recent Feed.\n")
+		description = "The \"getContent\" command downloads the file content for a single artifact from the Artificer" +
+				" repository.  The artifact can be identified either by its unique Artificer uuid or else by an index" +
+				" into the most recent Feed.  Output is to the console, by default.  Use the optional" +
+				" --outputFilePath to write the content to a file.\n")
 public class GetContentCommand extends AbstractCommand {
 
 	@Option(name = "uuid", hasValue = true, required = false,
@@ -52,7 +55,7 @@ public class GetContentCommand extends AbstractCommand {
 			description = "Feed index")
 	private String feedIndex;
 
-	@Option(name = "outputFile", hasValue = true, required = true, completer = Completer.class,
+	@Option(name = "outputFile", hasValue = true, required = false, completer = Completer.class,
 			description = "Output file or directory path")
 	private String outputFilePath;
 
@@ -68,31 +71,41 @@ public class GetContentCommand extends AbstractCommand {
 			return CommandResult.FAILURE;
 		}
 
-		File outFile = new File(outputFilePath);
-		if (outFile.isDirectory()) {
-			String fileName = artifact.getName();
-			outFile = new File(outFile, fileName);
-		}
-		if (outFile.getParentFile() != null) {
-			outFile.getParentFile().mkdirs();
-		}
-		if (outFile.exists()) {
-			outFile.delete();
-		}
-
-
 		InputStream artifactContent = null;
 		OutputStream outputStream = null;
 
 		try {
 			artifactContent = client(commandInvocation).getArtifactContent(ArtifactType.valueOf(artifact), artifact.getUuid());
-			outputStream = new FileOutputStream(outFile);
-			IOUtils.copy(artifactContent, outputStream);
-			commandInvocation.getShell().out().println(Messages.i18n.format("GetContent.ContentSaved", outFile.getCanonicalPath()));
+
+			if (StringUtils.isNotBlank(outputFilePath)) {
+				// write to file
+				File outFile = new File(outputFilePath);
+				if (outFile.isDirectory()) {
+					String fileName = artifact.getName();
+					outFile = new File(outFile, fileName);
+				}
+				if (outFile.getParentFile() != null) {
+					outFile.getParentFile().mkdirs();
+				}
+				if (outFile.exists()) {
+					outFile.delete();
+				}
+
+				outputStream = new FileOutputStream(outFile);
+				IOUtils.copy(artifactContent, outputStream);
+
+				commandInvocation.getShell().out().println(Messages.i18n.format("GetContent.ContentSaved",
+						outFile.getCanonicalPath()));
+			} else {
+				// print to console
+				IOUtils.copy(artifactContent, commandInvocation.getShell().out());
+				commandInvocation.getShell().out().println();
+			}
 		} finally {
 			IOUtils.closeQuietly(artifactContent);
 			IOUtils.closeQuietly(outputStream);
 		}
+
         return CommandResult.SUCCESS;
 	}
 
