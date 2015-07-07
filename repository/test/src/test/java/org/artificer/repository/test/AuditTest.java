@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -96,7 +97,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         Assert.assertEquals(1, auditEntries.getTotalSize());
         AuditEntry entry = auditEntries.getResults().get(0);
         Assert.assertNotNull(entry);
-        Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD.toString(), entry.getType());
+        Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD, entry.getType());
         Assert.assertEquals("junituser", entry.getWho());
 
         List<AuditItemType> items = entry.getAuditItem();
@@ -120,7 +121,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         Assert.assertEquals(1, auditEntries.getTotalSize());
         AuditEntry entry = auditEntries.getResults().get(0);
         Assert.assertNotNull(entry);
-        Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD.toString(), entry.getType());
+        Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD, entry.getType());
         Assert.assertEquals("junituser", entry.getWho());
 
         List<AuditItemType> items = entry.getAuditItem();
@@ -145,7 +146,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         Assert.assertEquals(1, auditEntries.getTotalSize());
         AuditEntry entry = auditEntries.getResults().get(0);
         Assert.assertNotNull(entry);
-        Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD.toString(), entry.getType());
+        Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD, entry.getType());
         Assert.assertEquals("junituser", entry.getWho());
 
         List<AuditItemType> items = entry.getAuditItem();
@@ -160,6 +161,47 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         Assert.assertFalse(properties.isEmpty());
         Assert.assertEquals(1, properties.size());
     }
+
+	@Test
+	public void testUpdateAuditEntryWithClassifiers() throws Exception {
+		createOntology();
+		Set<String> classifiers = new HashSet<>();
+		classifiers.add("urn:example.org/world#China");
+		classifiers.add("urn:example.org/world#Japan");
+		BaseArtifactType artifact = createArtifact(classifiers);
+
+		// add 1 and remove 1
+		artifact.getClassifiedBy().clear();
+		artifact.getClassifiedBy().add("urn:example.org/world#China");
+		artifact.getClassifiedBy().add("urn:example.org/world#Germany");
+		artifact = persistenceManager.updateArtifact(artifact, ArtifactType.Document());
+
+		PagedResult<AuditEntry> auditEntries = auditManager.getArtifactAuditEntries(artifact.getUuid());
+		Assert.assertNotNull(auditEntries);
+		Assert.assertEquals(2, auditEntries.getTotalSize());
+
+		AuditEntry entry = getAuditEntry(auditEntries.getResults(), AuditEntryTypes.ARTIFACT_ADD);
+		Assert.assertNotNull(entry);
+		Assert.assertEquals("junituser", entry.getWho());
+		List<AuditItemType> items = entry.getAuditItem();
+		Assert.assertNotNull(entry);
+		Assert.assertFalse(items.isEmpty());
+		Assert.assertEquals(2, items.size());
+		AuditItemType item = getAuditItem(items, AuditItemTypes.CLASSIFIERS_ADDED);
+		Assert.assertEquals(2, item.getProperty().size());
+
+		entry = getAuditEntry(auditEntries.getResults(), AuditEntryTypes.ARTIFACT_UPDATE);
+		Assert.assertNotNull(entry);
+		Assert.assertEquals("junituser", entry.getWho());
+		items = entry.getAuditItem();
+		Assert.assertNotNull(entry);
+		Assert.assertFalse(items.isEmpty());
+		Assert.assertEquals(2, items.size());
+		item = getAuditItem(items, AuditItemTypes.CLASSIFIERS_ADDED);
+		Assert.assertEquals(1, item.getProperty().size());
+		item = getAuditItem(items, AuditItemTypes.CLASSIFIERS_REMOVED);
+		Assert.assertEquals(1, item.getProperty().size());
+	}
 
     @Test
     public void testUpdateAuditEntry() throws Exception {
@@ -416,6 +458,17 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         return rval;
     }
 
+	private AuditEntry getAuditEntry(List<AuditEntry> auditEntries, String type) {
+		if (auditEntries == null)
+			return null;
+		for (AuditEntry auditEntry : auditEntries) {
+			if (type.equals(auditEntry.getType())) {
+				return auditEntry;
+			}
+		}
+		return null;
+	}
+
     /**
      * @param items
      * @param type
@@ -424,7 +477,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         if (items == null)
             return null;
         for (AuditItemType auditItemType : items) {
-            if (auditItemType.getType().equals(type.toString())) {
+            if (type.equals(auditItemType.getType())) {
                 return auditItemType;
             }
         }

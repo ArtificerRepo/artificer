@@ -38,16 +38,17 @@ import java.util.UUID;
  */
 public class HibernateAuditor {
 
-    private final Map<String, String> oldProperties;
-    private final List<String> oldClassifiers;
+    private final Map<String, String> oldProperties = new HashMap<>();
+    private final List<String> oldClassifiers = new ArrayList<>();
 
     /**
      * Constructor.  Creates an initial snapshot of information found in the
      * included artifact.  The information will be used for a later comparison.
      */
     public HibernateAuditor(ArtificerArtifact oldArtifact) {
-        oldProperties = oldArtifact.snapshotProperties();
-        oldClassifiers = oldArtifact.getClassifiers();
+		// Note: Do not directly use the ArtificerArtifact collections, as they are going to change before #diff is called!
+		oldProperties.putAll(oldArtifact.snapshotProperties());
+        oldClassifiers.addAll(oldArtifact.getClassifiers());
     }
 
     /**
