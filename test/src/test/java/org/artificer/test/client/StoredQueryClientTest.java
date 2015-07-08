@@ -119,7 +119,7 @@ public class StoredQueryClientTest extends AbstractClientTest {
 		artifact2.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
 		artifact2.setExtendedType("AnotherFooType");
 		artifact2.setName("Another Test Artifact");
-		client.createArtifact(artifact);
+		client.createArtifact(artifact2);
 
 		StoredQuery storedQuery = new StoredQuery();
 		storedQuery.setQueryName("fooQuery");
