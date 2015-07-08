@@ -24,12 +24,14 @@ import org.artificer.shell.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.OptionGroup;
 import org.jboss.aesh.cl.completer.OptionCompleter;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * CLI command to retrieve a stored query from the S-RAMP repository.
@@ -37,11 +39,16 @@ import java.util.List;
  * @author Brett Meyer
  */
 @CommandDefinition(name = "execute",
-        description = "The \"executeStoredQuery\" command executes the given stored query.  The results are displayed identically to query.\n")
+        description = "The \"executeStoredQuery\" command executes the given stored query.  Optionally, if the stored query " +
+				"was created using parameters (ex: /s-ramp/core/Document[@uuid = '${uuid}']), provide the parameter " +
+				"values as arguments (ex: -Duuid=12345).  The results are displayed identically to query.\n")
 public class ExecuteStoredQueryCommand extends AbstractCommand {
 
     @Arguments(description = "<name>", completer = Completer.class)
     private List<String> arguments;
+
+	@OptionGroup(shortName = 'D', description = "Parameter substitution values", required = false)
+	private Map<String, String> params;
 
     @Override
     protected String getName() {
@@ -62,7 +69,7 @@ public class ExecuteStoredQueryCommand extends AbstractCommand {
             commandInvocation.getShell().out().println(Messages.i18n.format("Query.Querying"));
             commandInvocation.getShell().out().println("\t" + name);
 
-            QueryResultSet rset = client.queryWithStoredQuery(name);
+            QueryResultSet rset = client.queryWithStoredQuery(name, params);
             
             int entryIndex = 1;
             commandInvocation.getShell().out().println(Messages.i18n.format("Query.AtomFeedSummary", rset.size()));
