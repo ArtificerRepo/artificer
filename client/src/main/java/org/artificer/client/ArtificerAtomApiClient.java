@@ -67,6 +67,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +79,7 @@ import java.util.Set;
  * Class used to communicate with the S-RAMP server via the S-RAMP Atom API.
  *
  * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 public class ArtificerAtomApiClient {
 
@@ -1184,7 +1186,7 @@ public class ArtificerAtomApiClient {
      * @throws ArtificerServerException
      */
     public QueryResultSet queryWithStoredQuery(String queryName) throws ArtificerClientException, ArtificerServerException {
-        return queryWithStoredQuery(queryName, 0, 20, "name", true);
+        return queryWithStoredQuery(queryName, Collections.EMPTY_MAP);
     }
 
     /**
@@ -1201,31 +1203,7 @@ public class ArtificerAtomApiClient {
      */
     public QueryResultSet queryWithStoredQuery(String queryName, int startIndex, int count, String orderBy,
             boolean ascending) throws ArtificerClientException, ArtificerServerException {
-        ClientResponse<Feed> response = null;
-        try {
-            String atomUrl = String.format("%1$s/query/%2$s/results", srampEndpoint, queryName);
-
-            StringBuilder urlBuilder = new StringBuilder();
-            urlBuilder.append(atomUrl);
-            urlBuilder.append("?startIndex=");
-            urlBuilder.append(String.valueOf(startIndex));
-            urlBuilder.append("&count=");
-            urlBuilder.append(String.valueOf(count));
-            urlBuilder.append("&orderBy=");
-            urlBuilder.append(URLEncoder.encode(orderBy, "UTF8"));
-            urlBuilder.append("&ascending=");
-            urlBuilder.append(String.valueOf(ascending));
-            
-            ClientRequest request = createClientRequest(urlBuilder.toString());
-            response = request.get(Feed.class);
-            return new QueryResultSet(response.getEntity());
-        } catch (ArtificerServerException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new ArtificerClientException(e);
-        } finally {
-            closeQuietly(response);
-        }
+        return queryWithStoredQuery(queryName, startIndex, count, orderBy, ascending, Collections.EMPTY_MAP);
     }
 
     /**
@@ -1237,6 +1215,70 @@ public class ArtificerAtomApiClient {
     public ArtificerClientQuery buildQueryWithStoredQuery(StoredQuery storedQuery) {
         return buildQuery(storedQuery.getQueryExpression());
     }
+
+	/**
+	 * See {@link #query(String)}
+	 *
+	 * @param queryName
+	 * @param params Keys and values used for parameter substitution.
+	 * @return QueryResultSet
+	 * @throws ArtificerClientException
+	 * @throws ArtificerServerException
+	 */
+	public QueryResultSet queryWithStoredQuery(String queryName, Map<String, String> params)
+			throws ArtificerClientException, ArtificerServerException {
+		return queryWithStoredQuery(queryName, 0, 20, "name", true, params);
+	}
+
+	/**
+	 * See {@link #query(String, int, int, String, boolean, Collection)}.
+	 * Note that {@link StoredQuery#getPropertyName()} is automatically given to #query.
+	 *
+	 * @param queryName
+	 * @param params Keys and values used for parameter substitution.
+	 * @param startIndex
+	 * @param count
+	 * @param orderBy
+	 * @param ascending
+	 * @return SrampClientQuery
+	 * @throws ArtificerClientException
+	 * @throws ArtificerServerException
+	 */
+	public QueryResultSet queryWithStoredQuery(String queryName, int startIndex, int count, String orderBy,
+			boolean ascending, Map<String, String> params) throws ArtificerClientException, ArtificerServerException {
+		ClientResponse<Feed> response = null;
+		try {
+			String atomUrl = String.format("%1$s/query/%2$s/results", srampEndpoint, queryName);
+
+			StringBuilder urlBuilder = new StringBuilder();
+			urlBuilder.append(atomUrl);
+			urlBuilder.append("?startIndex=");
+			urlBuilder.append(String.valueOf(startIndex));
+			urlBuilder.append("&count=");
+			urlBuilder.append(String.valueOf(count));
+			urlBuilder.append("&orderBy=");
+			urlBuilder.append(URLEncoder.encode(orderBy, "UTF8"));
+			urlBuilder.append("&ascending=");
+			urlBuilder.append(String.valueOf(ascending));
+
+			if (params != null) {
+				for (String paramName : params.keySet()) {
+					urlBuilder.append("&" + paramName + "=");
+					urlBuilder.append(URLEncoder.encode(params.get(paramName), "UTF8"));
+				}
+			}
+
+			ClientRequest request = createClientRequest(urlBuilder.toString());
+			response = request.get(Feed.class);
+			return new QueryResultSet(response.getEntity());
+		} catch (ArtificerServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new ArtificerClientException(e);
+		} finally {
+			closeQuietly(response);
+		}
+	}
 
 	/**
 	 * Adds a new audit entry on the artifact with the given UUID.
