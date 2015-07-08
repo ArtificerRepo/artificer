@@ -151,7 +151,6 @@ public class ArtificerDevServer extends ErraiDevServer {
         ServletContextHandler artificerUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
         artificerUI.setSecurityHandler(createSecurityHandler(true));
         artificerUI.setContextPath("/artificer-ui");
-        artificerUI.setWelcomeFiles(new String[]{"index.html"});
         artificerUI.setResourceBase(environment.getModuleDir("artificer-ui").getCanonicalPath());
         artificerUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST));
         artificerUI.addFilter(GWTCacheControlFilter.class, "/rest/*", EnumSet.of(DispatcherType.REQUEST));
@@ -183,6 +182,10 @@ public class ArtificerDevServer extends ErraiDevServer {
         for (String fileType : fileTypes) {
             artificerUI.addServlet(resources, "*." + fileType);
         }
+
+		// Jetty will 404 http://localhost:8080/artificer-ui, since a welcome file doesn't physically exist.  Instead,
+		// setup a servlet on that root context and have it forward to /artificer-ui/index.html.
+		artificerUI.addServlet(new ServletHolder(RootContextServlet.class), "/");
 
         /* *************
          * S-RAMP server
