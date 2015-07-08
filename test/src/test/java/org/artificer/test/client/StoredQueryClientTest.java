@@ -15,16 +15,18 @@
  */
 package org.artificer.test.client;
 
+import org.artificer.client.ArtificerAtomApiClient;
+import org.artificer.client.query.QueryResultSet;
+import org.artificer.common.query.ArtifactSummary;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.common.query.ArtifactSummary;
-import org.artificer.client.query.QueryResultSet;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -100,4 +102,42 @@ public class StoredQueryClientTest extends AbstractClientTest {
         assertNotNull(returnedStoredQueries);
         assertEquals(0, returnedStoredQueries.size());
     }
+
+	@Test
+	public void testStoredQueryParamReplacement() throws Exception {
+		ArtificerAtomApiClient client = client();
+
+		// create an artifact to use
+		ExtendedArtifactType artifact = new ExtendedArtifactType();
+		artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
+		artifact.setExtendedType("FooType");
+		artifact.setName("Test Artifact");
+		BaseArtifactType createdArtifact = client.createArtifact(artifact);
+
+		// create a decoy, just to make sure the params really work
+		ExtendedArtifactType artifact2 = new ExtendedArtifactType();
+		artifact2.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
+		artifact2.setExtendedType("AnotherFooType");
+		artifact2.setName("Another Test Artifact");
+		client.createArtifact(artifact);
+
+		StoredQuery storedQuery = new StoredQuery();
+		storedQuery.setQueryName("fooQuery");
+		storedQuery.setQueryExpression("/s-ramp/ext/${type}[@uuid = '${uuid}']");
+
+		// add
+		storedQuery = client.createStoredQuery(storedQuery);
+
+		// param values
+		Map<String, String> params = new HashMap<>();
+		params.put("type", "FooType");
+		params.put("uuid", createdArtifact.getUuid());
+
+		// execute query
+		QueryResultSet queryResults = client.queryWithStoredQuery(storedQuery.getQueryName(), params);
+		assertNotNull(queryResults);
+		assertEquals(1, queryResults.getTotalResults());
+		ArtifactSummary queryResult = queryResults.get(0);
+		assertEquals(artifact.getName(), queryResult.getName());
+	}
 }

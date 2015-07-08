@@ -15,6 +15,7 @@
  */
 package org.artificer.server.atom.services;
 
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.artificer.atom.ArtificerAtomConstants;
 import org.artificer.atom.ArtificerAtomUtils;
 import org.artificer.atom.err.ArtificerAtomException;
@@ -42,8 +43,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import java.net.URI;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A JAX-RS resource that provides Stored Query support.
@@ -151,11 +155,26 @@ public class StoredQueryResource extends AbstractFeedResource {
         try {
             String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
             StoredQuery storedQuery = queryService.getStoredQuery(queryName);
+
+			Map<String, String> params = new HashMap<>();
+			Enumeration<String> paramNames = request.getParameterNames();
+			while (paramNames.hasMoreElements()) {
+				String paramName = paramNames.nextElement();
+				if (!"startPage".equalsIgnoreCase(paramName) && !"startIndex".equalsIgnoreCase(paramName)
+						&& !"count".equalsIgnoreCase(paramName)  && !"orderBy".equalsIgnoreCase(paramName)
+						&& !"ascending".equalsIgnoreCase(paramName))
+				params.put(paramName, request.getParameter(paramName));
+			}
+			// Parameter replacement in the query string.  Ex:
+			// /s-ramp/core/Document[@uuid = '${uuid}']
+			// Map: "uuid" -> 12345
+			// queryString == /s-ramp/core/Document[@uuid = '12345']
+			String queryString = new StrSubstitutor(params).replace(storedQuery.getQueryExpression());
             
             // TODO: It may be possible to introduce certain optimizations...
             
-            return createArtifactFeed(storedQuery.getQueryExpression(), startPage, startIndex, count, orderBy, asc,
-                    new HashSet<String>(storedQuery.getPropertyName()), baseUrl);
+            return createArtifactFeed(queryString, startPage, startIndex, count, orderBy, asc,
+                    new HashSet<>(storedQuery.getPropertyName()), baseUrl);
         } catch (ArtificerServerException e) {
             // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.

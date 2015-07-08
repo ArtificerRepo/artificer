@@ -87,6 +87,21 @@ client.createStoredQuery(storedQuery);
 QueryResultSet rset = client.queryWithStoredQuery(storedQuery.getQueryName());
 ----
 
+.'Query the Artificer repository using a stored query, including parameter substitution.'
+----
+ArtificerAtomApiClient client = new ArtificerAtomApiClient(urlToArtificer);
+
+StoredQuery storedQuery = new StoredQuery();
+storedQuery.setQueryName("FooQuery");
+storedQuery.setQueryExpression("/s-ramp/ext/FooType[@uuid = '${uuid}']");
+client.createStoredQuery(storedQuery);
+
+Map<String, String> params = new HashMap<>();
+params.put("uuid", uuid);
+
+QueryResultSet rset = client.queryWithStoredQuery(storedQuery.getQueryName(), params);
+----
+
 
 Extended Feature: Ontologies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
