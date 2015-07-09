@@ -86,12 +86,13 @@ public class UpdateOntologyCommand extends AbstractOntologyCommand {
 		    if (file.exists()) {
 		        content = FileUtils.openInputStream(file);
 		    } else {
-		        URL url = this.getClass().getResource(filePath);
+		        URL url = this.getClass().getClassLoader().getResource(filePath);
 		        if (url != null) {
                     commandInvocation.getShell().out().println(Messages.i18n.format("UpdateOntology.ReadingOntology", url.toExternalForm()));
 		            content = url.openStream();
 		        } else {
                     commandInvocation.getShell().out().println(Messages.i18n.format("UpdateOntology.CannotFind", filePath));
+                    return CommandResult.FAILURE;
 		        }
 		    }
 	        client.updateOntology(ontologyUuid, content);

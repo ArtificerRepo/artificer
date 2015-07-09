@@ -97,7 +97,7 @@ public abstract class AbstractExecuteQueryCommand extends AbstractCommand {
 						displayType, summary.getName());
 			}
 			commandInvocation.getShell().out().println();
-			long endIndex = rset.getStartIndex() + rset.size();
+			long endIndex = rset.getStartIndex() + rset.size() - 1;
 			commandInvocation.getShell().out().println(Messages.i18n.format("Query.AtomFeedSummary",
 					rset.getStartIndex(), endIndex, rset.getTotalResults()));
 			commandInvocation.getShell().out().println();
@@ -106,7 +106,7 @@ public abstract class AbstractExecuteQueryCommand extends AbstractCommand {
 
 			return CommandResult.SUCCESS;
 		} catch (Exception e) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Query.Fail"));
+			commandInvocation.getShell().out().println(Messages.i18n.format("Query.Failure"));
 			commandInvocation.getShell().out().println("\t" + e.getMessage());
 			return CommandResult.FAILURE;
 		}

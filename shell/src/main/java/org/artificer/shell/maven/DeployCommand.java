@@ -52,6 +52,7 @@ import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -112,41 +113,43 @@ public class DeployCommand extends AbstractCommand {
 
         // Validate the file
         File file = new File(filePathArg);
-        if (!file.isFile()) {
-            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.FileNotFound", filePathArg));
+        if (!file.exists()) {
+            URL url = this.getClass().getClassLoader().getResource(filePathArg);
+            if (url != null) {
+                file = new File(url.toURI());
+            } else {
+                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.FileNotFound", filePathArg));
+                return CommandResult.FAILURE;
+            }
+        }
+
+        ArtifactType artifactType = null;
+        if (StringUtils.isNotBlank(type)) {
+            artifactType = ArtifactType.valueOf(type);
+            if (artifactType.isExtendedType()) {
+                artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
+            }
+        }
+        // Process GAV and other meta-data, then update the artifact
+        MavenGavInfo mavenGavInfo = MavenGavInfo.fromCommandLine(gav, file);
+        if (mavenGavInfo.getType() == null) {
+            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.TypeNotSet", file.getName()));
+            return CommandResult.FAILURE;
+        }
+        if (!ALLOW_SNAPSHOT && mavenGavInfo.isSnapshot()) {
+            commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.SnapshotNotAllowed", gav));
             return CommandResult.FAILURE;
         }
 
         InputStream content = null;
         try {
-            ArtifactType artifactType = null;
-            if (StringUtils.isNotBlank(type)) {
-                artifactType = ArtifactType.valueOf(type);
-                if (artifactType.isExtendedType()) {
-                    artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
-                }
-            }
-            // Process GAV and other meta-data, then update the artifact
-            MavenGavInfo mavenGavInfo = MavenGavInfo.fromCommandLine(gav, file);
-            if (mavenGavInfo.getType() == null) {
-                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.TypeNotSet", file.getName()));
-                IOUtils.closeQuietly(content);
-                return CommandResult.FAILURE;
-            }
-            if (!ALLOW_SNAPSHOT && mavenGavInfo.isSnapshot()) {
-                commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.SnapshotNotAllowed", gav));
-                IOUtils.closeQuietly(content);
-                return CommandResult.FAILURE;
-            }
             BaseArtifactType artifact = findExistingArtifactByGAV(client, mavenGavInfo);
             if (artifact != null) {
                 commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Failure.ReleaseArtifact.Exist", gav));
-                IOUtils.closeQuietly(content);
                 return CommandResult.FAILURE;
             } else {
                 content = FileUtils.openInputStream(file);
                 artifact = client.uploadArtifact(artifactType, content, file.getName());
-                IOUtils.closeQuietly(content);
             }
 
             // Process GAV and other meta-data, then update the artifact
@@ -189,13 +192,15 @@ public class DeployCommand extends AbstractCommand {
             commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Success"));
             PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor(commandInvocation);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+
+            return CommandResult.SUCCESS;
         } catch (Exception e) {
             commandInvocation.getShell().out().println(Messages.i18n.format("DeployCommand.Failure"));
             commandInvocation.getShell().out().println("\t" + e.getMessage());
-            IOUtils.closeQuietly(content);
             return CommandResult.FAILURE;
+        } finally {
+            IOUtils.closeQuietly(content);
         }
-        return CommandResult.SUCCESS;
     }
 
     /**
