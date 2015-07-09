@@ -69,8 +69,8 @@ public class ExecuteStoredQueryCommand extends AbstractCommand {
             commandInvocation.getShell().out().println(Messages.i18n.format("Query.Querying"));
             commandInvocation.getShell().out().println("\t" + name);
 
-            QueryResultSet rset = client.queryWithStoredQuery(name, params);
-            
+            QueryResultSet rset = client.queryWithStoredQuery(name, 0, 100, "uuid", true, params);
+
             int entryIndex = 1;
             commandInvocation.getShell().out().println(Messages.i18n.format("Query.AtomFeedSummary", rset.size()));
             commandInvocation.getShell().out().println("  Idx, UUID, Type, Name");
