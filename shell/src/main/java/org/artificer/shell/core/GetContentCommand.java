@@ -18,7 +18,7 @@ package org.artificer.shell.core;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactType;
-import org.artificer.shell.AbstractCommand;
+import org.artificer.shell.common.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.artificer.shell.util.FileNameCompleterDelegate;
 import org.jboss.aesh.cl.CommandDefinition;

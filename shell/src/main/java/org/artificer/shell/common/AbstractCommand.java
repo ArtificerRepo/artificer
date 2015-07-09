@@ -1,4 +1,4 @@
-package org.artificer.shell;/*
+package org.artificer.shell.common;/*
  * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.query.ArtifactSummary;
+import org.artificer.shell.ArtificerContext;
+import org.artificer.shell.ArtificerShellException;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.AeshConsoleBufferBuilder;

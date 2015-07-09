@@ -18,7 +18,7 @@ package org.artificer.shell.core;
 import org.apache.commons.collections.CollectionUtils;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.common.ArtifactType;
-import org.artificer.shell.AbstractCommand;
+import org.artificer.shell.common.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
