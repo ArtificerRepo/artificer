@@ -19,15 +19,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.query.QueryResultSet;
-import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtifactTypeEnum;
-import org.artificer.common.query.ArtifactSummary;
-import org.artificer.shell.common.AbstractCommand;
+import org.artificer.shell.common.AbstractExecuteQueryCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.completer.OptionCompleter;
-import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 
@@ -44,48 +41,17 @@ import java.util.TreeSet;
  */
 @CommandDefinition(name = "query",
 		description = "The \"query\" command issues a standard Artificer formatted query against the Artificer server.  The query will result in a Feed of entries.\n")
-public class QueryCommand extends AbstractCommand {
+public class QueryCommand extends AbstractExecuteQueryCommand {
 
 	@Arguments(description = "<query>", completer = Completer.class)
 	private List<String> arguments;
 
 	@Override
-	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-		if (CollectionUtils.isEmpty(arguments)) {
-			return doHelp(commandInvocation);
-		}
-
-		String query = requiredArgument(commandInvocation, arguments, 0);
-
-		ArtificerAtomApiClient client = client(commandInvocation);
-		if (query.endsWith("/")) {
-			query = query.substring(0, query.length() - 1);
-		}
-
+	protected QueryResultSet doExecute(String argument, ArtificerAtomApiClient client,
+			CommandInvocation commandInvocation) throws Exception {
 		commandInvocation.getShell().out().println(Messages.i18n.format("Query.Querying"));
-		commandInvocation.getShell().out().println("\t" + query);
-		try {
-    		QueryResultSet rset = client.query(query, 0, 100, "uuid", true);
-    		int entryIndex = 1;
-			commandInvocation.getShell().out().println(Messages.i18n.format("Query.AtomFeedSummary", rset.size()));
-			commandInvocation.getShell().out().println("  Idx, UUID, Type, Name");
-			commandInvocation.getShell().out().println("  ---------------------");
-    		for (ArtifactSummary summary : rset) {
-    			ArtifactType type = summary.getArtifactType();
-    			String displayType = type.getArtifactType().getType().toString();
-    			if (type.isExtendedType() && type.getExtendedType() != null) {
-    			    displayType = type.getExtendedType();
-    			}
-				commandInvocation.getShell().out().printf("  %d, %s, %s, %s\n", entryIndex++, summary.getUuid(),
-						displayType, summary.getName());
-    		}
-    		context(commandInvocation).setCurrentArtifactFeed(rset);
-		} catch (Exception e) {
-			commandInvocation.getShell().out().println(Messages.i18n.format("Query.Failure"));
-			commandInvocation.getShell().out().println("\t" + e.getMessage());
-			return CommandResult.FAILURE;
-		}
-        return CommandResult.SUCCESS;
+		commandInvocation.getShell().out().println("\t" + argument);
+		return client.query(argument, getStartIndex(), getCount(), getOrderBy(), isAscending());
 	}
 
 	private static class Completer implements OptionCompleter<CompleterInvocation> {
@@ -164,4 +130,8 @@ public class QueryCommand extends AbstractCommand {
 		return "query";
 	}
 
+	@Override
+	protected List<String> getArguments() {
+		return arguments;
+	}
 }

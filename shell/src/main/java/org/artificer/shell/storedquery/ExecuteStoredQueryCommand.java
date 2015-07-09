@@ -18,15 +18,12 @@ package org.artificer.shell.storedquery;
 import org.apache.commons.collections.CollectionUtils;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.query.QueryResultSet;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.query.ArtifactSummary;
-import org.artificer.shell.common.AbstractCommand;
+import org.artificer.shell.common.AbstractExecuteQueryCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.OptionGroup;
 import org.jboss.aesh.cl.completer.OptionCompleter;
-import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 
@@ -42,7 +39,7 @@ import java.util.Map;
         description = "The \"executeStoredQuery\" command executes the given stored query.  Optionally, if the stored query " +
 				"was created using parameters (ex: /s-ramp/core/Document[@uuid = '${uuid}']), provide the parameter " +
 				"values as arguments (ex: -Duuid=12345).  The results are displayed identically to query.\n")
-public class ExecuteStoredQueryCommand extends AbstractCommand {
+public class ExecuteStoredQueryCommand extends AbstractExecuteQueryCommand {
 
     @Arguments(description = "<name>", completer = Completer.class)
     private List<String> arguments;
@@ -56,43 +53,12 @@ public class ExecuteStoredQueryCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
-        if (CollectionUtils.isEmpty(arguments)) {
-            return doHelp(commandInvocation);
-        }
+    protected QueryResultSet doExecute(String argument, ArtificerAtomApiClient client,
+			CommandInvocation commandInvocation) throws Exception {
+        commandInvocation.getShell().out().println(Messages.i18n.format("Query.Querying"));
+		commandInvocation.getShell().out().println("\t" + argument);
 
-        String name = this.requiredArgument(commandInvocation, arguments, 0);
-
-        ArtificerAtomApiClient client = client(commandInvocation);
-
-        try {
-            commandInvocation.getShell().out().println(Messages.i18n.format("Query.Querying"));
-            commandInvocation.getShell().out().println("\t" + name);
-
-            QueryResultSet rset = client.queryWithStoredQuery(name, 0, 100, "uuid", true, params);
-
-            int entryIndex = 1;
-            commandInvocation.getShell().out().println(Messages.i18n.format("Query.AtomFeedSummary", rset.size()));
-            commandInvocation.getShell().out().println("  Idx, UUID, Type, Name");
-            commandInvocation.getShell().out().println("  ---------------------");
-            for (ArtifactSummary summary : rset) {
-                ArtifactType type = summary.getArtifactType();
-                String displayType = type.getArtifactType().getType().toString();
-                if (type.isExtendedType() && type.getExtendedType() != null) {
-                    displayType = type.getExtendedType();
-                }
-                commandInvocation.getShell().out().printf("  %d, %s, %s, %s\n", entryIndex++, summary.getUuid(),
-                        displayType, summary.getName());
-            }
-
-            context(commandInvocation).setCurrentArtifactFeed(rset);
-            
-            return CommandResult.SUCCESS;
-        } catch (Exception e) {
-            commandInvocation.getShell().out().println(Messages.i18n.format("ExecuteStoredQueryCommand.Fail"));
-            commandInvocation.getShell().out().println("\t" + e.getMessage());
-            return CommandResult.FAILURE;
-        }
+		return client.queryWithStoredQuery(argument, getStartIndex(), getCount(), getOrderBy(), isAscending(), params);
     }
 
     private static class Completer implements OptionCompleter<CompleterInvocation> {
@@ -104,4 +70,9 @@ public class ExecuteStoredQueryCommand extends AbstractCommand {
             }
         }
     }
+
+	@Override
+	protected List<String> getArguments() {
+		return arguments;
+	}
 }

@@ -45,13 +45,7 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
 
     @Override
     public PagedResult<ArtifactSummary> query(String query, String orderBy, Boolean ascending) throws Exception { // Add on the "/s-ramp/" if it's missing
-        String xpath = query;
-        if (!xpath.startsWith("/s-ramp")) {
-            if (query.startsWith("/"))
-                xpath = "/s-ramp" + query;
-            else
-                xpath = "/s-ramp/" + query;
-        }
+		String xpath = formatXpath(query);
 
         ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending);
         ArtificerQuery artificerQuery = queryManager().createQuery(xpath, args);
@@ -61,19 +55,27 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
     @Override
     public PagedResult<ArtifactSummary> query(String query, Integer startPage, Integer startIndex, Integer count,
             String orderBy, Boolean ascending) throws Exception {
-        // Add on the "/s-ramp/" if it's missing
-        String xpath = query;
-        if (!xpath.startsWith("/s-ramp")) {
-            if (query.startsWith("/"))
-                xpath = "/s-ramp" + query;
-            else
-                xpath = "/s-ramp/" + query;
-        }
+        String xpath = formatXpath(query);
 
         ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending, startPage, startIndex, count);
         ArtificerQuery artificerQuery = queryManager().createQuery(xpath, args);
         return artificerQuery.executeQuery();
     }
+
+	private String formatXpath(String query) {
+		String xpath = query;
+		if (xpath.equals("/s-ramp/")) {
+			// If query is "/s-ramp/" exactly, trim off the trailing "/" -- screws with the parser.
+			xpath = "/s-ramp";
+		} else if (!xpath.startsWith("/s-ramp")) {
+			// Add on the "/s-ramp/" if it's missing
+			if (query.startsWith("/"))
+				xpath = "/s-ramp" + query;
+			else
+				xpath = "/s-ramp/" + query;
+		}
+		return xpath;
+	}
 
     @Override
     public StoredQuery createStoredQuery(StoredQuery storedQuery) throws Exception {
