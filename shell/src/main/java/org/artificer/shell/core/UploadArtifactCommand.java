@@ -101,7 +101,7 @@ public class UploadArtifactCommand extends AbstractCommand {
                     if (url != null) {
                         path = url.getPath();
                     } else {
-                        commandInvocation.getShell().out().println(Messages.i18n.format("Upload.InvalidArgMsg.LocalFile"));
+                        commandInvocation.getShell().out().println(Messages.i18n.format("Upload.FileNotFound", filePath));
                         return CommandResult.FAILURE;
                     }
                 }
@@ -114,12 +114,11 @@ public class UploadArtifactCommand extends AbstractCommand {
                     if (url != null) {
                         content = url.openStream();
                     } else {
-                        commandInvocation.getShell().out().println(Messages.i18n.format("Upload.InvalidArgMsg.LocalFile"));
+                        commandInvocation.getShell().out().println(Messages.i18n.format("Upload.FileNotFound", filePath));
                         return CommandResult.FAILURE;
                     }
                 }
                 artifact = client.uploadArtifact(artifactType, content, file.getName());
-                IOUtils.closeQuietly(content);
             }
 
             if (StringUtils.isNotBlank(name) || StringUtils.isNotBlank(description)) {
@@ -137,13 +136,15 @@ public class UploadArtifactCommand extends AbstractCommand {
             commandInvocation.getShell().out().println(Messages.i18n.format("Upload.Success"));
             PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor(commandInvocation);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+
+            return CommandResult.SUCCESS;
         } catch (Exception e) {
             commandInvocation.getShell().out().println(Messages.i18n.format("Upload.Failure"));
             commandInvocation.getShell().out().println("\t" + e.getMessage());
-            IOUtils.closeQuietly(content);
             return CommandResult.FAILURE;
+        } finally {
+            IOUtils.closeQuietly(content);
         }
-        return CommandResult.SUCCESS;
     }
 
     private static class Completer implements OptionCompleter<CompleterInvocation> {
