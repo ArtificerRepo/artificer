@@ -35,10 +35,18 @@ public class ArtificerContext implements AeshContext {
     private Resource cwd;
 
     private ArtificerAtomApiClient client;
+
     private BaseArtifactType currentArtifact;
+
     private QueryResultSet currentArtifactFeed;
+
     private List<OntologySummary> currentOntologyFeed;
+
     private ArtificerArchive currentArchive;
+
+	private int currentStartIndex = 0;
+
+	private int currentCount = 100;
 
     public ArtificerContext() {
         cwd = new FileResource("").newInstance(Config.getUserDir());
@@ -96,4 +104,20 @@ public class ArtificerContext implements AeshContext {
     public void setCurrentArchive(ArtificerArchive currentArchive) {
         this.currentArchive = currentArchive;
     }
+
+	public int getCurrentStartIndex() {
+		return currentStartIndex;
+	}
+
+	public void setCurrentStartIndex(int currentStartIndex) {
+		this.currentStartIndex = currentStartIndex;
+	}
+
+	public int getCurrentCount() {
+		return currentCount;
+	}
+
+	public void setCurrentCount(int currentCount) {
+		this.currentCount = currentCount;
+	}
 }

@@ -779,9 +779,6 @@ public class ArtificerAtomApiClient {
 			String xpath = srampQuery;
 			if (xpath == null)
 				throw new Exception(Messages.i18n.format("INVALID_QUERY_FORMAT"));
-			// Remove the leading /s-ramp/ prior to POSTing to the atom endpoint
-			if (xpath.startsWith("/s-ramp/"))
-				xpath = xpath.substring(8);
 			String atomUrl = srampEndpoint;
 
 			// Do a GET if multiple propertyNames are provided.  We would like to always
