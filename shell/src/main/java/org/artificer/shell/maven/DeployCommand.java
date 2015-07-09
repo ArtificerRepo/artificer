@@ -34,7 +34,7 @@ import org.artificer.common.maven.MavenGavInfo;
 import org.artificer.common.maven.MavenUtil;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.integration.java.model.JavaModel;
-import org.artificer.shell.AbstractCommand;
+import org.artificer.shell.common.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.artificer.shell.util.ArtifactTypeCompleter;
 import org.artificer.shell.util.FileNameCompleterDelegate;

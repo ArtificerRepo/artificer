@@ -16,7 +16,7 @@
 package org.artificer.shell.archive;
 
 import org.artificer.atom.archive.ArtificerArchive;
-import org.artificer.shell.AbstractCommand;
+import org.artificer.shell.common.AbstractCommand;
 import org.artificer.shell.ArtificerShellException;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;

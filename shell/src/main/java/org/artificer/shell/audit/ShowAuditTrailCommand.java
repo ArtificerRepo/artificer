@@ -19,7 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.audit.AuditEntrySummary;
 import org.artificer.client.audit.AuditResultSet;
-import org.artificer.shell.AbstractCommand;
+import org.artificer.shell.common.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.Option;

@@ -23,7 +23,7 @@ import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtifactTypeEnum;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
-import org.artificer.shell.AbstractCommand;
+import org.artificer.shell.common.AbstractCommand;
 import org.artificer.shell.i18n.Messages;
 import org.artificer.shell.util.ArtifactTypeCompleter;
 import org.artificer.shell.util.FileNameCompleterDelegate;
