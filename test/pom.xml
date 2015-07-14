@@ -4,7 +4,7 @@
   <parent>
     <artifactId>artificer</artifactId>
     <groupId>org.artificer</groupId>
-    <version>1.0.0.Final-redhat-1</version>
+    <version>1.0.0.Final-redhat-3</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
