@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
-    <version>6.0.0.CR25</version>
+    <version>6.0.0.CR27</version>
   </parent>
 
   <groupId>org.artificer</groupId>
@@ -101,13 +101,11 @@
     <!-- Artificer only libraries (not in BOM) -->
     <version.commons-beanutils>1.8.2</version.commons-beanutils>
     <version.org.apache.bcel>5.2</version.org.apache.bcel>
-    <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
     <version.org.jboss.aesh>0.62</version.org.jboss.aesh>
     <version.org.jboss.errai>3.1.2.Final</version.org.jboss.errai>
     <version.org.jboss.shrinkwrap>1.2.2</version.org.jboss.shrinkwrap>
     <version.org.keycloak>1.2.0.Final</version.org.keycloak>
     <version.org.overlord.overlord-commons>3.1.0.Final</version.org.overlord.overlord-commons>
-    <version.org.reflections>0.9.9</version.org.reflections>
     <version.org.switchyard>2.0.0.Final</version.org.switchyard>
 
     <!-- BOM Overrides -->
@@ -116,7 +114,7 @@
     <version.org.codehaus.plexus>3.0.17</version.org.codehaus.plexus>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
     <version.org.hibernate>4.2.18.Final</version.org.hibernate>
-    <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
+    <version.org.jboss.as>7.5.2.Final-redhat-2</version.org.jboss.as>
   </properties>
 
   <build>
@@ -216,7 +214,7 @@
       <dependency>
         <groupId>org.jboss.integration-platform</groupId>
         <artifactId>jboss-integration-platform-bom</artifactId>
-        <version>6.0.0.CR25</version>
+        <version>6.0.0.CR27</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -622,11 +620,6 @@
         <version>${version.org.hibernate}</version>
       </dependency>
       <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-search-orm</artifactId>
-        <version>${version.org.hibernate.search}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-analyzers</artifactId>
         <version>${version.org.apache.lucene}</version>
@@ -692,11 +685,6 @@
         <version>${version.org.apache.httpcomponents.httpcore}</version>
       </dependency>
       <dependency>
-        <groupId>org.reflections</groupId>
-        <artifactId>reflections</artifactId>
-        <version>${version.org.reflections}</version>
-      </dependency>
-      <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>${version.org.codehaus.plexus}</version>
@@ -720,28 +708,6 @@
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-impl-base</artifactId>
         <version>${version.org.jboss.shrinkwrap}</version>
-      </dependency>
-      
-      <!-- Jetty (dev server) -->
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-security</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-server</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlet</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-util</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
       </dependency>
       
       <!-- UI -->
@@ -797,31 +763,6 @@
       </dependency>
 
       <!-- RESTEasy -->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jaxrs</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-atom-provider</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jaxb-provider</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-multipart-provider</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>jaxrs-api</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-      </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-client</artifactId>
