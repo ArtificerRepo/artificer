@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="sample" targetNamespace="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ext-types="urn:s-ramp:test:sample:types"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import namespace="urn:s-ramp:test:sample:types" schemaLocation="sample.xsd" />
+    </xsd:schema>
+  </wsdl:types>
+
+  <wsdl:message name="inputMessage">
+    <wsdl:part name="inputMessageParameters" element="ext-types:inputElement" />
+  </wsdl:message>
+  <wsdl:message name="outputMessage">
+    <wsdl:part name="outputMessageParameters" type="ext-types:outputType" />
+  </wsdl:message>
+
+  <wsdl:portType name="samplePortType">
+    <wsdl:operation name="sampleOperation">
+      <wsdl:input name="sampleOperationInput" message="tns:inputMessage"></wsdl:input>
+      <wsdl:output name="sampleOperationOutput" message="tns:outputMessage"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="sampleBinding" type="tns:samplePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="sampleOperation">
+      <soap:operation soapAction="" />
+      <wsdl:input name="sampleOperationInput">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="sampleOperationOutput">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="sampleService">
+    <wsdl:port binding="tns:sampleBinding" name="samplePort">
+      <soap:address location="http://localhost:8080/sample/sampleEP" />
+    </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>

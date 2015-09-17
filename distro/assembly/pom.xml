@@ -1,0 +1,256 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.artificer</groupId>
+    <artifactId>artificer-distro</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>artificer-distro-assembly</artifactId>
+  <packaging>pom</packaging>
+  <name>Artificer Distribution: Assembly</name>
+
+  <dependencies>
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-ant</artifactId>
+    </dependency>
+    <!-- Artificer Installer -->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-installer</artifactId>
+    </dependency>
+
+    <!-- Artificer Shell Distro -->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-distro-shell</artifactId>
+      <classifier>onejar</classifier>
+    </dependency>
+
+    <!-- Artificer Demos -->
+    <dependency>
+      <groupId>org.artificer.demos</groupId>
+      <artifactId>artificer-demos-assembly</artifactId>
+      <type>zip</type>
+    </dependency>
+
+    <!-- Artificer WARs -->
+    <!--<dependency>-->
+      <!--<groupId>org.artificer</groupId>-->
+      <!--<artifactId>artificer-server-eap6</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-server-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.artificer</groupId>-->
+      <!--<artifactId>artificer-ui-eap6</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-ui-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- Artificer Sources -->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-api</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-atom</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-client</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-common</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-events</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-events-jms</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-repository</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-repository-hibernate</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-server</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-shell</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-ui</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+
+    <!-- Artificer documentation (jdocbook) -->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-doc</artifactId>
+      <type>jdocbook</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-javadoc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-javadoc</artifactId>
+      <classifier>javadoc</classifier>
+    </dependency>
+
+    <!-- Keycloak -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-server-overlay</artifactId>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-jboss-modules</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-dist</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-feature-pack</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.keycloak</groupId>-->
+      <!--<artifactId>keycloak-server-overlay-eap6</artifactId>-->
+      <!--<type>zip</type>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-wf9-adapter-dist</artifactId>
+      <type>zip</type>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.keycloak</groupId>-->
+      <!--<artifactId>keycloak-eap6-adapter-dist</artifactId>-->
+      <!--<type>zip</type>-->
+    <!--</dependency>-->
+
+    <!-- ant -->
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-launcher</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>artificer-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <!-- Entry needed to enable jdocbook unzipping -->
+            <groupId>org.jboss.maven.plugins</groupId>
+            <artifactId>maven-jdocbook-plugin</artifactId>
+            <version>2.3.8</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>make-dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+
+              <attach>true</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/dist.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+              <appendAssemblyId>false</appendAssemblyId>
+              <archiverConfig>
+                <defaultDirectoryMode>0755</defaultDirectoryMode>
+              </archiverConfig>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>docker-test</id>
+      <build>
+        <finalName>artificer</finalName>
+        <plugins>
+          <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.1.1</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <imageName>artificer:${project.version}</imageName>
+              <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+              <resources>
+                <resource>
+                  <targetPath>/</targetPath>
+                  <directory>${project.build.directory}</directory>
+                  <include>artificer.zip</include>
+                </resource>
+              </resources>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+  
+</project>

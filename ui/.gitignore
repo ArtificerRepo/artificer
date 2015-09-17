@@ -1,0 +1,8 @@
+/.settings
+/target
+/.classpath
+/.project
+/bin
+/.settings
+.gwt
+**/overlays

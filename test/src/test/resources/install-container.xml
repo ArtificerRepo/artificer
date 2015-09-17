@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="S-RAMP Integration Tests: Setup">
+
+  <!--<property name="filename.eap64" value="jboss-eap-6.4.0.zip" />-->
+  <!--<property name="dir.eap64" value="jboss-eap-6.4" />-->
+
+  <property name="filename.wildfly9" value="wildfly-9.0.0.Final.zip" />
+  <property name="download.url.wildfly9"
+            value="http://download.jboss.org/wildfly/9.0.0.Final/${filename.wildfly9}" />
+  <property name="dir.wildfly9" value="wildfly-9.0.0.Final" />
+
+  <!--<target name="install-eap64">-->
+    <!--<property name="name" value="JBoss EAP 6.4" />-->
+    <!--<property name="filename" value="${filename.eap64}" />-->
+    <!--<property name="dir" value="${project.build.directory}/${dir.eap64}" />-->
+    <!--<antcall target="install" />-->
+  <!--</target>-->
+
+  <target name="install-wildfly9">
+    <property name="name" value="WildFly 9.0" />
+    <property name="filename" value="${filename.wildfly9}" />
+    <property name="dir" value="${project.build.directory}/${dir.wildfly9}" />
+    <property name="download.url" value="${download.url.wildfly9}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install" depends="download">
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Unzipping ${name}...                 #" />
+    <echo message="########################################" />
+    <echo message=" " />
+    <delete dir="${dir}" />
+    <unzip src="${filename}" dest="target" />
+
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Installing S-RAMP on ${name}...      #" />
+    <echo message="########################################" />
+    <echo message=" " />
+  </target>
+
+  <target name="download" if="missing" depends="find">
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Downloading ${name}...               #" />
+    <echo message="########################################" />
+    <echo message=" " />
+    <get src="${download.url}" dest="." />
+  </target>
+
+  <target name="find">
+    <condition property="missing">
+      <not>
+        <resourceexists>
+          <file file="${filename}" />
+        </resourceexists>
+      </not>
+    </condition>
+  </target>
+
+</project>

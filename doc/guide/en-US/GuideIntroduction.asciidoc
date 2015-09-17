@@ -1,0 +1,163 @@
+Introduction to Artificer
+-------------------------
+
+Why?
+~~~~
+
+All individuals, teams, and organizations tend to have a tangled mess of "stuff".  That bucket can include bits of
+information, logical metadata, and physical files.  Those "artifacts" are almost never isolated in nature.  They're all
+connected and inter-dependent, but the relationships can be difficult to understand.
+
+In the software development world, this is an especially important problem to solve.  The development process
+often spews out a huge amount of artifacts, needed for future analysis and actions.  Without the ability to
+analyze how the information, artifacts, and content within the artifacts are connected, development
+processes become difficult, at best, or nearly impossible, at worst.  Further, it's not enough to simply know how the
+bits are related.  How do you correlate the artifacts/metadata with, for example, service endpoints,
+the responsible teams/individuals, and change histories?
+
+Both the publisher and the consumer need help!
+
+
+Overview
+~~~~~~~~
+
+In steps Artificer.  Artificer is a software artifact, logical metadata, and information repository.  It consists of a
+common data model, multiple interfaces, useful tools, and extensibility.  In less words?
+It's a powerful platform that *untangles everything*.
+
+
+Use Cases
+~~~~~~~~~
+
+More specifically, here are a few brief examples of how Artificer can be used.  Obviously, this is not exhaustive!
+
+* Software artifact and metadata repository (publish and consume)
+* Software lifecycle management and workflows
+* Impact analysis
+* Discovery and reuse
+* Relationship comprehension and hierarchical analysis
+* Common configuration and policy management
+* Data auditing
+* Other "out of the box" uses:
+** "Getting Things Done"
+*** Reference system
+*** Project and action lists (with hierarchical classifications)
+
+For more details on specific use cases, take a look at Artificer's available
+https://developer.jboss.org/en/artificer/blog[blog posts].  We plan to periodically provide in-depth walkthroughs.
+
+
+Benefits
+~~~~~~~~
+
+Although all the features are described in detail, further in the guide, here's a brief overview of what Artificer
+provides.  The bottom line is that Artificer is *not* "just another software repository"!
+
+* Automatically extracts content from archives (ZIPs, JARs, WARs, etc.)
+* Automatically derives content from documents -- examples:
+** Type declarations in XSDs
+** Messages/ports/endpoints in WSDLs
+** Many others
+* Automatically detects content type
+* Powerful query language
+* Many interfaces & integrations
+** REST/Atom
+** UI
+** Java client
+** CLI
+** Maven (+ Gradle and other Maven dependency based systems)
+** EJB
+** JMS
+** Others under evaluation
+* Hierarchical classifiers/ontologies
+* Powerful & rich built-in/modeled metadata and relationships
+* Logical information models (services, organizations, etc.)
+* Ad-hoc metadata and relationships
+* Model does not have to be defined at compile time -- can be completely ad-hoc
+* Full-blown auditing of historical changes
+* Easily extended
+* Performance -- supports enterprise-level usage
+
+
+The S-RAMP Specification
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Much of Artificer's capabilities are defined by the OASIS S-RAMP specification.
+S-RAMP is the https://www.oasis-open.org/committees/s-ramp/charter.php[SOA Repository Artifact Model and Protocol],
+a newer specification provided by an OASIS Technical Committee.
+[quote, OASIS Charter, https://www.oasis-open.org/committees/s-ramp/charter.php]
+____
+The SOA Repository Artifact Model and Protocol (S-RAMP) TC defines a common data model for SOA repositories as well as an interaction protocol to facilitate the use of common tooling and sharing of data. The TC will define an ATOM binding which documents the syntax for interaction with a compliant repository for create, read, update, delete and query operations.
+____
+Two of the developers on the project currently participate in the Technical Committee, one of which is the co-chair.
+
+It's important to note that Artificer is not simply an S-RAMP implementation!  The capabilities extend well beyond
+what's required by the spec.  Further, although historically Artificer was 100% compliant with the spec, we've
+recently begun to break compliance where necessary.  In our opinion, flexibility, extension, and well-thought-out
+rules trump spec compliancy, at least in this unique case.
+
+
+Core Properties
+~~~~~~~~~~~~~~~
+
+All artifacts in Artificer contain a set of core properties such as name, description,
+creation date, etc.  Many of these properties are automatically set by the server when the
+artifact is added and/or updated.  Others, such as description, can be set by clients.
+
+However, most importantly every artifact has an Artifact Model and an Artifact Type.  
+These two properties determine what kind of artifact it is (more on artifact types later, 
+in the Data Models section of this Guide).  
+
+Some artifact types contain additional core properties.  For example, the
+Document artifact type includes additional core properties of contentType and contentSize, 
+while the XsdDocument artifact type includes the targetNamespace property.
+
+
+Custom Properties
+~~~~~~~~~~~~~~~~~
+
+An artifact may have additional properties set by clients.  These custom properties
+are simply arbitrary name/value pairs.  The only restriction is that a custom property
+may not have the same name as a Core Property.
+
+
+Classifiers
+~~~~~~~~~~~
+
+Another type of metadata found on artifacts are "classifiers".  Classifiers are a
+lot like keywords or tags except that they are *hierarchical*.  Classifiers are defined in the repository through
+the OWL Lite format, a subset of the Web Ontology Language.
+
+An example is helpful in this case.  First, a repository administrator would define and
+upload an ontology:
+
+----
+World
+  |-> North America
+     |-> United States
+         |-> Alabama
+         |-> Alaska
+     |-> Mexico
+     |-> Canada
+  |-> South America
+  |-> Australia
+----
+
+Once this ontology has been added to the repository, then clients can add, for example,
+#Alaska or #Canada as classifiers on artifacts.  This provides a way to "tag" artifacts
+in interesting and meaningful ways, and provides a useful means of querying (more on that
+later).
+
+For more information about ontologies and classifiers, have a look at Section 3 of the
+S-RAMP Foundation document.
+
+
+Relationships
+~~~~~~~~~~~~~
+
+The final bit of metadata that can be found on an artifact is relationships.  These are
+uni-directional links between a source artifact and a target artifact.  Artificer automatically defines a handful of
+useful relationships on its own, but artifacts can also have arbitrary, client-defined, ad hoc relationships defined
+during runtime.  All relationships have both a name and a target artifact.  For example, a client might define a relationship named
+"documentedBy" between a WSDL artifact and a text or PDF artifact, indicating that the
+latter provides documentation for the former.

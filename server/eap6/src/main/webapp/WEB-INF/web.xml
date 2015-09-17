@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <distributable/> 
+  <listener>
+    <listener-class>org.artificer.server.ArtificerLifeCycle</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>Resteasy</servlet-name>
+    <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>org.artificer.server.atom.services.ArtificerApplication</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Resteasy</servlet-name>
+    <url-pattern>/s-ramp/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Resteasy</servlet-name>
+    <url-pattern>/artificer/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>MavenRepository</servlet-name>
+    <servlet-class>org.artificer.server.mvn.services.MavenFacadeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MavenRepository</servlet-name>
+    <url-pattern>/maven/repository/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>MavenRepository</servlet-name>
+    <url-pattern>/maven/repository</url-pattern>
+  </servlet-mapping>
+ 
+  <filter>
+    <filter-name>LocaleFilter</filter-name>
+    <filter-class>org.artificer.server.filters.LocaleFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LocaleFilter</filter-name>
+    <servlet-name>Resteasy</servlet-name>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LocaleFilter</filter-name>
+    <servlet-name>MavenRepository</servlet-name>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>ServletCredentials</filter-name>
+    <filter-class>org.artificer.repository.filter.ServletCredentialsFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ServletCredentials</filter-name>
+    <servlet-name>Resteasy</servlet-name>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ServletCredentials</filter-name>
+    <servlet-name>MavenRepository</servlet-name>
+  </filter-mapping>
+
+  <!-- Security -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>artificer-server</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>KEYCLOAK</auth-method>
+    <realm-name>this is ignored currently</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>user</role-name>
+  </security-role>
+  
+</web-app>

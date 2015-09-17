@@ -1,0 +1,34 @@
+Artificer User Guide
+====================
+
+:doctype: book
+
+include::GuideIntroduction.asciidoc[]
+
+include::GuideGettingStarted.asciidoc[]
+
+include::GuideSrampDataModels.asciidoc[]
+
+include::GuideSrampQueryLanguage.asciidoc[]
+
+include::GuideSrampRestAPI.asciidoc[]
+
+include::GuideArtificerClients.asciidoc[]
+
+include::GuideArtificerCLI.asciidoc[]
+
+include::GuideArtificerMaven.asciidoc[]
+
+include::GuideArtificerBrowser.asciidoc[]
+
+include::GuideUserManagement.asciidoc[]
+
+include::GuideExtensionPoints.asciidoc[]
+
+include::GuideArtificerImplementation.asciidoc[]
+
+include::GuideArtificerServerConfiguration.asciidoc[]
+
+include::MigrationGuides.asciidoc[]
+
+:numbered!:

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xml:base="http://artificer.jboss.org/gettingthingsdone.owl">
+
+	<owl:Ontology rdf:ID="GTD">
+		<rdfs:label>GTD</rdfs:label>
+		<rdfs:comment>GTD</rdfs:comment>
+	</owl:Ontology>
+	
+	<owl:Class rdf:ID="Action">
+		<rdfs:label>Action</rdfs:label>
+		<rdfs:comment>Action</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="SimpleAction">
+		<rdfs:subClassOf rdf:resource="http://artificer.jboss.org/gettingthingsdone.owl#Action" />
+		<rdfs:label>Simple</rdfs:label>
+		<rdfs:comment>Simple</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="ModerateAction">
+		<rdfs:subClassOf rdf:resource="http://artificer.jboss.org/gettingthingsdone.owl#Action" />
+		<rdfs:label>Moderate</rdfs:label>
+		<rdfs:comment>Moderate</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="ComplexAction">
+		<rdfs:subClassOf rdf:resource="http://artificer.jboss.org/gettingthingsdone.owl#Action" />
+		<rdfs:label>Complex</rdfs:label>
+		<rdfs:comment>Complex</rdfs:comment>
+	</owl:Class>
+
+	<owl:Class rdf:ID="Waiting">
+		<rdfs:label>Waiting</rdfs:label>
+		<rdfs:comment>Waiting</rdfs:comment>
+	</owl:Class>
+
+	<owl:Class rdf:ID="Someday">
+		<rdfs:label>Someday</rdfs:label>
+		<rdfs:comment>Someday</rdfs:comment>
+	</owl:Class>
+
+	<owl:Class rdf:ID="Context">
+		<rdfs:label>Context</rdfs:label>
+		<rdfs:comment>Context</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="ComputerContext">
+		<rdfs:subClassOf rdf:resource="http://artificer.jboss.org/gettingthingsdone.owl#Context" />
+		<rdfs:label>On The Computer</rdfs:label>
+		<rdfs:comment>On The Computer</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="PhoneContext">
+		<rdfs:subClassOf rdf:resource="http://artificer.jboss.org/gettingthingsdone.owl#Context" />
+		<rdfs:label>On The Phone</rdfs:label>
+		<rdfs:comment>On The Phone</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="ErrandContext">
+		<rdfs:subClassOf rdf:resource="http://artificer.jboss.org/gettingthingsdone.owl#Context" />
+		<rdfs:label>Out Running Errands</rdfs:label>
+		<rdfs:comment>Out Running Errands</rdfs:comment>
+	</owl:Class>
+	
+</rdf:RDF>

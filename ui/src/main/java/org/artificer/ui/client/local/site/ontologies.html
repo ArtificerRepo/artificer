@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>S-RAMP Repository Browser - Ontologies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+  </head>
+
+  <body>
+    <div id="page" data-field="page">
+
+      <!-- Content area with footer-->
+      <div id="page-content" class="container-fluid">
+
+        <!-- Breadcrumbs -->
+        <div class="row-fluid">
+          <div id="user-actions" class="pull-right">
+            <a data-i18n-key="user-actions.logout" href="/artificer-ui/app/services/logout">Logout</a>
+          </div>
+          <ul class="breadcrumb">
+            <li><a data-i18n-key="breadcrumb.dashboard" data-field="back-to-dashboard" href="dashboard.html">S-RAMP Dashboard</a> <span class="divider">/<span data-role="dummy"/></span></li>
+            <li data-i18n-key="breadcrumb.ontologies" class="active">Ontologies</li>
+          </ul>
+        </div>
+
+        <!-- Page content -->
+        <div class="row-fluid">
+          <div id="ontologies" class="span4">
+            <div data-field="ontologies-canvas" class="ontologies-canvas">
+              <div class="sramp-ontology-box-header">Ontologies</div>
+              <ul class="nav nav-pills nav-stacked">
+                <li data-field="sramp-ontology-item">
+                  <a><span data-field="label" data-role="dummy">http://www.example.org/colors.owl</span></a>
+                  <div data-field="actions" class="sramp-ontology-item-actions"></div>
+                </li>
+                <li class="active">
+                  <a>http://www.example.org/regional.owl</a>
+                  <div class="sramp-ontology-item-actions">
+                    <button class="btn-mini btn">Download</button><button class="btn-mini btn">Delete</button>
+                  </div>
+                </li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+              </ul>
+            </div>
+            <div class="sramp-ontology-actions">
+              <button data-field="btn-new-ontology" data-i18n-key="new-ontology" class="btn">New</button><button data-field="btn-upload-ontology" data-i18n-key="upload-ontology" class="btn">Upload</button>
+            </div>
+          </div>
+          <div data-field="ontology-editor" id="ontology-editor" class="span8">
+            <div class="sramp-ontology-editor-canvas">
+              <!-- Ontology Tier 1 -->
+              <div class="sramp-ontology-tier">
+                <div class="sramp-ontology-tier-header">
+                  <button class="btn-mini btn">+</button>
+                </div>
+                <ul class="nav nav-pills nav-stacked">
+                  <li data-field="sramp-ontology-tier-item">
+                    <a><span data-field="label" data-role="dummy">Tier 1, Node 1</span></a>
+                    <div data-field="actions" class="sramp-ontology-item-actions"></div>
+                  </li>
+                  <li class="active">
+                    <a>Tier 1, Node 2</a>
+                    <div class="sramp-ontology-item-actions">
+                      <button class="btn-mini btn">Edit</button><button class="btn-mini btn">Delete</button>
+                    </div>
+                  </li>
+                  <li><a>Tier 1, Node 3</a></li>
+                  <li><a>Tier 1, Node 4</a></li>
+                  <li><a>Tier 1, Node 5</a></li>
+                </ul>
+              </div>
+              <!-- Ontology Tier 2 -->
+              <div class="sramp-ontology-tier" data-role="dummy">
+                <div class="sramp-ontology-tier-header">
+                  <button class="btn-mini btn">+</button>
+                </div>
+                <ul class="nav nav-pills nav-stacked">
+                  <li class="active">
+                    <a>Tier 2, Node 1</a>
+                    <div class="sramp-ontology-item-actions">
+                      <button class="btn-mini btn">Edit</button>
+                      <button class="btn-mini btn">Delete</button>
+                    </div>
+                  </li>
+                  <li><a>Tier 2, Node 2</a></li>
+                  <li><a>Tier 2, Node 3</a></li>
+                  <li><a>Tier 2, Node 4</a></li>
+                  <li><a>Tier 2, Node 5</a></li>
+                  <li><a>Tier 2, Node 6</a></li>
+                  <li><a>Tier 2, Node 7</a></li>
+                  <li><a>Tier 2, Node 8</a></li>
+                  <li><a>Tier 2, Node 9</a></li>
+                  <li><a>Tier 2, Node 10</a></li>
+                  <li><a>Tier 2, Node 31</a></li>
+                  <li><a>Tier 2, Node 32</a></li>
+                  <li><a>Tier 2, Node 33</a></li>
+                  <li><a>Tier 2, Node 34</a></li>
+                  <li><a>Tier 2, Node 35</a></li>
+                  <li><a>Tier 2, Node 36</a></li>
+                  <li><a>Tier 2, Node 37</a></li>
+                  <li><a>Tier 2, Node 38</a></li>
+                </ul>
+              </div>
+              <!-- Ontology Tier 3 -->
+              <div class="sramp-ontology-tier" data-role="dummy">
+                <div class="sramp-ontology-tier-header">
+                  <button class="btn-mini btn">+</button>
+                </div>
+                <ul class="nav nav-pills nav-stacked">
+                </ul>
+              </div>
+            </div>
+            <div class="sramp-ontology-actions" data-role="dummy">
+              <button class="btn">Save</button><button class="btn">Revert</button>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Footer -->
+        <footer>
+          <hr />
+          <p data-i18n-key="footer">&copy; Artificer 2015</p>
+        </footer>
+      </div> <!-- /container -->
+      
+    </div> <!-- /page -->
+  </body>
+</html>

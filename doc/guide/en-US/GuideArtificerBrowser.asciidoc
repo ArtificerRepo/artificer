@@ -1,0 +1,14 @@
+The Artificer Browser (UI)
+--------------------------
+
+Overview
+~~~~~~~~
+The Artificer project comes with a user interface that allows end users (or
+more likely business admins) to browse all of the artifacts in the Artificer repository.
+This UI is capable of viewing and manipulating all Artificer artifacts in a very
+generic way, supporting all aspects of the S-RAMP specification (properties, 
+classifiers, relationships, etc).
+
+The browser is a web based application built using GWT and Errai, and is compatible
+with all modern web browsers.  Additionally, it is capable of scaling the interface
+down to a size that is useful on a smart phone.

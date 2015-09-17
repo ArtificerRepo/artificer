@@ -1,0 +1,44 @@
+    <authorgroup>
+
+    <author>
+    <honorific>Dr</honorific>
+    <firstname>Kurt</firstname>
+    <surname>Stam</surname>
+    <othername role='mi'>T</othername>
+    <affiliation>
+      <shortaffil>Red Hat</shortaffil>
+      <jobtitle>Integration Magician</jobtitle>
+      <orgname>JBoss</orgname>
+
+    </affiliation>
+    </author>
+
+    <author>
+     <honorific>Mr</honorific>
+     <firstname>Eric</firstname>
+     <surname>Wittmann</surname>
+     <affiliation>
+       <shortaffil>Red Hat</shortaffil>
+       <jobtitle>Developer</jobtitle>
+       <orgname>JBoss</orgname>
+       <orgdiv>SOA</orgdiv>
+     </affiliation>
+     </author>
+
+    <author>
+     <honorific>Lord</honorific>
+     <firstname>Brett</firstname>
+     <surname>Meyer</surname>
+     <affiliation>
+       <shortaffil>Red Hat</shortaffil>
+       <jobtitle>Developer</jobtitle>
+       <orgname>JBoss</orgname>
+       <orgdiv>SOA</orgdiv>
+     </affiliation>
+     </author>
+
+     </authorgroup>
+
+     <copyright>
+     <year>2014</year>
+     </copyright>

@@ -5,4 +5,8 @@ target
 .metadata
 /RemoteSystemsTempFiles
 .errai
+*.versionsBackup
 *~
+.checkstyle
+*.iml
+.idea

@@ -1,0 +1,95 @@
+Artificer Server Configuration
+------------------------------
+
+Out-of-the-box, Artificer provides a useful, default server configuration.  However, if you'd like to mold it into an
+existing setup, here are a few areas that can be modified.
+
+Hibernate
+~~~~~~~~~
+
+Out of the box, we provide a fairly standard set of Hibernate configuration defaults.  However, for power users, note
+that *any* Hibernate property may be set, either in `artificer.properties`, environment variables, or System properties.
+More specifically, literally *any* property prefixed by 'hibernate.' will be handed to Hibernate during Artificer
+startup.  More specifics are below:
+
+Datasource
+~~~~~~~~~~
+
+See the "Getting Started" section for information on Artificer's provided DDL.  We currently support Postgres,
+MySQL, Oracle, SQL Server, DB2/IBM, and H2.
+
+By default, Artificer installs a simple, file-based H2 datasource
+(see `$JBOSS_HOME/standalone/deployments/artificer-h2-ds.xml`).  However, any other WildFly/EAP datasource can be used.
+Just edit the following in `artificer.properties`:
+
+----
+...
+hibernate.dialect = org.hibernate.dialect.H2Dialect
+hibernate.connection.driver_class = org.h2.Driver
+hibernate.connection.datasource = java:jboss/datasources/artificerH2
+hibernate.connection.username = sa
+hibernate.connection.password = sa
+...
+----
+
+Note that a datasource is *not* required, although we typically recommend them.  Plain JDBC connection URLs, including
+external instances, are also fully supported (use `hibernate.connection.url`, `hibernate.connection.username`,
+and `hibernate.connection.password`).  If a connection URL is used, Artificer will automatically wrap it with
+HikariCP, a lightweight and extremely performant connection pool library.
+
+Also note that, due to licensing, we only include the JDBC driver for H2.  For all other supported databases,
+you'll need to ensure that their JDBC driver JAR(s) are available on the classpath,
+typically through a WildFly/EAP module.
+
+File Content
+~~~~~~~~~~~~
+
+Artificer supports storing artifacts' file content on the filesystem or in JDBC Blobs.  By default, we use the Blob
+approach.  However, this is configurable at runtime.  See the 'artificer.file.storage' property in artificer.properties
+(values: 'blob' or 'filesystem').  If you use the filesystem, also include a path with the
+'artificer.file.storage.filesystem.path' property -- all content will be stored there.
+
+Although JDBC Blobs are the default (purely because they're convenient), many databases have fairly restrictive size
+limits.  Even more importantly, there are some vertical and horizontal performance considerations when dealing with
+larger files (ex: writing the Blob can take a lot of heap space, depending on the JDBC driver).
+For use cases that involve large file sizes, we'd actually recommend using the filesystem.
+
+Hibernate Configuration
+~~~~~~~~~~~~~~~~~~~~~~~
+
+For detailed information of what's possible, please see the Hibernate docs themselves.  However, a few things to highlight:
+
+* Query caching and Infinispan second-level entity caching are both enabled by default.  This drastically reduces
+processing time for repeated queries, relationship creation
+(when uploading large archives of artifacts or highly derived documents), etc.  We essentially lean on the default
+"hibernate" cache available in EAP and Wildfly.  However, as mentioned above, feel free to tweak the 'hibernate.cache.*'
+settings in `artificer.properties` as needed.
+* By default, we use Lucene filesystem indexes with Hibernate Search.  This is also highly configurable and can use
+any number of backends.  See the 'hibernate.search.*' properties in artificer.properties.  Note one property in
+particular: 'hibernate.search.default.indexBase'.  By default, we use a relative path: 'lucene/indexes'.  However,
+that's completely dependent on the location from which you start the application server.  Most users will probably
+need to change this path to something more permanent (and one which you have adequate permissions).
+* Also with Hibernate Search, many usages could benefit from hibernate-search-infinispan, which introduces in-memory
+index caching (clusterable, etc.).  This is currently disabled by default, but can be set with the correct properties
+and including the hibernate-search-infinispan JAR.
+See https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-UsingtheInfinispansecondlevelcache
+for more info.
+
+Running the Server and Web UI Separately
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Artificer server and web UI are purposefully separated into two WARs, allowing you to run each on separate app
+servers.  If you do so, you'll need to update the "artificer-ui.atom-api.endpoint" property in
+`artificer-ui.properties`.  By default, it assumes co-location and "localhost".
+
+Remote Connections
+~~~~~~~~~~~~~~~~~~
+
+If you'd like to allow remote, non-localhost connections to Artificer, you'll need to change two items in
+`standalone-full.xml`:
+
+* In <interface name="public">, change the inet-address from "127.0.0.1" to "0.0.0.0".
+* In the Keycloak subsystem, change the "auth-server-url" from "localhost" to your IP.
+
+WARNINGS
+~~~~~~~~

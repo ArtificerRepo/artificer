@@ -1,0 +1,139 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.artificer</groupId>
+    <artifactId>artificer</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>artificer-javadoc</artifactId>
+  <name>Artificer Javadoc</name>
+  <description>API javadocs.</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-atom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <groups>
+              <group>
+                <title>Artificer Client</title>
+                <packages>org.artificer.client*</packages>
+              </group>
+              <group>
+                <title>Artificer Artifact Expander</title>
+                <packages>org.artificer.atom.archive.expand.registry*</packages>
+              </group>
+              <group>
+                <title>Artificer Artifact Builder</title>
+                <packages>org.artificer.integration.artifactbuilder*</packages>
+              </group>
+              <group>
+                <title>Artificer Shell API</title>
+                <packages>org.artificer.shell.api*</packages>
+              </group>
+            </groups>
+            <additionalparam>${javadoc.opts}</additionalparam>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-sources</id>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <mkdir dir="${project.build.directory}/sources" />
+                <copy todir="${project.build.directory}/sources">
+                  <fileset dir="..">
+                    <!-- APIs + packages for arguments and return types -->
+                    <include name="**/src/main/java/org/artificer/client/**/*.java" />
+                    <include name="**/src/main/java/org/artificer/atom/archive/**/*.java" />
+                    <include name="**/src/main/java/org/artificer/common/**/*.java" />
+                    <include name="**/src/main/java/org/artificer/shell/api/*.java" />
+                    
+                    <include name="**/src/main/java/org/artificer/atom/client/**/*.java" />
+                    <include name="**/src/main/java/org/artificer/atom/err/**/*.java" />
+                    
+                    <exclude name="**/i18n/**" />
+                    <exclude name="**/internal/**" />
+                  </fileset>
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>artificer-javadoc</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <sourcepath>${project.build.directory}/sources</sourcepath>
+              <outputDirectory>${project.build.directory}/api</outputDirectory>
+              <attach>true</attach>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <minmemory>128m</minmemory>
+          <maxmemory>768m</maxmemory>
+          <header>Artificer</header>
+          <footer>Artificer</footer>
+          <doctitle>Artificer ${project.version} API</doctitle>
+          <notimestamp>true</notimestamp>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+

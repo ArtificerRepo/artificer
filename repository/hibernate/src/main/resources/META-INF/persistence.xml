@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+  <persistence-unit name="Artificer">
+    <class>org.artificer.repository.hibernate.entity.ArtificerRelationship</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerTarget</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerComment</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerDocumentArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerStoredQuery</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerWsdlDerivedArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerWsdlDocumentArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerXsdDocumentArtifact</class>
+    <class>org.artificer.common.ontology.ArtificerOntology</class>
+    <class>org.artificer.common.ontology.ArtificerOntologyClass</class>
+    <class>org.artificer.repository.hibernate.audit.ArtificerAuditEntry</class>
+    <class>org.artificer.repository.hibernate.audit.ArtificerAuditItem</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerProperty</class>
+
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+    
+    <properties>
+      <!-- A few items that should probably *not* be changed -->
+      <property name="hibernate.order_updates" value="true"/>
+      <property name="hibernate.connection.autocommit" value="false"/>
+      <property name="hibernate.format_sql" value="true"/>
+
+      <!-- Don't allow WF/EAP to manage the persistence unit - vital since we're dynamically setting most of the
+      properties *after* WF/EAP has started! -->
+      <property name="jboss.as.jpa.managed" value="false"/>
+
+      <!-- Note: *Everything* else provided by artificer.properties -->
+    </properties>
+  </persistence-unit>
+</persistence>

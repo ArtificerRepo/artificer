@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0"
+  targetNamespace="urn:s-ramp:test:sample:types" xmlns:tns="urn:s-ramp:test:sample:types"
+  elementFormDefault="qualified">
+
+  <xsd:element name="inputElement" type="tns:inputType" />
+
+  <xsd:complexType name="inputType">
+    <xsd:sequence>
+      <xsd:element name="child1" type="xsd:string" />
+      <xsd:element name="child2" type="xsd:string" />
+      <xsd:element name="child3" type="xsd:string" />
+    </xsd:sequence>
+    <xsd:attribute name="attribute1" type="xsd:string" />
+    <xsd:attribute name="attribute2" type="xsd:string" />
+  </xsd:complexType>
+
+  <xsd:complexType name="outputType">
+    <xsd:sequence>
+      <xsd:element name="child1" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

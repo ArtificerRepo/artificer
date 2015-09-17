@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app:service xmlns:atom="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app">
+    <app:workspace>
+        <atom:title>XSD Model</atom:title>
+        <app:collection href="http://example.org/s-ramp/xsd">
+            <atom:title>XSD Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema" scheme="urn:x-s-ramp:2013:type" term="XsdDocument"/>
+                <atom:category label="XML Schema Attribute Declaration" scheme="urn:x-s-ramp:2013:type" term="AttributeDeclaration"/>
+                <atom:category label="XML Schema Element Declaration" scheme="urn:x-s-ramp:2013:type" term="ElementDeclaration"/>
+                <atom:category label="XML Schema Simple Type Declaration" scheme="urn:x-s-ramp:2013:type" term="SimpleTypeDeclaration"/>
+                <atom:category label="XML Schema Complex Type Declaration" scheme="urn:x-s-ramp:2013:type" term="ComplexTypeDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://example.org/s-ramp/xsd/XsdDocument">
+            <atom:title>XSD Documents</atom:title>
+            <app:accept>application/xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema" scheme="urn:x-s-ramp:2013:type" term="XsdDocument"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://example.org/s-ramp/xsd/AttributeDeclaration">
+            <atom:title>Attribute Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Attribute Declaration" scheme="urn:x-s-ramp:2013:type" term="AttributeDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://example.org/s-ramp/xsd/ElementDeclaration">
+            <atom:title>Element Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Element Declaration" scheme="urn:x-s-ramp:2013:type" term="ElementDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://example.org/s-ramp/xsd/SimpleTypeDeclaration">
+            <atom:title>Simple Type Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Simple Type Declaration" scheme="urn:x-s-ramp:2013:type" term="SimpleTypeDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://example.org/s-ramp/xsd/ComplexTypeDeclaration">
+            <atom:title>Complex Type Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Complex Type Declaration" scheme="urn:x-s-ramp:2013:type" term="ComplexTypeDeclaration"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+</app:service>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <!-- Artificer Repository -->
+  <datasource jndi-name="java:jboss/datasources/artificerH2" pool-name="artificerH2" enabled="true"
+        use-java-context="true" jta="true">
+    <connection-url>jdbc:h2:${jboss.server.data.dir}/h2/artificer;mvcc=true</connection-url>
+    <driver>h2</driver>
+    <security>
+      <user-name>sa</user-name>
+      <password>sa</password>
+    </security>
+  </datasource>
+
+  <!-- Keycloak -->
+  <datasource jndi-name="java:jboss/datasources/KeycloakDS" pool-name="KeycloakDS" enabled="true"
+        use-java-context="true">
+    <connection-url>jdbc:h2:${jboss.server.data.dir}/h2/keycloak;AUTO_SERVER=TRUE</connection-url>
+    <driver>h2</driver>
+    <security>
+      <user-name>sa</user-name>
+      <password>sa</password>
+    </security>
+  </datasource>
+</datasources>

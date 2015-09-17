@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app:service xmlns:atom="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app">
+    <app:workspace>
+        <atom:title>Core Model</atom:title>
+        <app:collection href="http://example.org/s-ramp/core">
+            <atom:title>Core Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Document" scheme="urn:x-s-ramp:2013:type" term="Document"/>
+                <atom:category label="XML Document" scheme="urn:x-s-ramp:2013:type" term="XmlDocument"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://example.org/s-ramp/core/Document">
+            <atom:title>Documents</atom:title>
+            <app:accept>application/octet-stream</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Document" scheme="urn:x-s-ramp:2013:type" term="Document"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://example.org/s-ramp/core/XmlDocument">
+            <atom:title>XML Documents</atom:title>
+            <app:accept>application/xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Document" scheme="urn:x-s-ramp:2013:type" term="XmlDocument"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+</app:service>
+

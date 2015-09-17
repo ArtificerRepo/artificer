@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title data-role="dummy">S-RAMP Repository Browser - Artifact Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+  </head>
+
+  <body>
+    <div id="page" data-field="page">
+
+      <!-- Content area with footer-->
+      <div id="page-content" class="container-fluid">
+
+        <!-- Breadcrumbs -->
+        <div class="row-fluid">
+          <div id="user-actions" class="pull-right">
+            <a data-i18n-key="user-actions.logout" href="/artificer-ui/app/services/logout">Logout</a>
+          </div>
+          <ul class="breadcrumb">
+            <li><a data-field="back-to-dashboard" href="dashboard.html" data-i18n-key="breadcrumb.dashboard">S-RAMP Dashboard</a> <span class="divider">/<span data-role="dummy"/></span></li>
+            <li><a data-field="back-to-artifacts" href="artifacts.html" data-i18n-key="breadcrumb.artifacts">Artifacts</a> <span class="divider">/<span data-role="dummy"/></span></li>
+            <li class="active" data-i18n-key="breadcrumb.artifact-details">Artifact Details</li>
+          </ul>
+        </div>
+
+        <!-- Loading spinner -->
+        <div data-field="artifact-details-loading-spinner" class="spinner artifact-details-loading hide" data-i18n-key="loading-artifacts">Loading artifact, please wait...</div>
+
+        <div id="artifact-details-content-wrapper">
+        <!-- Action bar -->
+        <div class="row-fluid">
+          <div class="span12 sramp-artifact-actions">
+            <span class="sramp-sp4n-label">
+              <span class="sramp-artifact-details-title" data-field="core-property-name" data-role="dummy">Artifact 1</span>
+              <span class="sramp-artifact-details-version" data-field="core-property-version" data-role="dummy">v1.1.2</span>
+              <span class="sramp-artifact-details-type">[<span data-field="core-property-type-1" data-role="dummy">XmlDocument</span>]</span>
+              <span class="pull-right"><a data-field="feed-link" href="#"><i class="icon icon-feed"></i></a></span>
+            </span>
+            <!--
+            <div class="btn-group" style="margin-left: 20px; visibility: hidden">
+              <button class="btn">Actions</button>
+              <button class="btn dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a>Download</a></li>
+                <li><a>Add to Favorites</a></li>
+                <li><a>Delete (Master)</a></li>
+                <li><a>Delete (Referenced)</a></li>
+              </ul>
+            </div>
+             -->
+            <button data-field="btn-delete" class="btn" name="Delete" data-i18n-key="delete">Delete</button>
+            <div data-field="derived-from" class="sramp-sp4n-label sramp-artifact-details-derivedFrom pull-right desktop-only hidden">
+              <span><span data-i18n-key="derived-from">Derived from</span>: </span>
+              <a href="artifact-details.html" data-role="dummy">Master Artifact 0</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="row-fluid">
+          <div class="span12 sramp-artifact-tabs">
+            <ul id="myTab" class="nav nav-tabs sramp-nav-tabs">
+              <li class="active"><a onclick="$(this).blur();" href="#overview" data-toggle="tab" data-i18n-key="tab.overview">Overview</a></li>
+              <li class=""><a onclick="$(this).blur();" href="#relationships" data-field="sramp-artifact-tabs-relationships" data-toggle="tab" data-i18n-key="tab.relationships">Relationships</a></li>
+              <li class=""><a onclick="$(this).blur();" href="#comments" data-field="sramp-artifact-tabs-comments" data-toggle="tab" data-i18n-key="tab.comments">Comments</a></li>
+              <li class=""><a onclick="$(this).blur();" href="#source" data-field="sramp-artifact-tabs-source" data-toggle="tab" data-i18n-key="tab.source">Source</a></li>
+<!--               <li class=""><a href="#history" data-toggle="tab">History</a></li> -->
+            </ul>
+            <div id="tabContent" class="tab-content sramp-tab-content">
+              <!-- Overview Tab -->
+              <div class="tab-pane fade in active container-fluid" id="overview">
+                <div class="span4">
+                  <!-- Links Section -->
+                  <div class="row-fluid sramp-meta-data-section">
+                    <div class="sramp-meta-data-section-header" data-i18n-key="links">Links</div>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-label"><a data-field="link-repository-content" data-i18n-key="link-to-repository-content">Artifact Content Link (repository)</a></div>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-label"><a data-field="link-repository-metadata" data-i18n-key="link-to-repository-metadata">Artifact Metadata Link (repository)</a></div>
+                  </div>
+
+                  <!-- Core Properties -->
+                  <div class="row-fluid sramp-meta-data-section">
+                    <div class="sramp-meta-data-section-header" data-i18n-key="header.core-properties">Core Properties</div>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-label" data-i18n-key="type">Type:</div>
+                    <div data-field="core-property-type-2" class="sramp-meta-data-section-value" data-role="dummy">XmlDocument</div>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-label" data-i18n-key="uuid">UUID:</div>
+                    <div data-field="core-property-uuid" class="sramp-meta-data-section-value" data-role="dummy">283783-2348982-1243983-23234</div>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-label" data-i18n-key="derived">Derived:</div>
+                    <div data-field="core-property-derived" class="sramp-meta-data-section-value" data-role="dummy">true</div>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-label" data-i18n-key="date-created">Date Created:</div>
+                    <div class="sramp-meta-data-section-value">
+                      <span data-field="core-property-createdOn" data-role="dummy">12/07/2012</span>
+                      <span data-i18n-key="by">by</span>
+                      <span data-field="core-property-createdBy" data-role="dummy">Danny Devito</span>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-label" data-i18n-key="last-modified">Last Modified:</div>
+                    <div class="sramp-meta-data-section-value">
+                      <span data-field="core-property-modifiedOn" data-role="dummy">12/07/2012</span>
+                      <span data-i18n-key="by">by</span>
+                      <span data-field="core-property-modifiedBy" data-role="dummy">Danny Devito</span>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <!-- Description -->
+                  <div class="row-fluid sramp-meta-data-section">
+                    <div class="sramp-meta-data-section-header" data-i18n-key="header.description">Description</div>
+                    <div class="clearfix"></div>
+                    <span data-field="core-property-description" data-role="dummy" class="core-property-description">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent
+                      libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum
+                      imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper
+                      porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu
+                      ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales
+                      ligula in libero. Sed dignissim lacinia nunc.
+                    </span>
+                  </div>
+                </div>
+                <div class="span4">
+                  <!-- Custom Properties -->
+                  <div class="row-fluid sramp-meta-data-section">
+                    <div class="sramp-meta-data-section-header" data-i18n-key="header.custom-properties">Custom Properties</div>
+                    <div class="clearfix"></div>
+                    <div data-field="custom-properties-container">
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">custom-property:</div>
+                      <span class="sramp-meta-data-section-value" data-role="dummy">Property value</span>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <button data-field="add-property-button" class="btn btn-mini" data-i18n-key="add-property">Add Property</button>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+                <div class="span4">
+                  <!-- Classifiers -->
+                  <div class="row-fluid sramp-meta-data-section">
+                    <div class="sramp-meta-data-section-header" data-i18n-key="header.classifiers">Classifiers</div>
+                    <div class="clearfix"></div>
+                    <div data-field="classifiers-container">
+                      <div class="sramp-meta-data-section-label" data-role="dummy">http://www.example.org/colors.owl#Blue</div>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">http://www.example.org/colors.owl#Blue</div>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">http://www.example.org/colors.owl#Blue</div>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">http://www.example.org/colors.owl#Blue</div>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">http://www.example.org/colors.owl#Blue</div>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label" data-role="dummy">http://www.example.org/colors.owl#Blue</div>
+                      <div class="clearfix"></div>
+                    </div>
+                    <button data-field="modify-classifiers-button" class="btn btn-mini" data-i18n-key="modify-classifiers">Modify Classifiers</button>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Relationships Tab -->
+              <div class="tab-pane fade container-fluid" id="relationships">
+
+                <div class="row-fluid sramp-meta-data-section">
+                  <div class="span12">
+                    <button data-field="btn-add-relationship" class="btn pull-right" data-i18n-key="add-relationship">Add Relationship</button>
+                    <div class="clearfix"></div>
+                    <div class="sramp-meta-data-section-header"><span data-field="relationships-header" data-role="dummy">Targeted by Artifact 1</span></div>
+                    <table data-field="relationships-table" style="" class="sramp-relationship-table table table-condensed table-bordered">
+                      <thead>
+                        <tr>
+                          <th data-i18n-key="column.name">Name</th>
+                          <th data-i18n-key="column.type">Type</th>
+                          <th data-i18n-key="column.derived">Derived?</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody data-role="dummy">
+                        <tr class="sramp-relationship-type">
+                          <td colspan="4">Derived From</td>
+                        </tr>
+                        <tr>
+                          <td><a href="artifact-details.html">Master Artifact 0</a></td>
+                          <td>WsdlDocument</td>
+                          <td>true</td>
+                          <td>
+                            <div class="btn-group">
+                              <button class="btn">Actions</button>
+                              <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a>Edit</a></li>
+                                <li><a>Delete</a></li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="sramp-relationship-type">
+                          <td colspan="4">Documented By</td>
+                        </tr>
+                        <tr>
+                          <td><a href="artifact-details.html">Documentation Alpha</a></td>
+                          <td>OfficeDocument</td>
+                          <td>true</td>
+                        </tr>
+                        <tr>
+                          <td><a href="artifact-details.html">Documentation Beta</a></td>
+                          <td>OfficeDocument</td>
+                          <td>true</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div data-field="relationship-tab-progress" style="display:none" class="spinner sramp-details-tab-spinner pull-left" data-i18n-key="loading-relationships">Loading relationships, please wait...</div>
+                  </div>
+                </div>
+
+                <div class="row-fluid sramp-meta-data-section">
+                  <div class="span12">
+                    <div class="sramp-meta-data-section-header"><span data-field="reverse-relationships-header" data-role="dummy">Targets Artifact 1</span></div>
+                    <table data-field="reverse-relationships-table" style="" class="sramp-relationship-table table table-condensed table-bordered">
+                      <thead>
+                      <tr>
+                        <th data-i18n-key="column.name">Name</th>
+                        <th data-i18n-key="column.type">Type</th>
+                        <th data-i18n-key="column.derived">Derived?</th>
+                        <th></th>
+                      </tr>
+                      </thead>
+                      <tbody data-role="dummy">
+                      <tr class="sramp-relationship-type">
+                        <td colspan="4">Derived From</td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Master Artifact 0</a></td>
+                        <td>WsdlDocument</td>
+                        <td>true</td>
+                      </tr>
+                      <tr class="sramp-relationship-type">
+                        <td colspan="4">Documented By</td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Documentation Alpha</a></td>
+                        <td>OfficeDocument</td>
+                        <td>true</td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Documentation Beta</a></td>
+                        <td>OfficeDocument</td>
+                        <td>true</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <div data-field="relationship-tab-progress" style="display:none" class="spinner sramp-details-tab-spinner pull-left" data-i18n-key="loading-relationships">Loading relationships, please wait...</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comments Tab -->
+              <div class="tab-pane fade container-fluid" id="comments">
+
+                <div class="row-fluid sramp-meta-data-section">
+                  <div class="span4">
+                    <form class="" onSubmit="return false;">
+                      <fieldset>
+                        <label data-i18n-key="add-comment-text">Add a comment:</label>
+                        <textarea data-field="add-comment-text" name="commentText" class="input-value" rows="5" cols=""></textarea>
+                      </fieldset>
+                      <button data-field="add-comment-form-submit-button" class="btn btn-focus" data-i18n-key="add-comment-form-submit-button">Create</button>
+                    </form>
+                  </div>
+                  <div class="span8" data-field="comments-container">
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      A looper, you know, a caddy, a looper, a jock. So, I tell them I'm a pro jock, and who do you think they give me? The Dalai Lama, himself. Twelfth son of the Lama. The flowing robes, the grace, bald... striking. So, I'm on the first tee with him. I give him the driver. He hauls off and whacks one - big hitter, the Lama - long, into a ten-thousand foot crevasse, right at the base of this glacier. Do you know what the Lama says? Gunga galunga... gunga, gunga-lagunga. So we finish the eighteenth and he's gonna stiff me. And I say, "Hey, Lama, hey, how about a little something, you know, for the effort, you know." And he says, "Oh, uh, there won't be any money, but when you die, on your deathbed, you will receive total consciousness." So I got that goin' for me, which is nice.
+                    </p>
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      Cinderella story. Outta nowhere. A former greenskeeper, now, about to become the Masters champion. It looks like a mirac... It's in the hole! It's in the hole! It's in the hole!
+                    </p>
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      License to kill gophers by the government of the United Nations. Man, free to kill gophers at will. To kill, you must know your enemy, and in this case my enemy is a varmint. And a varmint will never quit - ever. They're like the Viet Cong - Varmint Cong. So you have to fall back on superior intelligence and superior firepower. And that's all she wrote.
+                    </p>
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      I have to laugh, because I've outsmarted even myself. My enemy, my foe, is an animal. In order to conquer the animal, I have to learn to think like an animal. And, whenever possible, to look like one. I've gotta get inside this guy's pelt and crawl around for a few days. Who's the gopher's ally. His friends. The harmless squirrel and the friendly rabbit.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Source Tab -->
+              <div class="tab-pane fade container-fluid" id="source">
+                <div id="editor-wrapper" class="sramp-source-editor-wrapper span12">
+                  <div data-role="dummy" data-field="artifact-editor" id="editor" class="sramp-source-editor">&lt;assembly
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd"&gt;
+    &lt;id&gt;brms&lt;/id&gt;
+    &lt;formats&gt;
+        &lt;format&gt;zip&lt;/format&gt;
+    &lt;/formats&gt;
+    &lt;includeBaseDirectory&gt;false&lt;/includeBaseDirectory&gt;
+&lt;/assembly&gt;
+                  </div>
+                </div>
+                <div data-field="source-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none" data-i18n-key="loading-source">Loading artifact source, please wait...</div>
+              </div>
+              <!-- History Tab -->
+              <!-- 
+              <div class="tab-pane fade container-fluid" id="history">
+                <div class="row-fluid">
+                  <div class="span12">
+                    <table class="sramp-history-table table table-condensed table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Version</th>
+                          <th>Name</th>
+                          <th class="desktop-only">Last Modified</th>
+                          <th class="desktop-only">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><a href="artifact-details.html">1.1.2</a></td>
+                          <td>Artifact 1</td>
+                          <td class="desktop-only">08/23/2012</td>
+                          <td class="desktop-only"></td>
+                        </tr>
+                        <tr>
+                          <td><a href="artifact-details.html">1.1.1</a></td>
+                          <td>Artifact 1</td>
+                          <td class="desktop-only">04/11/2012</td>
+                          <td class="desktop-only"></td>
+                        </tr>
+                        <tr>
+                          <td><a href="artifact-details.html">1.1.0</a></td>
+                          <td>Artifact 1</td>
+                          <td class="desktop-only">02/10/2012</td>
+                          <td class="desktop-only"></td>
+                        </tr>
+                        <tr>
+                          <td><a href="artifact-details.html">1.0</a></td>
+                          <td>Artifact Alpha</td>
+                          <td class="desktop-only">03/11/2011</td>
+                          <td class="desktop-only"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div data-field="history-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none">Loading history, please wait...</div>
+                </div>
+              </div>
+              -->
+            </div>
+          </div>
+        </div>
+        
+        </div><!-- /artifact-details-content-wrapper -->
+        
+        <!-- Footer -->
+        <footer>
+          <hr />
+          <p data-i18n-key="footer">&copy; Artificer 2015</p>
+        </footer>
+      </div> <!-- /container -->
+      
+    </div> <!-- /page -->
+
+    <!-- Some scripting to add functionality to the live template -->
+    <script>
+      $(document).ready(function() {
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/eclipse");
+        editor.getSession().setMode("ace/mode/xml");
+      });
+      $('.sramp-artifact-actions ul li:nth-child(3)').click(function() {
+        $('#delete-dialog-derived').modal();
+      });
+      $('.sramp-artifact-actions ul li:nth-child(4)').click(function() {
+        $('#delete-dialog-referenced').modal();
+      });
+    </script>
+  </body>
+</html>

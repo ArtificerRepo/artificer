@@ -1,0 +1,258 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.artificer</groupId>
+  <artifactId>artificer</artifactId>
+  <version>0.4.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Artificer</name>
+  <description>Artificer is a SOA Repository Artifact Model and Protocol (Artificer) implementation.</description>
+
+  <properties>
+    <!-- Instruct the build to use only UTF-8 encoding for source code -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+
+    <!-- Distribution URLs -->
+    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+
+    <!-- Maven plugin versions -->
+    <maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
+    <maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>
+    <maven.assembly.plugin.version>2.2</maven.assembly.plugin.version>
+    <maven.install.plugin.version>2.3.1</maven.install.plugin.version>
+    <maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
+    <maven.jxr.plugin.version>2.1</maven.jxr.plugin.version>
+    <maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
+    <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
+    <maven.bundle.plugin.version>2.1.0</maven.bundle.plugin.version>
+    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+    <maven.deploy.plugin.version>2.5</maven.deploy.plugin.version>
+
+    <!-- Dependency versions -->
+    <junit.version>4.11</junit.version>
+    <log4j.version>1.2.16</log4j.version>
+    <slf4j.api.version>1.5.11</slf4j.api.version>
+    <slf4j.log4j.version>1.5.11</slf4j.log4j.version>
+    <slf4j.nop.version>1.5.11</slf4j.nop.version>
+    <xmlunit.version>1.3</xmlunit.version>
+    <resteasy.version>2.3.6.Final</resteasy.version>
+    <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
+    <commons.io.version>2.4</commons.io.version>
+    <commons.lang3.version>3.1</commons.lang3.version>
+    <commons.config.version>1.6</commons.config.version>
+    <commons.compress.version>1.4.1</commons.compress.version>
+    <commons.codec.version>1.5</commons.codec.version>
+    <jline.version>2.9</jline.version>
+    <joda-time.version>2.1</joda-time.version>
+  </properties>
+
+  <build>
+    <!-- This section defines the default plugin settings inherited by child 
+      projects. -->
+    <pluginManagement>
+      <plugins>
+        <!-- Fixes how test resources of a project can be used in projects dependent 
+          on it -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.jar.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${maven.war.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven.assembly.plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <!-- Produce source jars during the 'verify' phase -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven.source.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.surefire.plugin.version}</version>
+        <configuration>
+          <includes>
+            <include>**/*TestCase.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+          <systemProperties>
+            <property>
+              <name>java.io.tmpdir</name>
+              <value>${basedir}/target</value>
+            </property>
+          </systemProperties>
+          <argLine>-Xmx368m -XX:MaxPermSize=128m</argLine>
+        </configuration>
+      </plugin>
+      <!-- Build a test-jar for each project, so that src/test/* resources and 
+        classes can be used in other projects. Also customize how the jar files are 
+        assembled. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven.jar.plugin.version}</version><!--$NO-MVN-MAN-VER$ -->
+        <executions>
+          <execution>
+            <id>test-jar</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Implementation-URL>${project.url}</Implementation-URL>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Common libraries -->
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-config</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons.lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons.io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-configuration</groupId>
+        <artifactId>commons-configuration</artifactId>
+        <version>${commons.config.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons.compress.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda-time.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.spec.javax.servlet</groupId>
+        <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+        <scope>provided</scope>
+      </dependency>
+      <!-- Logging (require SLF4J API for compiling, but use Log4J and its SLF4J 
+        binding for testing) -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.api.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.log4j.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- Testing (note the scope) -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>xmlunit</groupId>
+        <artifactId>xmlunit</artifactId>
+        <version>${xmlunit.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${maven.surefire.report.plugin.version}</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <distributionManagement>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>${jboss.releases.repo.url}</url>
+    </repository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>${jboss.snapshots.repo.url}</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <!-- modules in alphabetical order -->
+  <modules>
+    <module>artificer-api</module>
+    <module>artificer-atom</module>
+    <module>artificer-client</module>
+    <module>artificer-common</module>
+    <module>artificer-distro</module>
+    <module>artificer-installer</module>
+    <module>artificer-integration-java</module>
+    <module>artificer-integration-kie</module>
+    <module>artificer-integration-switchyard</module>
+    <module>artificer-integration-teiid</module>
+    <module>artificer-repository</module>
+    <module>artificer-server</module>
+    <module>artificer-shell</module>
+    <module>artificer-ui</module>
+  </modules>
+</project>
+
