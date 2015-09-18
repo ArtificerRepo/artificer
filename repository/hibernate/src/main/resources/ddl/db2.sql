@@ -56,7 +56,7 @@
     create table ArtificerAuditItem_properties (
         ArtificerAuditItem_id bigint not null,
         properties varchar(255),
-        properties_KEY varchar(255),
+        properties_KEY varchar(255) not null,
         primary key (ArtificerAuditItem_id, properties_KEY)
     );
 
@@ -119,7 +119,7 @@
     create table ArtificerRelationship_otherAttributes (
         ArtificerRelationship_id bigint not null,
         otherAttributes varchar(255),
-        otherAttributes_KEY varchar(255),
+        otherAttributes_KEY varchar(255) not null,
         primary key (ArtificerRelationship_id, otherAttributes_KEY)
     );
 
@@ -145,7 +145,7 @@
     create table ArtificerTarget_otherAttributes (
         ArtificerTarget_id bigint not null,
         otherAttributes varchar(255),
-        otherAttributes_KEY varchar(255),
+        otherAttributes_KEY varchar(255) not null,
         primary key (ArtificerTarget_id, otherAttributes_KEY)
     );
 
