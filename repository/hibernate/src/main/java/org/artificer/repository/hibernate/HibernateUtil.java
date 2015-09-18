@@ -17,7 +17,23 @@ package org.artificer.repository.hibernate;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import java.io.Serializable;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.error.ArtificerNotFoundException;
@@ -29,19 +45,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernatePersistence;
 import org.hibernate.engine.spi.SessionImplementor;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.io.Serializable;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author Brett Meyer.
@@ -171,18 +174,25 @@ public class HibernateUtil {
                 }
 
                 Statement statement = null;
-                try {
+
                     URL url = HibernateUtil.class.getClassLoader().getResource("ddl/" + ddlFile);
                     String ddl = IOUtils.toString(url);
 
-                    statement = connection.createStatement();
-                    statement.executeUpdate(ddl);
-                } finally {
-                    if (statement != null) {
-                        statement.close();
+                String[] queries = StringUtils.split(ddl, ";");
+                if (queries != null && queries.length > 0) {
+                    for (String query : queries) {
+                        try {
+                            statement = connection.createStatement();
+                            statement.executeUpdate(query + ";");
+                        } finally {
+                            if (statement != null) {
+                                statement.close();
+                            }
+                            // do *not* close the connection -- it will still be
+                            // used by this instance of the EntityManager
+                            }
+                        }
                     }
-                    // do *not* close the connection -- it will still be used by this instance of the EntityManager
-                }
             }
         }
     }
