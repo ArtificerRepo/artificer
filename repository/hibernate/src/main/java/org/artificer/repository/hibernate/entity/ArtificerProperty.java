@@ -15,18 +15,20 @@
  */
 package org.artificer.repository.hibernate.entity;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
+import javax.persistence.Table;
+
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 
 /**
  * @author Brett Meyer.
@@ -34,6 +36,7 @@ import java.io.Serializable;
 @Entity
 @Indexed
 @Analyzer(impl = StandardAnalyzer.class)
+@Table(name = "Property")
 public class ArtificerProperty implements Serializable {
 
     private long id;

@@ -15,6 +15,34 @@
  */
 package org.artificer.repository.hibernate.entity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.artificer.repository.hibernate.audit.ArtificerAuditEntry;
 import org.artificer.repository.hibernate.query.ArtificerTikaBridge;
@@ -28,37 +56,12 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @author Brett Meyer.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(appliesTo = "ArtificerArtifact", indexes = {
+@Table(appliesTo = "Artifact", indexes = {
 		// Note that the indexes all include 'trashed', since 'trashed=false' is used on all queries.
 		@Index(name = "artifact_uuid_idx", columnNames = {"uuid", "trashed"}),
         @Index(name = "artifact_name_idx", columnNames = {"name", "trashed"}),
@@ -69,6 +72,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Indexed
 @Analyzer(impl = StandardAnalyzer.class)
+@javax.persistence.Table(name = "Artifact")
 public class ArtificerArtifact implements Serializable {
 
     private long id;
@@ -225,6 +229,7 @@ public class ArtificerArtifact implements Serializable {
     }
 
     @ElementCollection
+    @CollectionTable(name = "Artifact_classifiers", joinColumns = @JoinColumn(name = "Artifact_Id"))
     public List<String> getClassifiers() {
         return classifiers;
     }
@@ -234,6 +239,7 @@ public class ArtificerArtifact implements Serializable {
     }
 
     @ElementCollection
+    @CollectionTable(name = "Artifact_normalizedClassifiers", joinColumns = @JoinColumn(name = "Artifact_Id"))
     public List<String> getNormalizedClassifiers() {
         return normalizedClassifiers;
     }

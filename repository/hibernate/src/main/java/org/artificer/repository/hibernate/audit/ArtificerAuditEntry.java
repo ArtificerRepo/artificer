@@ -15,11 +15,9 @@
  */
 package org.artificer.repository.hibernate.audit;
 
-import org.artificer.repository.hibernate.entity.ArtificerArtifact;
-import org.artificer.repository.hibernate.entity.ArtificerUser;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Immutable;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -31,9 +29,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Table;
+
+import org.artificer.repository.hibernate.entity.ArtificerArtifact;
+import org.artificer.repository.hibernate.entity.ArtificerUser;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
 
 /**
  * @author Brett Meyer.
@@ -42,6 +44,7 @@ import java.util.List;
 @Immutable
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Table(name = "AuditEntry")
 public class ArtificerAuditEntry implements Serializable {
 
     private long id;
