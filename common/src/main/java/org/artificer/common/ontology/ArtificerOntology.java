@@ -15,16 +15,6 @@
  */
 package org.artificer.common.ontology;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,12 +23,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
 /**
  * Models an s-ramp ontology.
  *
  * @author eric.wittmann@redhat.com
  */
 @Entity
+@Table(name = "Ontology")
 public class ArtificerOntology implements Serializable {
 
 	private String uuid;
@@ -51,8 +54,8 @@ public class ArtificerOntology implements Serializable {
 	private String lastModifiedBy;
 	private Date lastModifiedOn;
 	private List<ArtificerOntologyClass> rootClasses = new ArrayList<ArtificerOntologyClass>();
-	private Map<URI, ArtificerOntologyClass> classIndexByUri = new HashMap<URI, ArtificerOntologyClass>();
-	private Map<String, ArtificerOntologyClass> classIndexById = new HashMap<String, ArtificerOntologyClass>();
+	private final Map<URI, ArtificerOntologyClass> classIndexByUri = new HashMap<URI, ArtificerOntologyClass>();
+	private final Map<String, ArtificerOntologyClass> classIndexById = new HashMap<String, ArtificerOntologyClass>();
 	private long surrogateId;
 
 	@Id
