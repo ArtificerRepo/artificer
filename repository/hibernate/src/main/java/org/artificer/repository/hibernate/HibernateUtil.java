@@ -181,15 +181,18 @@ public class HibernateUtil {
                 String[] queries = StringUtils.split(ddl, ";");
                 if (queries != null && queries.length > 0) {
                     for (String query : queries) {
-                        try {
-                            statement = connection.createStatement();
-                            statement.executeUpdate(query + ";");
-                        } finally {
-                            if (statement != null) {
-                                statement.close();
+                        if (query != null && !query.trim().equals("")) {
+                            try {
+                                statement = connection.createStatement();
+                                statement.executeUpdate(query + ";");
+                            } finally {
+                                if (statement != null) {
+                                    statement.close();
+                                }
+                                // do *not* close the connection -- it will
+                                // still be
+                                // used by this instance of the EntityManager
                             }
-                            // do *not* close the connection -- it will still be
-                            // used by this instance of the EntityManager
                             }
                         }
                     }
