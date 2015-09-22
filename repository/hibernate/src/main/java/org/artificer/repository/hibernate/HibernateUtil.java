@@ -64,6 +64,7 @@ public class HibernateUtil {
             EntityManager entityManager = null;
             try {
                 entityManager = entityManager();
+
                 entityManager.getTransaction().begin();
 
                 T rtn = doExecute(entityManager);
@@ -101,7 +102,7 @@ public class HibernateUtil {
         protected abstract T doExecute(EntityManager entityManager) throws Exception;
     }
 
-    private static EntityManager entityManager() throws Exception {
+    private synchronized static EntityManager entityManager() throws Exception {
         if (entityManagerFactory == null) {
             // Pass in all hibernate.* settings from artificer.properties
             Map<String, Object> properties = ArtificerConfig.getConfigProperties("hibernate");
@@ -185,6 +186,9 @@ public class HibernateUtil {
                             try {
                                 statement = connection.createStatement();
                                 statement.executeUpdate(query + ";");
+                            } catch (Exception e) {
+                                System.out.println("Exception executing Query:" + query);
+                                throw e;
                             } finally {
                                 if (statement != null) {
                                     statement.close();
