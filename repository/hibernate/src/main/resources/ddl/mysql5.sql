@@ -1,5 +1,7 @@
 
-    create table Artifact (
+   SET GLOBAL max_allowed_packet=1073741824;
+    
+   create table Artifact (
         id bigint not null auto_increment,
         content longblob,
         contentEncoding varchar(255),
