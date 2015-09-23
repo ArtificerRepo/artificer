@@ -24,7 +24,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -45,6 +44,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernatePersistence;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Brett Meyer.
@@ -54,6 +55,8 @@ public class HibernateUtil {
     private static String persistenceUnit = "Artificer";
 
     private static EntityManagerFactory entityManagerFactory = null;
+
+    private static Logger LOG = LoggerFactory.getLogger(HibernateUtil.class);
 
     /**
      * A worker pattern, used for *all* integration with the EntityManager.  This should be the only public means to use it.
@@ -175,9 +178,9 @@ public class HibernateUtil {
                 }
 
                 Statement statement = null;
-
-                    URL url = HibernateUtil.class.getClassLoader().getResource("ddl/" + ddlFile);
-                    String ddl = IOUtils.toString(url);
+                LOG.info("INITIALIZING DATABASE WITH SCRIPT: " + ddlFile);
+                URL url = HibernateUtil.class.getClassLoader().getResource("ddl/" + ddlFile);
+                String ddl = IOUtils.toString(url);
 
                 String[] queries = StringUtils.split(ddl, ";");
                 if (queries != null && queries.length > 0) {
@@ -197,9 +200,10 @@ public class HibernateUtil {
                                 // still be
                                 // used by this instance of the EntityManager
                             }
-                            }
                         }
                     }
+                }
+                LOG.info("END INITIALIZING DATABASE WITH SCRIPT");
             }
         }
     }
@@ -208,13 +212,13 @@ public class HibernateUtil {
         DatabaseMetaData metadata = connection.getMetaData();
 
         // check if "ArtificerArtifact" table exists
-        ResultSet tables = metadata.getTables(null, null, ArtificerArtifact.class.getSimpleName(), null);
+        ResultSet tables = metadata.getTables(null, null, "Artifact", null);
         if (tables.next()) {
             return true;
         }
 
         // also need to check all caps (thanks, Oracle)
-        tables = metadata.getTables(null, null, ArtificerArtifact.class.getSimpleName().toUpperCase(Locale.ROOT), null);
+        tables = metadata.getTables(null, null, "ARTIFACT", null);
         if (tables.next()) {
             return true;
         }
