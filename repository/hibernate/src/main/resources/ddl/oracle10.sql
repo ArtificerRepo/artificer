@@ -60,7 +60,7 @@
         primary key (AuditItem_id, properties_KEY)
     );
 
-    create table Comment (
+    create table "COMMENT" (
         id number(19,0) not null,
         lastActionTime timestamp,
         username varchar2(50 char),
@@ -77,7 +77,7 @@
     create table Ontology (
         surrogateId number(19,0) not null,
         base varchar2(255 char),
-        comment clob,
+        "comment" clob,
         createdBy varchar2(255 char),
         createdOn date,
         id varchar2(255 char),
@@ -90,7 +90,7 @@
 
     create table OntologyClass (
         surrogateId number(19,0) not null,
-        comment clob,
+        "comment" clob,
         id varchar2(255 char),
         label varchar2(255 char),
         uri varchar2(255 char),
@@ -216,7 +216,6 @@
 
     create index relationship_name_idx on Relationship (name);
 
-    create index storedquery_name_idx on StoredQuery (queryName);
 
     alter table WsdlDerived_WsdlDerived 
         add constraint UK_mqmkpiqop0cu4jdco09lq9ovq unique (extension_id);
@@ -325,7 +324,7 @@
         foreign key (AuditItem_id) 
         references AuditItem;
 
-    alter table Comment 
+    alter table "Comment" 
         add constraint FK_lk7u6h2hivm5v2qx4q4iomjag 
         foreign key (artifact_id) 
         references Artifact;
@@ -518,6 +517,7 @@
     alter table XsdDocument_Artifact 
         add constraint FK_q7lklcfoq767xuoxbby7x8be7 
         foreign key (XsdDocument_id) 
+        references XsdDocument;
 
     alter table XsdDocument_Artifact 
         add constraint FK_h3a7wjolu3yb7pnn85g7bgjc9 
