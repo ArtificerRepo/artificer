@@ -10,7 +10,7 @@
 
   <groupId>org.artificer</groupId>
   <artifactId>artificer</artifactId>
-  <version>1.0.0.Final-redhat-3</version>
+  <version>1.0.0.Final-redhat-4</version>
   <packaging>pom</packaging>
 
   <name>Artificer</name>
