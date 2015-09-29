@@ -19,6 +19,8 @@ import org.artificer.ui.client.shared.beans.ArtifactBean;
 import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
+import org.artificer.ui.client.shared.beans.RelationshipGraphBean;
+import org.artificer.ui.client.shared.beans.RelationshipTreeBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 
 import javax.ws.rs.Consumes;
@@ -64,14 +66,36 @@ public interface IArtifactService {
     /**
      * Gets all of the relationships (resolved) for an artifact.
      * @param uuid
-     * @param artifactType
      * @throws org.artificer.ui.client.shared.exceptions.ArtificerUiException
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("relationships/{uuid}/{artifactType}")
-    public ArtifactRelationshipsIndexBean getRelationships(@PathParam("uuid") String uuid,
-            @PathParam("artifactType") String artifactType) throws ArtificerUiException;
+    @Path("relationships/{uuid}")
+    public ArtifactRelationshipsIndexBean getRelationships(@PathParam("uuid") String uuid) throws ArtificerUiException;
+
+    /**
+     * Builds a "relationship graph", starting from the given artifact UUID.  Simply returns a Collection of
+     * ArtifactRelationshipsIndexBeans, assuming that the UI will be responsible for building the graph (using the
+     * beans' forward and reverse relationships).  Will not include duplicate beans.
+     * @param startUuid
+     * @throws org.artificer.ui.client.shared.exceptions.ArtificerUiException
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("relationshipGraph/{uuid}")
+    public RelationshipGraphBean getRelationshipGraph(@PathParam("uuid") String startUuid)
+            throws ArtificerUiException;
+
+    /**
+     * Builds a "relationship tree", starting from the given artifact UUID.
+     * @param startUuid
+     * @throws org.artificer.ui.client.shared.exceptions.ArtificerUiException
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("relationshipTree/{uuid}")
+    public RelationshipTreeBean getRelationshipTree(@PathParam("uuid") String startUuid)
+            throws ArtificerUiException;
 
     /**
      * Called to update the given artifact bean.

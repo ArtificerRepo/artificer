@@ -25,6 +25,9 @@ import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
+import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
+import org.artificer.ui.client.shared.beans.RelationshipGraphBean;
+import org.artificer.ui.client.shared.beans.RelationshipTreeBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 import org.artificer.ui.client.shared.services.IArtifactService;
 import org.artificer.ui.server.api.ArtificerApiClientAccessor;
@@ -40,8 +43,11 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 import javax.enterprise.context.ApplicationScoped;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Concrete implementation of the artifact service.
@@ -68,7 +74,7 @@ public class ArtifactService implements IArtifactService {
         try {
             BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(uuid);
             ArtifactType artifactType = ArtifactType.valueOf(artifact);
-            
+
             ArtifactBean bean = new ArtifactBean();
             bean.setModel(artifactType.getArtifactType().getModel());
             bean.setType(artifactType.getType());
@@ -153,16 +159,12 @@ public class ArtifactService implements IArtifactService {
         }
     }
 
-    /**
-     * @see org.artificer.ui.client.shared.services.IArtifactService#getRelationships(java.lang.String, java.lang.String)
-     */
     @Override
-    public ArtifactRelationshipsIndexBean getRelationships(String uuid, String artifactType)
+    public ArtifactRelationshipsIndexBean getRelationships(String uuid)
             throws ArtificerUiException {
         ArtifactRelationshipsIndexBean rval = new ArtifactRelationshipsIndexBean();
         try {
-            ArtifactType at = ArtifactType.valueOf(artifactType);
-            BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(at, uuid);
+            BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(uuid);
             RelationshipResolver relResolver = new RelationshipResolver(ArtificerApiClientAccessor.getClient(), rval);
             relResolver.resolveAll(artifact);
         } catch (ArtificerClientException e) {
@@ -172,6 +174,165 @@ public class ArtifactService implements IArtifactService {
         }
 
         return rval;
+    }
+
+    @Override
+    public RelationshipGraphBean getRelationshipGraph(String startUuid) throws ArtificerUiException {
+        RelationshipGraphBean rval = new RelationshipGraphBean();
+        // To easily prevent duplicates, keep a second collection with processed UUIDs.
+        List<String> processedUuids = new ArrayList<>();
+        buildRelationshipGraph(startUuid, rval, processedUuids, true);
+        return rval;
+    }
+
+    private RelationshipGraphBean buildRelationshipGraph(String uuid, RelationshipGraphBean rval,
+            List<String> processedUuids, boolean isOriginal) throws ArtificerUiException {
+        try {
+            if (!processedUuids.contains(uuid)) {
+                // We need to be smart (hard to believe, I know...) about what needs to be included in the graph and
+                // what needs to be filtered out.  In general, allowing all depths of relationships causes chaos in the
+                // graph.  To see what we actually need, take an XSD and WSDL example.  The WSDL imports the XSD and
+                // its elements use the XSD type declarations.  If we view the graph for one of the type declarations,
+                // we're only interested in seeing how the relationships flow through the WSDL elements that actually
+                // use it, *not* every single derived artifact in the WSDL.  So, rules:
+                //
+                // 1.) Start with the artifact in question.
+                // 2.) If #1 is primary, add its children using the *reverse* 'relatedDocument' relationships.
+                // 3.) Based on the #1 starting point, build the rest of the graph, following *all* relationships
+                //     through all levels.
+                // 4.) If a relationship results in another *derived* node on the graph, also add its parent (using the
+                //     'relatedDocument' relationship).
+                // 5.) #2 and #4 should be the only cases when 'relatedDocument' is processed.  For all others, skip it.
+                // Note about #4-#5: The main point is that if we arrive at a derived artifact, generally it's useful to
+                //     see its parent and how that parent fits in.  However, the reverse is *not* true.  If a
+                //     relationship points at a primary (ie, WSDL<-XSD), we only want to see the WSDL's derived
+                //     artifacts if they somehow lead back to the XSD.  Otherwise, it just crowds the graph.
+
+                processedUuids.add(uuid);
+
+                // Generate the node
+                BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(uuid);
+                ArtifactType artifactType = ArtifactType.valueOf(artifact);
+                ArtifactSummaryBean bean = new ArtifactSummaryBean();
+                bean.setModel(artifactType.getArtifactType().getModel());
+                bean.setType(artifactType.getType());
+                bean.setRawType(artifactType.getArtifactType().getType());
+                bean.setUuid(artifact.getUuid());
+                bean.setName(artifact.getName());
+                bean.setDerived(artifactType.isDerived());
+
+                // Resolve all of its relationships, both forward and reverse
+                ArtifactRelationshipsIndexBean relIndex = new ArtifactRelationshipsIndexBean();
+                RelationshipResolver relResolver = new RelationshipResolver(ArtificerApiClientAccessor.getClient(), relIndex);
+                relResolver.resolveAll(artifact);
+
+                for (ArtifactRelationshipsBean rels : relIndex.getRelationships().values()) {
+                    for (ArtifactRelationshipBean rel : rels.getRelationships()) {
+                        // Simply allow everything since, at this point, a 'relatedDocument' as a forward relationship
+                        // implies this is derived.
+                        buildRelationshipGraph(rel.getTargetUuid(), rval, processedUuids, false);
+                    }
+                }
+                Iterator<Map.Entry<String, ArtifactRelationshipsBean>> reverseRelIt
+                        = relIndex.getReverseRelationships().entrySet().iterator();
+                while (reverseRelIt.hasNext()) {
+                    Map.Entry<String, ArtifactRelationshipsBean> reverseRel = reverseRelIt.next();
+                    if (!isOriginal && reverseRel.getKey().equalsIgnoreCase("relatedDocument")) {
+                        // Skip processing and remove it from the index.
+                        reverseRelIt.remove();
+                    } else {
+                        // Either this is the original artifact or the rel isn't 'relatedDocument'.  Process it...
+                        for (ArtifactRelationshipBean rel : reverseRel.getValue().getRelationships()) {
+                            buildRelationshipGraph(rel.getTargetUuid(), rval, processedUuids, false);
+                        }
+                    }
+                }
+
+                // add it to the map
+                rval.add(bean, relIndex);
+            }
+            return rval;
+        } catch (ArtificerClientException e) {
+            throw new ArtificerUiException(e.getMessage());
+        } catch (ArtificerServerException e) {
+            throw new ArtificerUiException(e.getMessage());
+        }
+    }
+
+    @Override
+    public RelationshipTreeBean getRelationshipTree(String startUuid) throws ArtificerUiException {
+        Map<String, ArtifactSummaryBean> artifactCache = new HashMap<>();
+        Map<String, ArtifactRelationshipsIndexBean> relCache = new HashMap<>();
+        return buildRelationshipTree(startUuid, null, false, "", artifactCache, relCache, true);
+    }
+
+    private RelationshipTreeBean buildRelationshipTree(String uuid, String relationshipType,
+            boolean relationshipReverse, String path, Map<String, ArtifactSummaryBean> artifactCache,
+            Map<String, ArtifactRelationshipsIndexBean> relCache, boolean isOriginal)
+            throws ArtificerUiException {
+
+        try {
+            // Generate the node and relationships
+            ArtifactSummaryBean artifactBean;
+            ArtifactRelationshipsIndexBean relIndex;
+            if (artifactCache.containsKey(uuid)) {
+                artifactBean = artifactCache.get(uuid);
+                relIndex = relCache.get(uuid);
+            } else {
+                BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(uuid);
+                ArtifactType artifactType = ArtifactType.valueOf(artifact);
+                artifactBean = new ArtifactSummaryBean();
+                artifactBean.setModel(artifactType.getArtifactType().getModel());
+                artifactBean.setType(artifactType.getType());
+                artifactBean.setRawType(artifactType.getArtifactType().getType());
+                artifactBean.setUuid(artifact.getUuid());
+                artifactBean.setName(artifact.getName());
+                artifactBean.setDerived(artifactType.isDerived());
+
+                relIndex = new ArtifactRelationshipsIndexBean();
+                RelationshipResolver relResolver = new RelationshipResolver(ArtificerApiClientAccessor.getClient(), relIndex);
+                relResolver.resolveAll(artifact);
+
+                artifactCache.put(uuid, artifactBean);
+                relCache.put(uuid, relIndex);
+            }
+
+            RelationshipTreeBean tree = new RelationshipTreeBean();
+            tree.setArtifact(artifactBean);
+            tree.setRelationshipType(relationshipType);
+            tree.setRelationshipReverse(relationshipReverse);
+
+            path += uuid;
+
+            List<RelationshipTreeBean> children = new ArrayList<>();
+            for (String key : relIndex.getRelationships().keySet()) {
+                if (isOriginal || !"relatedDocument".equalsIgnoreCase(key)) {
+                    for (ArtifactRelationshipBean rel : relIndex.getRelationships().get(key).getRelationships()) {
+                        if (!path.contains(rel.getTargetUuid())) {
+                            children.add(buildRelationshipTree(rel.getTargetUuid(), rel.getRelationshipType(), false, path,
+                                    artifactCache, relCache, false));
+                        }
+                    }
+                }
+            }
+            for (String key : relIndex.getReverseRelationships().keySet()) {
+                if (!"relatedDocument".equalsIgnoreCase(key)) {
+                    for (ArtifactRelationshipBean rel : relIndex.getReverseRelationships().get(key).getRelationships()) {
+                        if (!path.contains(rel.getTargetUuid())) {
+                            children.add(buildRelationshipTree(rel.getTargetUuid(), rel.getRelationshipType(), true, path,
+                                    artifactCache, relCache, false));
+                        }
+                    }
+                }
+            }
+            tree.setChildren(children);
+
+            return tree;
+        } catch (ArtificerClientException e) {
+            throw new ArtificerUiException(e.getMessage());
+        } catch (ArtificerServerException e) {
+            throw new ArtificerUiException(e.getMessage());
+        }
     }
 
     /**

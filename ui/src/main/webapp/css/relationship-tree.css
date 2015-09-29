@@ -1,0 +1,59 @@
+#tree rect {
+    fill: none;
+    pointer-events: all;
+}
+
+#tree pre {
+    font-size: 18px;
+}
+
+#tree line {
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+#tree .string, #tree .regexp {
+    color: #f39;
+}
+
+#tree .keyword {
+    color: #00c;
+}
+
+#tree .comment {
+    color: #777;
+    font-style: oblique;
+}
+
+#tree .number {
+    color: #369;
+}
+
+#tree .class, #tree .special {
+    color: #1181B8;
+}
+
+#tree .hint {
+    position: absolute;
+    right: 0;
+    /*width: 1280px;*/
+    font-size: 12px;
+    color: #999;
+}
+
+#tree .node circle {
+    cursor: pointer;
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+#tree .node text {
+    font-size: 12px;
+}
+
+#tree path.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+}

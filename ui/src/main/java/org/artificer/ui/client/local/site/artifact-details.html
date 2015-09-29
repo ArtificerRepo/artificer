@@ -10,6 +10,8 @@
     <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet"></link>
     <link href="../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
     <link href="../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/css/relationship-sankey.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/css/relationship-tree.css" rel="stylesheet"></link>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -80,6 +82,8 @@
             <ul id="myTab" class="nav nav-tabs sramp-nav-tabs">
               <li class="active"><a onclick="$(this).blur();" href="#overview" data-toggle="tab" data-i18n-key="tab.overview">Overview</a></li>
               <li class=""><a onclick="$(this).blur();" href="#relationships" data-field="sramp-artifact-tabs-relationships" data-toggle="tab" data-i18n-key="tab.relationships">Relationships</a></li>
+              <li class=""><a onclick="$(this).blur();" href="#relationships-graph" data-field="sramp-artifact-tabs-relationships-graph" data-toggle="tab" data-i18n-key="tab.relationships-graph">Relationships Graph</a></li>
+              <li class=""><a onclick="$(this).blur();" href="#relationships-tree" data-field="sramp-artifact-tabs-relationships-tree" data-toggle="tab" data-i18n-key="tab.relationships-tree">Relationships Tree</a></li>
               <li class=""><a onclick="$(this).blur();" href="#comments" data-field="sramp-artifact-tabs-comments" data-toggle="tab" data-i18n-key="tab.comments">Comments</a></li>
               <li class=""><a onclick="$(this).blur();" href="#source" data-field="sramp-artifact-tabs-source" data-toggle="tab" data-i18n-key="tab.source">Source</a></li>
 <!--               <li class=""><a href="#history" data-toggle="tab">History</a></li> -->
@@ -212,6 +216,7 @@
                   </div>
                 </div>
               </div>
+
               <!-- Relationships Tab -->
               <div class="tab-pane fade container-fluid" id="relationships">
 
@@ -309,10 +314,39 @@
                   </div>
                 </div>
               </div>
+              <!-- Relationships Graph Tab -->
+              <div class="tab-pane fade container-fluid" id="relationships-graph">
+                <div class="row-fluid sramp-meta-data-section">
+                  <div class="span12">
+                    <p id="chart-instructions" class="pull-right"></p>
+                    <div id="chart"></div>
+                    <script type="text/javascript" src="../../../../../../../webapp/js/d3.v3.min.js"></script>
+                    <script type="text/javascript" src="../../../../../../../webapp/js/bihisankey.js"></script>
+                    <script type="text/javascript" src="../../../../../../../webapp/js/relationship-sankey.js"></script>
+
+                    <div data-field="relationships-graph-tab-progress" style="display:none" class="spinner sramp-details-tab-spinner pull-left" data-i18n-key="loading-relationships">Loading relationships, please wait...</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Relationships Tree Tab -->
+              <div class="tab-pane fade container-fluid" id="relationships-tree">
+                <div class="row-fluid sramp-meta-data-section">
+                  <div class="span12">
+                    <p id="tree-instructions" class="pull-right"></p>
+                    <div id="tree"></div>
+                    <script type="text/javascript" src="../../../../../../../webapp/js/d3.v3.min.js"></script>
+                    <script type="text/javascript" src="../../../../../../../webapp/js/relationship-tree.js"></script>
+
+                    <div data-field="relationships-tree-tab-progress" style="display:none" class="spinner sramp-details-tab-spinner pull-left" data-i18n-key="loading-relationships">Loading relationships, please wait...</div>
+                  </div>
+                </div>
+              </div>
+
+
 
               <!-- Comments Tab -->
               <div class="tab-pane fade container-fluid" id="comments">
-
                 <div class="row-fluid sramp-meta-data-section">
                   <div class="span4">
                     <form class="" onSubmit="return false;">
