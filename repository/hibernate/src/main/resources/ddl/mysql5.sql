@@ -79,7 +79,7 @@
     create table Ontology (
         surrogateId bigint not null auto_increment,
         base varchar(255),
-        comment longtext,
+        annotation longtext,
         createdBy varchar(255),
         createdOn date,
         id varchar(255),
@@ -92,7 +92,7 @@
 
     create table OntologyClass (
         surrogateId bigint not null auto_increment,
-        comment longtext,
+        annotation longtext,
         id varchar(255),
         label varchar(255),
         uri varchar(255),

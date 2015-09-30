@@ -132,7 +132,7 @@ public class OntologyService implements IOntologyService {
         OntologyBean bean = new OntologyBean();
         bean.setLastModifiedBy(ontology.getLastModifiedBy());
         bean.setBase(ontology.getBase());
-        bean.setComment(ontology.getComment());
+        bean.setComment(ontology.getAnnotation());
         bean.setCreatedBy(ontology.getCreatedBy());
         bean.setCreatedOn(ontology.getCreatedOn());
         bean.setId(ontology.getId());
@@ -147,7 +147,7 @@ public class OntologyService implements IOntologyService {
         for (ArtificerOntologyClass cl4ss : allClasses) {
             OntologyClassBean classBean = bean.createClass(cl4ss.getId());
             classIndexById.put(cl4ss.getId(), classBean);
-            classBean.setComment(cl4ss.getComment());
+            classBean.setComment(cl4ss.getAnnotation());
             classBean.setLabel(cl4ss.getLabel());
         }
         // Then go back through and set up the tree.
@@ -191,7 +191,7 @@ public class OntologyService implements IOntologyService {
         sontology.setBase(ontology.getBase());
         sontology.setId(ontology.getId());
         sontology.setLabel(ontology.getLabel());
-        sontology.setComment(ontology.getComment());
+        sontology.setAnnotation(ontology.getComment());
         sontology.setUuid(ontology.getUuid());
         
         List<ArtificerOntologyClass> srootClasses = new ArrayList<ArtificerOntologyClass>();
@@ -214,7 +214,7 @@ public class OntologyService implements IOntologyService {
      * @param to
      */
     private void copyOntologyClass(ArtificerOntology sontology, OntologyClassBean from, ArtificerOntologyClass to) {
-        to.setComment(from.getComment());
+        to.setAnnotation(from.getComment());
         to.setLabel(from.getLabel());
         
         List<ArtificerOntologyClass> schildren = new ArrayList<ArtificerOntologyClass>();

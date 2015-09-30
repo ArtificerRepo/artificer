@@ -9,7 +9,7 @@
         createdTime timestamp,
         createdByUsername varchar2(50 char),
         derived number(1,0) not null,
-        description clob,
+        description varchar2(255 char),
         expandedFromArchive number(1,0) not null,
         expandedFromArchivePath varchar2(255 char),
         mimeType varchar2(100 char),
@@ -64,7 +64,7 @@
         id number(19,0) not null,
         lastActionTime timestamp,
         username varchar2(50 char),
-        text clob,
+        text varchar2(255 char),
         artifact_id number(19,0) not null,
         primary key (id)
     );
@@ -77,7 +77,7 @@
     create table Ontology (
         surrogateId number(19,0) not null,
         base varchar2(255 char),
-        "comment" clob,
+        annotation varchar2(255 char),
         createdBy varchar2(255 char),
         createdOn date,
         id varchar2(255 char),
@@ -90,7 +90,7 @@
 
     create table OntologyClass (
         surrogateId number(19,0) not null,
-        "comment" clob,
+        annotation varchar2(255 char),
         id varchar2(255 char),
         label varchar2(255 char),
         uri varchar2(255 char),

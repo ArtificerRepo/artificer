@@ -230,7 +230,7 @@ public final class ArtificerAtomUtils {
         entry.setUpdated(ontology.getLastModifiedOn());
         entry.getAuthors().add(new Person(ontology.getCreatedBy()));
         entry.setTitle(ontology.getLabel());
-        entry.setSummary(ontology.getComment());
+        entry.setSummary(ontology.getAnnotation());
         Source source = new Source();
         source.setBase(new URI(ontology.getBase()));
         source.setId(new URI(ontology.getId()));

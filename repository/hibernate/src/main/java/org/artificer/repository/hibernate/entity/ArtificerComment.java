@@ -38,7 +38,7 @@ import org.hibernate.search.annotations.Field;
 @Immutable
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-@Table(name = "Comment")
+@Table(name = "COMMENT")
 public class ArtificerComment implements Serializable {
 
     private long id;
