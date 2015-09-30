@@ -419,7 +419,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         ArtificerOntology ontology = new ArtificerOntology();
         ontology.setBase("urn:example.org/world");
         ontology.setLabel("World Ontology");
-        ontology.setComment("This is my test ontology.");
+        ontology.setAnnotation("This is my test ontology.");
 
         ArtificerOntologyClass world = createClass(ontology, null, "World", "World", "The entire world");
         ArtificerOntologyClass asia = createClass(ontology, world, "Asia", "Asia", null);
@@ -453,7 +453,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
     private ArtificerOntologyClass createClass(ArtificerOntology ontology, ArtificerOntologyClass parent, String id, String label, String comment) {
         ArtificerOntologyClass rval = ontology.createClass(id);
         rval.setParent(parent);
-        rval.setComment(comment);
+        rval.setAnnotation(comment);
         rval.setLabel(label);
         return rval;
     }

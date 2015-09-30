@@ -77,7 +77,7 @@
     create table Ontology (
         surrogateId int8 not null,
         base varchar(255),
-        comment text,
+        annotation text,
         createdBy varchar(255),
         createdOn date,
         id varchar(255),
@@ -90,7 +90,7 @@
 
     create table OntologyClass (
         surrogateId int8 not null,
-        comment text,
+        annotation text,
         id varchar(255),
         label varchar(255),
         uri varchar(255),

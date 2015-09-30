@@ -31,7 +31,7 @@ public class ArtificerOntologyClass implements Serializable {
 
     private String id;
     private String label;
-    private String comment;
+    private String annotation;
     private String uri;
     private ArtificerOntology root;
     private ArtificerOntologyClass parent;
@@ -114,15 +114,15 @@ public class ArtificerOntologyClass implements Serializable {
      * @return the comment
      */
     @Lob
-    public String getComment() {
-        return comment;
+    public String getAnnotation() {
+        return annotation;
     }
 
     /**
      * @param comment the comment to set
      */
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
     }
 
     @ManyToOne
