@@ -40,7 +40,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	ArtificerOntology ontology = new ArtificerOntology();
     	ontology.setBase("urn:example.org/test1");
     	ontology.setLabel("Test Ontology #1");
-    	ontology.setComment("This is my first test ontology.");
+    	ontology.setAnnotation("This is my first test ontology.");
     	String uuid = persistenceManager.persistOntology(ontology).getUuid();
     	Assert.assertNotNull(uuid);
 
@@ -48,7 +48,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	Assert.assertEquals(ontology.getUuid(), actual.getUuid());
     	Assert.assertEquals(ontology.getBase(), actual.getBase());
     	Assert.assertEquals(ontology.getLabel(), actual.getLabel());
-    	Assert.assertEquals(ontology.getComment(), actual.getComment());
+    	Assert.assertEquals(ontology.getAnnotation(), actual.getAnnotation());
     	Assert.assertEquals(ontology.getId(), actual.getId());
 
 		// Ensure querying also works.
@@ -56,7 +56,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
 		Assert.assertEquals(ontology.getUuid(), actual.getUuid());
 		Assert.assertEquals(ontology.getBase(), actual.getBase());
 		Assert.assertEquals(ontology.getLabel(), actual.getLabel());
-		Assert.assertEquals(ontology.getComment(), actual.getComment());
+		Assert.assertEquals(ontology.getAnnotation(), actual.getAnnotation());
 		Assert.assertEquals(ontology.getId(), actual.getId());
     }
 
@@ -65,7 +65,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	ArtificerOntology ontology = new ArtificerOntology();
     	ontology.setBase("urn:example.org/test2");
     	ontology.setLabel("Test Ontology #2");
-    	ontology.setComment("This is my second test ontology.");
+    	ontology.setAnnotation("This is my second test ontology.");
 
     	ArtificerOntologyClass world = createClass(ontology, null, "World", "World", "The entire world");
     	ArtificerOntologyClass asia = createClass(ontology, world, "Asia", "Asia", null);
@@ -91,14 +91,14 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	Assert.assertEquals(ontology.getUuid(), actual.getUuid());
     	Assert.assertEquals(ontology.getBase(), actual.getBase());
     	Assert.assertEquals(ontology.getLabel(), actual.getLabel());
-    	Assert.assertEquals(ontology.getComment(), actual.getComment());
+    	Assert.assertEquals(ontology.getAnnotation(), actual.getAnnotation());
     	Assert.assertEquals(ontology.getId(), actual.getId());
     	Assert.assertEquals(1, actual.getRootClasses().size());
 
     	ArtificerOntologyClass actualWorld = actual.getRootClasses().get(0);
     	Assert.assertEquals(world.getUri(), actualWorld.getUri());
     	Assert.assertEquals(world.getLabel(), actualWorld.getLabel());
-    	Assert.assertEquals(world.getComment(), actualWorld.getComment());
+    	Assert.assertEquals(world.getAnnotation(), actualWorld.getAnnotation());
     	Assert.assertEquals(world.getId(), actualWorld.getId());
     	Assert.assertNull(actualWorld.getParent());
     	Assert.assertEquals(2, actualWorld.getChildren().size());
@@ -106,7 +106,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	ArtificerOntologyClass actualAsia = actualWorld.getChildren().get(0);
     	Assert.assertEquals(asia.getUri(), actualAsia.getUri());
     	Assert.assertEquals(asia.getLabel(), actualAsia.getLabel());
-    	Assert.assertEquals(asia.getComment(), actualAsia.getComment());
+    	Assert.assertEquals(asia.getAnnotation(), actualAsia.getAnnotation());
     	Assert.assertEquals(asia.getId(), actualAsia.getId());
     	Assert.assertNotNull(actualAsia.getParent());
     	Assert.assertEquals(actualWorld, actualAsia.getParent());
@@ -115,7 +115,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	ArtificerOntologyClass actualJapan = actualAsia.getChildren().get(0);
     	Assert.assertEquals(japan.getUri(), actualJapan.getUri());
     	Assert.assertEquals(japan.getLabel(), actualJapan.getLabel());
-    	Assert.assertEquals(japan.getComment(), actualJapan.getComment());
+    	Assert.assertEquals(japan.getAnnotation(), actualJapan.getAnnotation());
     	Assert.assertEquals(japan.getId(), actualJapan.getId());
     	Assert.assertNotNull(actualJapan.getParent());
     	Assert.assertEquals(actualAsia, actualJapan.getParent());
@@ -139,7 +139,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	ArtificerOntology ontology = new ArtificerOntology();
     	ontology.setBase("urn:example.org/test3");
     	ontology.setLabel("Test Ontology #3");
-    	ontology.setComment("This is my third test ontology.");
+    	ontology.setAnnotation("This is my third test ontology.");
 
     	ArtificerOntologyClass world = createClass(ontology, null, "World", "World", "The entire world");
     	ArtificerOntologyClass asia = createClass(ontology, world, "Asia", "Asia", null);
@@ -168,7 +168,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	Assert.assertEquals(ontology.getUuid(), actual.getUuid());
     	Assert.assertEquals(ontology.getBase(), actual.getBase());
     	Assert.assertEquals(ontology.getLabel(), actual.getLabel());
-    	Assert.assertEquals(ontology.getComment(), actual.getComment());
+    	Assert.assertEquals(ontology.getAnnotation(), actual.getAnnotation());
     	Assert.assertEquals(ontology.getId(), actual.getId());
     	Assert.assertEquals(1, actual.getRootClasses().size());
 
@@ -215,7 +215,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	ArtificerOntology ontology = new ArtificerOntology();
     	ontology.setBase("urn:example.org/test6");
     	ontology.setLabel("Test Ontology #6");
-    	ontology.setComment("This is my sixth test ontology.");
+    	ontology.setAnnotation("This is my sixth test ontology.");
     	ArtificerOntologyClass world = createClass(ontology, null, "World", "World", "The entire world");
     	ArtificerOntologyClass asia = createClass(ontology, world, "Asia", "Asia", null);
     	ArtificerOntologyClass japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair.");
@@ -265,7 +265,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
         ArtificerOntology ontology = new ArtificerOntology();
         ontology.setBase("urn:example.org/test2");
         ontology.setLabel("Test Ontology #2");
-        ontology.setComment("This is my second test ontology.");
+        ontology.setAnnotation("This is my second test ontology.");
 
         ArtificerOntologyClass world = createClass(ontology, null, "World", "World", "The entire world");
         ArtificerOntologyClass asia = createClass(ontology, world, "Asia", "Asia", null);
@@ -291,14 +291,14 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
         Assert.assertEquals(ontology.getUuid(), actual.getUuid());
         Assert.assertEquals(ontology.getBase(), actual.getBase());
         Assert.assertEquals(ontology.getLabel(), actual.getLabel());
-        Assert.assertEquals(ontology.getComment(), actual.getComment());
+        Assert.assertEquals(ontology.getAnnotation(), actual.getAnnotation());
         Assert.assertEquals(ontology.getId(), actual.getId());
         Assert.assertEquals(1, actual.getRootClasses().size());
 
         ArtificerOntologyClass actualWorld = actual.getRootClasses().get(0);
         Assert.assertEquals(world.getUri(), actualWorld.getUri());
         Assert.assertEquals(world.getLabel(), actualWorld.getLabel());
-        Assert.assertEquals(world.getComment(), actualWorld.getComment());
+        Assert.assertEquals(world.getAnnotation(), actualWorld.getAnnotation());
         Assert.assertEquals(world.getId(), actualWorld.getId());
         Assert.assertNull(actualWorld.getParent());
         Assert.assertEquals(2, actualWorld.getChildren().size());
@@ -306,7 +306,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
         ArtificerOntologyClass actualAsia = actualWorld.getChildren().get(0);
         Assert.assertEquals(asia.getUri(), actualAsia.getUri());
         Assert.assertEquals(asia.getLabel(), actualAsia.getLabel());
-        Assert.assertEquals(asia.getComment(), actualAsia.getComment());
+        Assert.assertEquals(asia.getAnnotation(), actualAsia.getAnnotation());
         Assert.assertEquals(asia.getId(), actualAsia.getId());
         Assert.assertNotNull(actualAsia.getParent());
         Assert.assertEquals(actualWorld, actualAsia.getParent());
@@ -315,7 +315,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
         ArtificerOntologyClass actualJapan = actualAsia.getChildren().get(0);
         Assert.assertEquals(japan.getUri(), actualJapan.getUri());
         Assert.assertEquals(japan.getLabel(), actualJapan.getLabel());
-        Assert.assertEquals(japan.getComment(), actualJapan.getComment());
+        Assert.assertEquals(japan.getAnnotation(), actualJapan.getAnnotation());
         Assert.assertEquals(japan.getId(), actualJapan.getId());
         Assert.assertNotNull(actualJapan.getParent());
         Assert.assertEquals(actualAsia, actualJapan.getParent());
@@ -361,7 +361,7 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
 	private ArtificerOntologyClass createClass(ArtificerOntology ontology, ArtificerOntologyClass parent, String id, String label, String comment) {
 		ArtificerOntologyClass rval = ontology.createClass(id);
 		rval.setParent(parent);
-		rval.setComment(comment);
+		rval.setAnnotation(comment);
 		rval.setLabel(label);
 		return rval;
 	}

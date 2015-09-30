@@ -67,7 +67,7 @@ public class ClassificationPersistenceTest extends AbstractNoAuditingPersistence
     	ArtificerOntology ontology = new ArtificerOntology();
     	ontology.setBase("urn:example.org/test2");
     	ontology.setLabel("Test Ontology #2");
-    	ontology.setComment("This is my second test ontology.");
+    	ontology.setAnnotation("This is my second test ontology.");
 
     	ArtificerOntologyClass world = createClass(ontology, null, "World", "World", "The entire world");
     	ArtificerOntologyClass asia = createClass(ontology, world, "Asia", "Asia", null);
@@ -100,7 +100,7 @@ public class ClassificationPersistenceTest extends AbstractNoAuditingPersistence
 	private ArtificerOntologyClass createClass(ArtificerOntology ontology, ArtificerOntologyClass parent, String id, String label, String comment) {
 		ArtificerOntologyClass rval = ontology.createClass(id);
 		rval.setParent(parent);
-		rval.setComment(comment);
+		rval.setAnnotation(comment);
 		rval.setLabel(label);
 		return rval;
 	}

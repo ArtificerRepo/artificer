@@ -157,18 +157,21 @@ public class HibernateUtil {
         // If the DDL is not already installed in the DB, automatically do it on first use.
         SessionImplementor session  = (SessionImplementor) entityManager.getDelegate();
         Connection connection = session.connection();
+        String schema = (String)properties.get("hibernate.default_schema");
 
-        if (!hasTables(connection)) {
+        if (!hasTables(connection, schema)) {
             // our tables don't exist -- create them
-            String dialect = (String) properties.get("hibernate.dialect");
+            String dialect = (String)properties.get("hibernate.dialect");
             if (dialect != null) {
                 String ddlFile;
+                boolean isOracle = false;
                 if (dialect.contains("PostgreSQL")) {
                     ddlFile = "postgres9.sql";
                 } else if (dialect.contains("MySQL")) {
                     ddlFile = "mysql5.sql";
                 } else if (dialect.contains("Oracle")) {
                     ddlFile = "oracle10.sql";
+                    isOracle = true;
                 } else if (dialect.contains("SQLServer")) {
                     ddlFile = "mssql2012.sql";
                 } else if (dialect.contains("DB2")) {
@@ -188,9 +191,14 @@ public class HibernateUtil {
                         if (query != null && !query.trim().equals("")) {
                             try {
                                 statement = connection.createStatement();
-                                statement.executeUpdate(query + ";");
+                                if(query!=null && !query.trim().equals("")){
+                                    if (!isOracle) {
+                                        query += ";";
+                                    }
+                                    statement.executeUpdate(query);
+                                }
                             } catch (Exception e) {
-                                System.out.println("Exception executing Query:" + query);
+                                LOG.error("Exception executing Query:" + query, e);
                                 throw e;
                             } finally {
                                 if (statement != null) {
@@ -208,17 +216,17 @@ public class HibernateUtil {
         }
     }
 
-    private static boolean hasTables(Connection connection) throws Exception {
+    private static boolean hasTables(Connection connection, String schema) throws Exception {
         DatabaseMetaData metadata = connection.getMetaData();
 
         // check if "ArtificerArtifact" table exists
-        ResultSet tables = metadata.getTables(null, null, "Artifact", null);
+        ResultSet tables = metadata.getTables(null, schema, "Artifact", null);
         if (tables.next()) {
             return true;
         }
 
         // also need to check all caps (thanks, Oracle)
-        tables = metadata.getTables(null, null, "ARTIFACT", null);
+        tables = metadata.getTables(null, schema, "ARTIFACT", null);
         if (tables.next()) {
             return true;
         }
