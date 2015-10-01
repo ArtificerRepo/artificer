@@ -15,15 +15,17 @@
  */
 package org.artificer.repository.hibernate.entity;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Indexed;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Table;
+
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.Indexed;
 
 /**
  * @author Brett Meyer.
@@ -31,6 +33,7 @@ import java.util.List;
 @Entity
 @Indexed
 @Analyzer(impl = StandardAnalyzer.class)
+@Table(name = "WsdlDocument")
 public class ArtificerWsdlDocumentArtifact extends ArtificerDocumentArtifact {
 
     private List<ArtificerArtifact> elements = new ArrayList<>();

@@ -15,6 +15,23 @@
  */
 package org.artificer.repository.hibernate.entity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 import org.artificer.common.query.RelationshipType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -22,29 +39,16 @@ import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Brett Meyer.
  */
 @Entity
-@Table(appliesTo = "ArtificerRelationship", indexes = {
+@Table(appliesTo = "Relationship", indexes = {
         @Index(name = "relationship_name_idx", columnNames = "name")})
 @Immutable
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@javax.persistence.Table(name = "Relationship")
 public class ArtificerRelationship implements Serializable {
 
     private long id;
@@ -95,6 +99,7 @@ public class ArtificerRelationship implements Serializable {
     }
 
     @ElementCollection
+    @CollectionTable(name = "Relationship_otherAttributes", joinColumns = @JoinColumn(name = "Relationship_id"))
     public Map<String, String> getOtherAttributes() {
         return otherAttributes;
     }

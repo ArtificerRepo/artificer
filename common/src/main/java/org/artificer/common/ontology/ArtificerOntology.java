@@ -15,16 +15,6 @@
  */
 package org.artificer.common.ontology;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,250 +23,267 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
 /**
  * Models an s-ramp ontology.
  *
  * @author eric.wittmann@redhat.com
  */
 @Entity
+@Table(name = "Ontology")
 public class ArtificerOntology implements Serializable {
 
-	private String uuid;
-	private String label;
-	private String comment;
-	private String base;
-	private String id;
-	private String createdBy;
-	private Date createdOn;
-	private String lastModifiedBy;
-	private Date lastModifiedOn;
-	private List<ArtificerOntologyClass> rootClasses = new ArrayList<ArtificerOntologyClass>();
-	private Map<URI, ArtificerOntologyClass> classIndexByUri = new HashMap<URI, ArtificerOntologyClass>();
-	private Map<String, ArtificerOntologyClass> classIndexById = new HashMap<String, ArtificerOntologyClass>();
-	private long surrogateId;
+    private String uuid;
+    private String label;
+    private String annotation;
+    private String base;
+    private String id;
+    private String createdBy;
+    private Date createdOn;
+    private String lastModifiedBy;
+    private Date lastModifiedOn;
+    private List<ArtificerOntologyClass> rootClasses = new ArrayList<ArtificerOntologyClass>();
+    private final Map<URI, ArtificerOntologyClass> classIndexByUri = new HashMap<URI, ArtificerOntologyClass>();
+    private final Map<String, ArtificerOntologyClass> classIndexById = new HashMap<String, ArtificerOntologyClass>();
+    private long surrogateId;
 
-	@Id
-	@GeneratedValue
-	public long getSurrogateId() {
-		return surrogateId;
-	}
+    @Id
+    @GeneratedValue
+    public long getSurrogateId() {
+        return surrogateId;
+    }
 
-	public void setSurrogateId(long surrogateId) {
-		this.surrogateId = surrogateId;
-	}
+    public void setSurrogateId(long surrogateId) {
+        this.surrogateId = surrogateId;
+    }
 
-	// Note: Cannot be @Id!  Not guaranteed to be set by clients.
-	public String getId() {
-		return id;
-	}
+    // Note: Cannot be @Id! Not guaranteed to be set by clients.
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * @return the uuid
-	 */
-	@Column(columnDefinition = "char(36)")
+    /**
+     * @return the uuid
+     */
+    @Column(columnDefinition = "char(36)")
     public String getUuid() {
-		return uuid;
-	}
+        return uuid;
+    }
 
-	/**
-	 * @param uuid the uuid to set
-	 */
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-	/**
-	 * @return the label
-	 */
-	public String getLabel() {
-		return label;
-	}
+    /**
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
+    }
 
-	/**
-	 * @param label the label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    /**
+     * @param label the label to set
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-	/**
-	 * @return the comment
-	 */
-	@Lob
-	public String getComment() {
-		return comment;
-	}
+    /**
+     * @return the comment
+     */
+    @Lob
+    public String getAnnotation() {
+        return annotation;
+    }
 
-	/**
-	 * @param comment the comment to set
-	 */
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    /**
+     * @param comment the annotation to set
+     */
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
+    }
 
-	/**
-	 * @return the base
-	 */
+    /**
+     * @return the base
+     */
     public String getBase() {
-		return base;
-	}
+        return base;
+    }
 
-	/**
-	 * @param base the base to set
-	 */
-	public void setBase(String base) {
-		this.base = base;
-	}
+    /**
+     * @param base the base to set
+     */
+    public void setBase(String base) {
+        this.base = base;
+    }
 
-	@OneToMany(mappedBy = "root", orphanRemoval = true, cascade = CascadeType.ALL)
-	public List<ArtificerOntologyClass> getRootClasses() {
-		return rootClasses;
-	}
+    @OneToMany(mappedBy = "root", orphanRemoval = true, cascade = CascadeType.ALL)
+    public List<ArtificerOntologyClass> getRootClasses() {
+        return rootClasses;
+    }
 
-	/**
-	 * @param rootClasses the rootClasses to set
-	 */
-	public void setRootClasses(List<ArtificerOntologyClass> rootClasses) {
-		this.rootClasses = rootClasses;
-	}
+    /**
+     * @param rootClasses the rootClasses to set
+     */
+    public void setRootClasses(List<ArtificerOntologyClass> rootClasses) {
+        this.rootClasses = rootClasses;
+    }
 
-	@Transient
-	public List<ArtificerOntologyClass> getAllClasses() {
-		List<ArtificerOntologyClass> allClasses = new ArrayList<ArtificerOntologyClass>();
-		addAllClasses(allClasses, getRootClasses());
-		return allClasses;
-	}
+    @Transient
+    public List<ArtificerOntologyClass> getAllClasses() {
+        List<ArtificerOntologyClass> allClasses = new ArrayList<ArtificerOntologyClass>();
+        addAllClasses(allClasses, getRootClasses());
+        return allClasses;
+    }
 
-	/**
-	 * Adds all classes recursively to the list of classes.
-	 * @param allClasses
-	 * @param classes
-	 */
-	private void addAllClasses(List<ArtificerOntologyClass> allClasses, List<ArtificerOntologyClass> classes) {
-		allClasses.addAll(classes);
-		for (ArtificerOntologyClass c : classes) {
-			addAllClasses(allClasses, c.getChildren());
-		}
-	}
+    /**
+     * Adds all classes recursively to the list of classes.
+     * 
+     * @param allClasses
+     * @param classes
+     */
+    private void addAllClasses(List<ArtificerOntologyClass> allClasses, List<ArtificerOntologyClass> classes) {
+        allClasses.addAll(classes);
+        for (ArtificerOntologyClass c : classes) {
+            addAllClasses(allClasses, c.getChildren());
+        }
+    }
 
-	/**
-	 * Creates a new class within this ontology.
-	 * @param id
-	 */
-	public ArtificerOntologyClass createClass(String id) {
-		ArtificerOntologyClass c = new ArtificerOntologyClass();
-		c.setId(id);
-		String uri = this.getBase() + "#" + id;
-		c.setUri(uri);
-		return c;
-	}
+    /**
+     * Creates a new class within this ontology.
+     * 
+     * @param id
+     */
+    public ArtificerOntologyClass createClass(String id) {
+        ArtificerOntologyClass c = new ArtificerOntologyClass();
+        c.setId(id);
+        String uri = this.getBase() + "#" + id;
+        c.setUri(uri);
+        return c;
+    }
 
-	/**
-	 * Finds a class by its unique id within the ontology.
-	 * @param id
-	 */
-	public synchronized ArtificerOntologyClass findClass(String id) {
-		if (classIndexById.containsKey(id)) {
-			return classIndexById.get(id);
-		} else {
-			ArtificerOntologyClass found = null;
-			for (ArtificerOntologyClass candidate : rootClasses) {
-				found = candidate.findClass(id);
-				if (found != null) {
-					break;
-				}
-			}
-			if (found != null) {
-				classIndexById.put(id, found);
-			}
-			return found;
-		}
-	}
+    /**
+     * Finds a class by its unique id within the ontology.
+     * 
+     * @param id
+     */
+    public synchronized ArtificerOntologyClass findClass(String id) {
+        if (classIndexById.containsKey(id)) {
+            return classIndexById.get(id);
+        } else {
+            ArtificerOntologyClass found = null;
+            for (ArtificerOntologyClass candidate : rootClasses) {
+                found = candidate.findClass(id);
+                if (found != null) {
+                    break;
+                }
+            }
+            if (found != null) {
+                classIndexById.put(id, found);
+            }
+            return found;
+        }
+    }
 
-	/**
-	 * Finds a class by its unique URI.
-	 * @param uri
-	 */
-	public synchronized ArtificerOntologyClass findClass(URI uri) {
-		if (classIndexByUri.containsKey(uri)) {
-			return classIndexByUri.get(uri);
-		} else {
-			ArtificerOntologyClass found = null;
-			for (ArtificerOntologyClass candidate : rootClasses) {
-				found = candidate.findClass(uri);
-				if (found != null) {
-					break;
-				}
-			}
-			if (found != null) {
-				classIndexByUri.put(uri, found);
-			}
-			return found;
-		}
-	}
+    /**
+     * Finds a class by its unique URI.
+     * 
+     * @param uri
+     */
+    public synchronized ArtificerOntologyClass findClass(URI uri) {
+        if (classIndexByUri.containsKey(uri)) {
+            return classIndexByUri.get(uri);
+        } else {
+            ArtificerOntologyClass found = null;
+            for (ArtificerOntologyClass candidate : rootClasses) {
+                found = candidate.findClass(uri);
+                if (found != null) {
+                    break;
+                }
+            }
+            if (found != null) {
+                classIndexByUri.put(uri, found);
+            }
+            return found;
+        }
+    }
 
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    /**
+     * @return the createdBy
+     */
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    /**
+     * @param createdBy the createdBy to set
+     */
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	/**
-	 * @return the createdOn
-	 */
-	@Temporal(TemporalType.DATE)
-	public Date getCreatedOn() {
-		return createdOn;
-	}
+    /**
+     * @return the createdOn
+     */
+    @Temporal(TemporalType.DATE)
+    public Date getCreatedOn() {
+        return createdOn;
+    }
 
-	/**
-	 * @param createdOn the createdOn to set
-	 */
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
+    /**
+     * @param createdOn the createdOn to set
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
 
-	/**
-	 * @return the lastModifiedBy
-	 */
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
-	}
+    /**
+     * @return the lastModifiedBy
+     */
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
 
-	/**
-	 * @param lastModifiedBy the lastModifiedBy to set
-	 */
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
-	}
+    /**
+     * @param lastModifiedBy the lastModifiedBy to set
+     */
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
 
-	/**
-	 * @return the lastModifiedOn
-	 */
-	@Temporal(TemporalType.DATE)
-	public Date getLastModifiedOn() {
-		return lastModifiedOn;
-	}
+    /**
+     * @return the lastModifiedOn
+     */
+    @Temporal(TemporalType.DATE)
+    public Date getLastModifiedOn() {
+        return lastModifiedOn;
+    }
 
-	/**
-	 * @param lastModifiedOn the lastModifiedOn to set
-	 */
-	public void setLastModifiedOn(Date lastModifiedOn) {
-		this.lastModifiedOn = lastModifiedOn;
-	}
+    /**
+     * @param lastModifiedOn the lastModifiedOn to set
+     */
+    public void setLastModifiedOn(Date lastModifiedOn) {
+        this.lastModifiedOn = lastModifiedOn;
+    }
 }

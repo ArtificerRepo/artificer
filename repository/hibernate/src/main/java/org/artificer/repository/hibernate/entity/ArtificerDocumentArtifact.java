@@ -15,12 +15,13 @@
  */
 package org.artificer.repository.hibernate.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
-
-import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 /**
  * @author Brett Meyer.
@@ -28,6 +29,7 @@ import javax.persistence.Transient;
 @Entity
 @Indexed
 @Analyzer(impl = StandardAnalyzer.class)
+@Table(name = "Document")
 public class ArtificerDocumentArtifact extends ArtificerArtifact {
 
     @Override

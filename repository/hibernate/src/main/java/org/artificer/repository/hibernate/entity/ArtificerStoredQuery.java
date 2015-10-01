@@ -15,28 +15,32 @@
  */
 package org.artificer.repository.hibernate.entity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Cacheable;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
-import javax.persistence.Cacheable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Brett Meyer.
  */
 @Entity
-@Table(appliesTo = "ArtificerStoredQuery", indexes = {
+@Table(appliesTo = "StoredQuery", indexes = {
         @Index(name = "storedquery_name_idx", columnNames = "queryName")})
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@javax.persistence.Table(name = "StoredQuery")
 public class ArtificerStoredQuery implements Serializable {
 
     private String queryName;
@@ -63,6 +67,7 @@ public class ArtificerStoredQuery implements Serializable {
     }
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "StoredQuery_propertyNames", joinColumns = @JoinColumn(name = "StoredQuery_queryName"))
     public List<String> getPropertyNames() {
         return propertyNames;
     }

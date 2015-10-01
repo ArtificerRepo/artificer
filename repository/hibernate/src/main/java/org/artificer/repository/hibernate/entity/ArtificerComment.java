@@ -15,10 +15,7 @@
  */
 package org.artificer.repository.hibernate.entity;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Immutable;
-import org.hibernate.search.annotations.Field;
+import java.io.Serializable;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Embedded;
@@ -27,7 +24,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
+import org.hibernate.search.annotations.Field;
 
 /**
  * @author Brett Meyer.
@@ -36,6 +38,7 @@ import java.io.Serializable;
 @Immutable
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Table(name = "COMMENT")
 public class ArtificerComment implements Serializable {
 
     private long id;
