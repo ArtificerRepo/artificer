@@ -15,6 +15,13 @@
  */
 package org.artificer.ui.server.services;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.commons.io.IOUtils;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.common.ArtifactType;
@@ -36,12 +43,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Concrete implementation of the artifact service.
@@ -68,7 +69,7 @@ public class ArtifactService implements IArtifactService {
         try {
             BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(uuid);
             ArtifactType artifactType = ArtifactType.valueOf(artifact);
-            
+
             ArtifactBean bean = new ArtifactBean();
             bean.setModel(artifactType.getArtifactType().getModel());
             bean.setType(artifactType.getType());
@@ -192,8 +193,10 @@ public class ArtifactService implements IArtifactService {
                 ArtificerModelUtils.setCustomProperty(artifact, propName, bean.getProperty(propName));
             }
             artifact.getClassifiedBy().clear();
-            for (String classifier : bean.getClassifiedBy()) {
-                artifact.getClassifiedBy().add(classifier);
+            if (bean.getClassifiedBy() != null && !bean.getClassifiedBy().isEmpty()) {
+                for (String classifier : bean.getClassifiedBy()) {
+                    artifact.getClassifiedBy().add(classifier);
+                }
             }
             // Push the changes back to the server
             ArtificerApiClientAccessor.getClient().updateArtifactMetaData(artifact);
@@ -310,7 +313,7 @@ public class ArtifactService implements IArtifactService {
     /**
      * Creates a link to the remote repository for the given artifact.
      * @param artifact
-     * @param artifactType 
+     * @param artifactType
      */
     private String getRepositoryLink(BaseArtifactType artifact, ArtifactType artifactType) {
         StringBuilder builder = new StringBuilder();
@@ -331,7 +334,7 @@ public class ArtifactService implements IArtifactService {
     /**
      * Creates a media link to the remote repository for the given artifact.
      * @param artifact
-     * @param artifactType 
+     * @param artifactType
      */
     private String getRepositoryMediaLink(BaseArtifactType artifact, ArtifactType artifactType) {
         return getRepositoryLink(artifact, artifactType) + "/media";
