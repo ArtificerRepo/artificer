@@ -15,6 +15,30 @@
  */
 package org.artificer.repository.hibernate.query;
 
+import java.math.BigInteger;
+import java.net.URI;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.MapJoin;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Subquery;
+import javax.xml.namespace.QName;
+
 import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConstants;
@@ -44,28 +68,6 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.MapJoin;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Subquery;
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Visitor used to produce a JSQL query from an S-RAMP xpath query.
@@ -524,8 +526,28 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
                 valueContext = node.getLiteral();
             }
         } else if (node.getNumber() != null) {
-            // TODO: may be an int?
-            valueContext = node.getNumber().doubleValue();
+            if (customPropertySubquery == null) {
+                if (propertyContext != null && propertyContext.contains("lastActionTime")) {
+                    Date date = null;
+                    if (node.getNumber() instanceof BigInteger) {
+                        date = new Date(((BigInteger)node.getNumber()).longValue());
+                    } else {
+                        date = new Date((Long)node.getNumber());
+                    }
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    valueContext = calendar;
+                } else if ("true".equalsIgnoreCase(node.getLiteral())) {
+                    valueContext = Boolean.valueOf(true);
+                } else if ("false".equalsIgnoreCase(node.getLiteral())) {
+                    valueContext = Boolean.valueOf(false);
+                } else {
+                    valueContext = node.getLiteral();
+                }
+            } else {
+                valueContext = node.getNumber().doubleValue();
+            }
         } else if (node.getPropertyQName() != null) {
             throw new RuntimeException(Messages.i18n.format("XP_PROPERTY_PRIMARY_EXPR_NOT_SUPPORTED"));
         }
