@@ -15,12 +15,12 @@
  */
 package org.artificer.server.core.api;
 
-import org.artificer.common.query.ReverseRelationship;
+import java.util.List;
+
 import org.artificer.common.query.ArtifactSummary;
+import org.artificer.common.query.ReverseRelationship;
 import org.artificer.repository.query.PagedResult;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-
-import java.util.List;
 
 /**
  * @author Brett Meyer.
@@ -51,4 +51,6 @@ public interface QueryService extends AbstractService {
      * @throws Exception
      */
     public List<ReverseRelationship> reverseRelationships(String uuid) throws Exception;
+
+    public List<String> getTypes() throws Exception;
 }

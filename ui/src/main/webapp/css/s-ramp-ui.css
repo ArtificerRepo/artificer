@@ -723,3 +723,13 @@ ul.ontology-selector {
 .add-relationship-instructions {
     font-weight: bold;
 }
+
+
+
+
+.gwt-SuggestBoxPopup .item {
+	background: white !important;
+}
+.gwt-SuggestBoxPopup .item-selected { 
+	background: #0080FF !important;	
+}

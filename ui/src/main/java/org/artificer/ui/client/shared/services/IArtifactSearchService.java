@@ -15,6 +15,8 @@
  */
 package org.artificer.ui.client.shared.services;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,9 +24,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
-import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
 import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
+import org.artificer.ui.client.shared.beans.ArtifactTypeBean;
+import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 
 /**
  * Provides a way to search for artifacts.
@@ -58,4 +61,17 @@ public interface IArtifactSearchService {
     @Produces(MediaType.TEXT_PLAIN)
     public String query(ArtifactFilterBean filterBean) throws ArtificerUiException;
 
+    /**
+     * Generate a query string using the given filters.
+     *
+     * Note: Theoretically, query generation could be client-side. However,
+     * numerous conveniences are used (Calendar, etc.) that are not supported by
+     * GWT emulation. So, for now, offloading to the server-side services.
+     *
+     * @throws org.artificer.ui.client.shared.exceptions.ArtificerUiException
+     */
+    @POST
+    @Path("types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ArtifactTypeBean> types() throws ArtificerUiException;
 }
