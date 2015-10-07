@@ -25,6 +25,18 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.artificer.ui.client.local.ClientMessages;
 import org.artificer.ui.client.local.events.ReloadHandler;
 import org.artificer.ui.client.local.pages.artifacts.CommentsPanel;
@@ -64,16 +76,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.HtmlSnippet;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * The page shown to the user when she clicks on one of the artifacts
@@ -178,7 +180,7 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject
     Instance<AddRelationshipDialog> addRelationshipDialogFactory;
     protected boolean relationshipsLoaded;
-    
+
     // Comments tab
     @Inject @DataField("sramp-artifact-tabs-comments")
     Anchor commentsTabAnchor;
@@ -556,6 +558,7 @@ public class ArtifactDetailsPage extends AbstractPage {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
                         i18n.format("artifact-details.error-updating-arty"),
                         error);
+                onPageShown();
             }
         });
     }
@@ -571,7 +574,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         });
         commentsLoaded = true;
     }
-    
+
     protected void addComment(final ArtifactBean artifact) {
         String comment = commentText.getValue();
         if (comment != null && comment.length() > 0) {

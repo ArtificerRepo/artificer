@@ -27,6 +27,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.TextBox;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.artificer.ui.client.local.ClientMessages;
 import org.artificer.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.artificer.ui.client.local.pages.artifacts.ArtifactsTable;
@@ -56,13 +65,6 @@ import org.overlord.commons.gwt.client.local.events.TableSortEvent;
 import org.overlord.commons.gwt.client.local.widgets.HtmlSnippet;
 import org.overlord.commons.gwt.client.local.widgets.Pager;
 import org.overlord.commons.gwt.client.local.widgets.SortableTemplatedWidgetTable.SortColumn;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The default "Artifacts" page.
@@ -129,7 +131,7 @@ public class ArtifactsPage extends AbstractPage {
     protected InlineLabel addRelationshipInstructions;
     @Inject @DataField("add-relationship-save")
     protected Button addRelationshipSave;
-    private List<String> addRelationshipTargets = new ArrayList<>();
+    private final List<String> addRelationshipTargets = new ArrayList<>();
 
     private int currentPage = 1;
 
@@ -148,6 +150,7 @@ public class ArtifactsPage extends AbstractPage {
             @Override
             public void onValueChange(ValueChangeEvent<ArtifactFilterBean> event) {
                 populateQueryBox();
+                filtersPanel.loadSuggestionsArtifactTypes();
             }
         });
         searchBox.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -168,7 +171,14 @@ public class ArtifactsPage extends AbstractPage {
                 doArtifactSearch(currentPage);
             }
         });
+        refreshButton.addClickHandler(new ClickHandler() {
 
+            @Override
+            public void onClick(ClickEvent event) {
+                filtersPanel.loadSuggestionsArtifactTypes();
+
+            }
+        });
         // Hide columns 2-5 when in mobile mode.
         artifactsTable.setColumnClasses(2, "desktop-only");
         artifactsTable.setColumnClasses(3, "desktop-only");
@@ -351,7 +361,7 @@ public class ArtifactsPage extends AbstractPage {
         stateService.setArtifactsSearchText(searchText);
         stateService.setArtifactsPage(currentPage);
         stateService.setArtifactsSortColumn(currentSortColumn);
-        
+
         ArtifactSearchBean searchBean = new ArtifactSearchBean();
         searchBean.setQueryText(searchText);
         searchBean.setPage(page);
