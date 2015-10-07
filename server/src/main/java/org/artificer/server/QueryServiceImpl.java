@@ -15,19 +15,20 @@
  */
 package org.artificer.server;
 
-import org.artificer.common.query.ReverseRelationship;
-import org.artificer.common.query.ArtifactSummary;
-import org.artificer.repository.query.ArtificerQuery;
-import org.artificer.repository.query.ArtificerQueryArgs;
-import org.artificer.repository.query.PagedResult;
-import org.artificer.server.core.api.QueryService;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
+import java.util.List;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
-import java.util.List;
+
+import org.artificer.common.query.ArtifactSummary;
+import org.artificer.common.query.ReverseRelationship;
+import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.ArtificerQueryArgs;
+import org.artificer.repository.query.PagedResult;
+import org.artificer.server.core.api.QueryService;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
 /**
  * @author Brett Meyer.
@@ -103,5 +104,10 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
     @Override
     public List<ReverseRelationship> reverseRelationships(String uuid) throws Exception {
         return queryManager().reverseRelationships(uuid);
+    }
+
+    @Override
+    public List<String> getTypes() throws Exception {
+        return queryManager().getTypes();
     }
 }

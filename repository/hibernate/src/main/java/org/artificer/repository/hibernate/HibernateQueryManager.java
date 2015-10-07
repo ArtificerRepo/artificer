@@ -1,20 +1,18 @@
 package org.artificer.repository.hibernate;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.artificer.common.ArtificerException;
 import org.artificer.common.query.ArtifactSummary;
 import org.artificer.common.query.RelationshipType;
 import org.artificer.common.query.ReverseRelationship;
 import org.artificer.repository.QueryManager;
-import org.artificer.repository.hibernate.data.HibernateEntityToSrampVisitor;
-import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.query.HibernateQuery;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.ArtificerQueryArgs;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.List;
 
 /**
  * @author Brett Meyer
@@ -78,6 +76,21 @@ public class HibernateQueryManager implements QueryManager {
                 }
 
                 return reverseRelationships;
+            }
+        }.execute();
+    }
+
+    @Override
+    public List<String> getTypes() throws ArtificerException {
+        return new HibernateUtil.HibernateTask<List<String>>() {
+            @Override
+            protected List<String> doExecute(EntityManager entityManager) throws Exception {
+                Query q = entityManager.createQuery("SELECT distinct type FROM ArtificerArtifact");
+
+                q.unwrap(org.hibernate.Query.class).setCacheable(true);
+                List<String> types = q.getResultList();
+
+                return types;
             }
         }.execute();
     }

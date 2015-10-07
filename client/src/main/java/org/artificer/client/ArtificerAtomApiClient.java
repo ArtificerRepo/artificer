@@ -15,8 +15,24 @@
  */
 package org.artificer.client;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -33,13 +49,13 @@ import org.artificer.client.auth.AuthenticationProvider;
 import org.artificer.client.auth.BasicAuthenticationProvider;
 import org.artificer.client.i18n.Messages;
 import org.artificer.client.ontology.OntologySummary;
-import org.artificer.common.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.MediaType;
 import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.query.ArtifactSummary;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientResponse;
@@ -60,20 +76,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
-import javax.xml.namespace.QName;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Class used to communicate with the S-RAMP server via the S-RAMP Atom API.
  *
@@ -82,10 +84,10 @@ import java.util.Set;
 public class ArtificerAtomApiClient {
 
 	private String endpoint;
-    private String srampEndpoint;
-    private String artificerEndpoint;
+    private final String srampEndpoint;
+    private final String artificerEndpoint;
 	private boolean validating;
-	private Set<String> enabledFeatures = new HashSet<String>();
+	private final Set<String> enabledFeatures = new HashSet<String>();
 	private Locale locale;
 
     private AuthenticationProvider authProvider;
@@ -611,7 +613,7 @@ public class ArtificerAtomApiClient {
 					}
 				} else {
 					// Only a non-compliant s-ramp impl could cause this
-					ArtificerServerException exception = new ArtificerServerException(Messages.i18n.format("BAD_RETURN_CODE", rbean.getCode(), contentId)); 
+					ArtificerServerException exception = new ArtificerServerException(Messages.i18n.format("BAD_RETURN_CODE", rbean.getCode(), contentId));
 					rval.put(path, exception);
 				}
 			}
@@ -859,7 +861,7 @@ public class ArtificerAtomApiClient {
 	public ArtificerClientQuery buildQuery(String query) {
 	    return new ArtificerClientQuery(this, query);
 	}
-    
+
     /**
      * Adds on ontology in RDF format to the S-RAMP repository.  This will only work if the S-RAMP
      * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
@@ -1047,10 +1049,10 @@ public class ArtificerAtomApiClient {
             closeQuietly(response);
         }
     }
-    
+
     /**
      * Adds a stored query to the S-RAMP repository.
-     * 
+     *
      * @param storedQuery
      * @throws ArtificerClientException
      * @throws ArtificerServerException
@@ -1062,7 +1064,7 @@ public class ArtificerAtomApiClient {
             String atomUrl = String.format("%1$s/query", srampEndpoint);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, ArtificerAtomUtils.wrapStoredQuery(storedQuery));
-                    
+
             response = request.post(Entry.class);
             Entry entry = response.getEntity();
             return ArtificerAtomUtils.unwrapStoredQuery(entry);
@@ -1078,7 +1080,7 @@ public class ArtificerAtomApiClient {
     /**
      * Uploads a new version of a stored query to the S-RAMP repository.  The stored query will be
      * replaced with this new version.
-     * 
+     *
      * @param queryName
      * @param storedQuery
      */
@@ -1101,7 +1103,7 @@ public class ArtificerAtomApiClient {
 
     /**
      * Gets a list of all the stored queries currently installed in the S-RAMP repository.
-     * 
+     *
      * @throws ArtificerClientException
      * @throws ArtificerServerException
      */
@@ -1129,7 +1131,7 @@ public class ArtificerAtomApiClient {
 
     /**
      * Gets a single stored query by name.
-     * 
+     *
      * @param queryName
      * @throws ArtificerClientException
      * @throws ArtificerServerException
@@ -1154,7 +1156,7 @@ public class ArtificerAtomApiClient {
 
     /**
      * Deletes a single stored query by name.
-     * 
+     *
      * @param queryName
      * @throws ArtificerClientException
      * @throws ArtificerServerException
@@ -1174,10 +1176,10 @@ public class ArtificerAtomApiClient {
             closeQuietly(response);
         }
     }
-    
+
     /**
      * See {@link #query(String)}
-     * 
+     *
      * @param queryName
      * @return QueryResultSet
      * @throws ArtificerClientException
@@ -1190,7 +1192,7 @@ public class ArtificerAtomApiClient {
     /**
      * See {@link #query(String, int, int, String, boolean, Collection)}.
      * Note that {@link StoredQuery#getPropertyName()} is automatically given to #query.
-     * 
+     *
      * @param startIndex
      * @param count
      * @param orderBy
@@ -1215,7 +1217,7 @@ public class ArtificerAtomApiClient {
             urlBuilder.append(URLEncoder.encode(orderBy, "UTF8"));
             urlBuilder.append("&ascending=");
             urlBuilder.append(String.valueOf(ascending));
-            
+
             ClientRequest request = createClientRequest(urlBuilder.toString());
             response = request.get(Feed.class);
             return new QueryResultSet(response.getEntity());
@@ -1230,7 +1232,7 @@ public class ArtificerAtomApiClient {
 
     /**
      * See {@link #buildQuery(String)}
-     * 
+     *
      * @param storedQuery
      * @return SrampClientQuery
      */
@@ -1460,6 +1462,34 @@ public class ArtificerAtomApiClient {
             ClientRequest request = createClientRequest(urlBuilder.toString());
             response = request.get(Feed.class);
             return new QueryResultSet(response.getEntity());
+        } catch (ArtificerServerException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ArtificerClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+
+    public List<String> getTypes()
+        throws ArtificerClientException, ArtificerServerException {
+        ClientResponse<String> response = null;
+        try {
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.append(artificerEndpoint);
+            urlBuilder.append("/types");
+            ClientRequest request = createClientRequest(urlBuilder.toString());
+            response = request.get(String.class);
+            String entity = response.getEntity();
+
+            List<String> types = new ArrayList<String>();
+            if (entity != null && entity.length() > 0) {
+                String[] types_str = StringUtils.split(entity, "::");
+                for (String type : types_str) {
+                    types.add(type);
+                }
+            }
+            return types;
         } catch (ArtificerServerException e) {
             throw e;
         } catch (Throwable e) {
