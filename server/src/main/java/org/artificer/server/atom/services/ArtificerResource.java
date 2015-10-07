@@ -15,6 +15,18 @@
  */
 package org.artificer.server.atom.services;
 
+import java.net.URI;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+
 import org.artificer.atom.ArtificerAtomUtils;
 import org.artificer.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
 import org.artificer.common.ArtificerConfig;
@@ -26,17 +38,6 @@ import org.artificer.common.query.ReverseRelationship;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Person;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import java.net.URI;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * An JAX-RS resource with Artificer-specific capabilities, outside of the S-RAMP spec.
@@ -76,5 +77,24 @@ public class ArtificerResource extends AbstractFeedResource {
         }
 
         return feed;
+    }
+
+    @GET
+    @Path("types")
+    @Produces(MediaType.TEXT_HTML)
+    public String getTypes(@Context HttpServletRequest request) throws Exception {
+
+        List<String> types = queryService.getTypes();
+
+        String str = "";
+        if (types != null) {
+            for (int i = 0; i < types.size(); i++) {
+                str += types.get(i);
+                if (i != types.size() - 1) {
+                    str += "::";
+                }
+            }
+        }
+        return str;
     }
 }

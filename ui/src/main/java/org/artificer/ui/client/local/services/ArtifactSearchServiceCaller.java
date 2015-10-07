@@ -15,20 +15,23 @@
  */
 package org.artificer.ui.client.local.services;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.artificer.ui.client.local.services.callback.DelegatingErrorCallback;
+import org.artificer.ui.client.local.services.callback.DelegatingRemoteCallback;
 import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
+import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
+import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
+import org.artificer.ui.client.shared.beans.ArtifactTypeBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
+import org.artificer.ui.client.shared.services.IArtifactSearchService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.artificer.ui.client.local.services.callback.DelegatingErrorCallback;
-import org.artificer.ui.client.local.services.callback.DelegatingRemoteCallback;
-import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
-import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
-import org.artificer.ui.client.shared.services.IArtifactSearchService;
 
 /**
  * Client-side service for making Caller calls to the remote search service.
@@ -50,7 +53,7 @@ public class ArtifactSearchServiceCaller {
     /**
      * Performs the search using the remote service.  Hides the details from
      * the caller.
-     * 
+     *
      * @param searchBean
      */
     public void search(ArtifactSearchBean searchBean, final IServiceInvocationHandler<ArtifactResultSetBean> handler) {
@@ -71,6 +74,22 @@ public class ArtifactSearchServiceCaller {
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
             remoteSearchService.call(successCallback, errorCallback).query(filterBean);
+        } catch (ArtificerUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    public void types(final IServiceInvocationHandler<List<ArtifactTypeBean>> handler) {
+        // TODO only allow one search at a time. If another search comes in
+        // before the previous one
+        // finished, cancel the previous one. In other words, only return the
+        // results of the *last*
+        // search performed.
+        RemoteCallback<List<ArtifactTypeBean>> successCallback = new DelegatingRemoteCallback<List<ArtifactTypeBean>>(
+                                                                                                              handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteSearchService.call(successCallback, errorCallback).types();
         } catch (ArtificerUiException e) {
             errorCallback.error(null, e);
         }

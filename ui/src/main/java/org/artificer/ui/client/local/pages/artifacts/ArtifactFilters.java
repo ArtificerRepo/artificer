@@ -19,6 +19,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -26,19 +28,30 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.TextBox;
-import org.artificer.ui.client.local.ClientMessages;
-import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
-import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.commons.gwt.client.local.widgets.DateBox;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.artificer.ui.client.local.ClientMessages;
+import org.artificer.ui.client.local.services.ArtifactSearchServiceCaller;
+import org.artificer.ui.client.local.services.NotificationService;
+import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
+import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
+import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
+import org.artificer.ui.client.shared.beans.ArtifactTypeBean;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.commons.gwt.client.local.widgets.DateBox;
 
 /**
  * The artifact filtersPanel sidebar.  Whenever the user changes any of the settings in
@@ -60,7 +73,7 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
 
     // Artifact Type
     @Inject @DataField
-    protected TextBox artifactType;
+    protected SuggestBox artifactType;
 
     @Inject @DataField
     protected TextBox uuid;
@@ -104,10 +117,39 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
     @Inject
     protected Instance<AddPropertyFilterDialog> addPropertyFilterDialogFactory;
 
+    @Inject
+    protected ArtifactSearchServiceCaller searchService;
+
+    @Inject
+    protected NotificationService notificationService;
     /**
      * Constructor.
      */
     public ArtifactFilters() {
+    }
+
+    public void loadSuggestionsArtifactTypes() {
+
+        final MultiWordSuggestOracle suggestions = (MultiWordSuggestOracle)artifactType.getSuggestOracle();
+        suggestions.clear();
+        searchService.types(new IServiceInvocationHandler<List<ArtifactTypeBean>>() {
+
+            @Override
+            public void onReturn(List<ArtifactTypeBean> data) {
+                if (data != null && data.size() > 0) {
+                    for (ArtifactTypeBean type : data) {
+                        suggestions.add(type.getType());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                notificationService.sendErrorNotification(i18n
+                    .format("artifacts.filter.types.error-searching"), error);
+            }
+        });
     }
 
     /**
@@ -136,8 +178,15 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
                 onFilterValueChange();
             }
         };
+
+        loadSuggestionsArtifactTypes();
+
+        dateCreatedFrom.setReadOnly(false);
+        dateCreatedTo.setReadOnly(false);
+        dateModifiedFrom.setReadOnly(false);
+        dateModifiedTo.setReadOnly(false);
+
         keywords.addValueChangeHandler(valueChangeHandler);
-        artifactType.addValueChangeHandler(valueChangeHandler);
         uuid.addValueChangeHandler(valueChangeHandler);
         name.addValueChangeHandler(valueChangeHandler);
         dateCreatedFrom.addValueChangeHandler(valueChangeHandler);
@@ -148,7 +197,17 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
         lastModifiedBy.addValueChangeHandler(valueChangeHandler);
         classifierFilters.addValueChangeHandler(valueChangeHandler);
         customPropertyFilters.addValueChangeHandler(valueChangeHandler);
+        artifactType.addValueChangeHandler(valueChangeHandler);
 
+        SelectionHandler<Suggestion> selectionHandler = new SelectionHandler<SuggestOracle.Suggestion>() {
+
+            @Override
+            public void onSelection(SelectionEvent<Suggestion> event) {
+                artifactType.setValue(event.getSelectedItem().getReplacementString());
+                onFilterValueChange();
+            }
+        };
+        artifactType.addSelectionHandler(selectionHandler);
         originSelect.addItem(i18n.format("artifacts.all"), ArtifactOriginEnum.ALL.name());
         originSelect.addItem(i18n.format("artifacts.primary-original"), ArtifactOriginEnum.PRIMARY_ORIGINAL.name());
         originSelect.addItem(i18n.format("artifacts.primary-expanded"), ArtifactOriginEnum.PRIMARY_EXPANDED.name());
@@ -208,10 +267,11 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
     /**
      * @return the current filter settings
      */
+    @Override
     public ArtifactFilterBean getValue() {
         return this.currentState;
     }
-    
+
     /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
@@ -252,6 +312,7 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
     /**
      * @param value the new filter settings
      */
+    @Override
     public void setValue(ArtifactFilterBean value) {
     	setValue(value, false);
     }
