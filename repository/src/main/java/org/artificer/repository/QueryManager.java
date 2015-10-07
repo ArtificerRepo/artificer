@@ -15,12 +15,12 @@
  */
 package org.artificer.repository;
 
+import java.util.List;
+
 import org.artificer.common.ArtificerException;
 import org.artificer.common.query.ReverseRelationship;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.ArtificerQueryArgs;
-
-import java.util.List;
 
 /**
  * Service used to query the repository using the s-ramp query api.
@@ -63,5 +63,7 @@ public interface QueryManager extends AbstractManager {
      * @throws ArtificerException
      */
     public List<ReverseRelationship> reverseRelationships(String uuid) throws ArtificerException;
+
+    public List<String> getTypes() throws ArtificerException;
 
 }

@@ -15,6 +15,15 @@
  */
 package org.artificer.ui.server.services;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.commons.lang3.StringUtils;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.client.ArtificerClientQuery;
@@ -26,17 +35,10 @@ import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
 import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
 import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
 import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
+import org.artificer.ui.client.shared.beans.ArtifactTypeBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 import org.artificer.ui.client.shared.services.IArtifactSearchService;
 import org.artificer.ui.server.api.ArtificerApiClientAccessor;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Concrete implementation of the artifact search service.
@@ -217,7 +219,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
             queryBuilder.append(StringUtils.join(criteria, " and "));
             queryBuilder.append("]");
         }
-        
+
         return queryBuilder.toString();
     }
 
@@ -249,5 +251,23 @@ public class ArtifactSearchService implements IArtifactSearchService {
         cal.set(Calendar.MILLISECOND, 0);
     }
 
+    @Override
+    public List<ArtifactTypeBean> types() throws ArtificerUiException {
+        List<String> types = null;
+        try {
+            types = ArtificerApiClientAccessor.getClient().getTypes();
+        } catch (ArtificerClientException e) {
+            throw new ArtificerUiException(e.getMessage());
+        } catch (ArtificerServerException e) {
+            throw new ArtificerUiException(e.getMessage());
+        }
+        List<ArtifactTypeBean> returnTypes = new ArrayList<ArtifactTypeBean>();
+        if (types != null && !types.isEmpty()) {
+            for (String type : types) {
+                returnTypes.add(new ArtifactTypeBean(type));
+            }
+        }
+        return returnTypes;
+    }
 
 }
