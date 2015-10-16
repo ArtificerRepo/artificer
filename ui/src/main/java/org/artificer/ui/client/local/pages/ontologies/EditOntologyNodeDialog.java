@@ -16,6 +16,8 @@
 package org.artificer.ui.client.local.pages.ontologies;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -23,15 +25,16 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.artificer.ui.client.shared.beans.OntologyClassBean;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 /**
  * Dialog that allows the user to create a new ontology tier node.
@@ -50,7 +53,7 @@ public class EditOntologyNodeDialog extends ModalDialog implements HasValueChang
     protected TextArea comment;
     @Inject @DataField("edit-ontology-node-submit-button")
     protected Button submitButton;
-    
+
     /**
      * Constructor.
      */
@@ -62,8 +65,32 @@ public class EditOntologyNodeDialog extends ModalDialog implements HasValueChang
      */
     @PostConstruct
     protected void onPostConstruct() {
+        KeyUpHandler validationHandler1 = new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                submitButton.setEnabled(isValid());
+            }
+        };
+        ValueChangeHandler<String> validationHandler2 = new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                submitButton.setEnabled(isValid());
+            }
+        };
+        id.addKeyUpHandler(validationHandler1);
+        id.addValueChangeHandler(validationHandler2);
+        label.addValueChangeHandler(validationHandler2);
+        label.addKeyUpHandler(validationHandler1);
     }
 
+    /**
+     * Returns true if the values in the form fields are valid.
+     */
+    protected boolean isValid() {
+        String idVal = id.getValue();
+        String labelValue=label.getValue();
+        return idVal != null && idVal.trim().length() > 0 && labelValue != null && labelValue.trim().length() > 0;
+    }
     /**
      * @see org.overlord.commons.gwt.client.local.widgets.ModalDialog#show()
      */
