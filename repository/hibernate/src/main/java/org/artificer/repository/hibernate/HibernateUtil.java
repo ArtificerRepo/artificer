@@ -165,6 +165,8 @@ public class HibernateUtil {
             if (dialect != null) {
                 String ddlFile;
                 boolean isOracle = false;
+                boolean isDB2 = false;
+
                 if (dialect.contains("PostgreSQL")) {
                     ddlFile = "postgres9.sql";
                 } else if (dialect.contains("MySQL")) {
@@ -176,6 +178,7 @@ public class HibernateUtil {
                     ddlFile = "mssql2012.sql";
                 } else if (dialect.contains("DB2")) {
                     ddlFile = "db2.sql";
+                    isDB2 = true;
                 } else {
                     ddlFile = "h2.sql";
                 }
@@ -192,8 +195,12 @@ public class HibernateUtil {
                             try {
                                 statement = connection.createStatement();
                                 if(query!=null && !query.trim().equals("")){
-                                    if (!isOracle) {
+                                    if (!isOracle && !isDB2) {
                                         query += ";";
+                                    } else if (isDB2) {
+                                        if (query.endsWith(";")) {
+                                            query = query.substring(0, query.length() - 1);
+                                        }
                                     }
                                     statement.executeUpdate(query);
                                 }
