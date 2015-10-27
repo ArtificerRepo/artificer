@@ -59,7 +59,6 @@ public class ArtificerComment implements Serializable {
         this.id = id;
     }
 
-    @Lob
     @Field // @IndexedEmbedded by ArtificerArtifact
     public String getText() {
         return text;
