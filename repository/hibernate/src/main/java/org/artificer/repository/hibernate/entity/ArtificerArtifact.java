@@ -183,7 +183,6 @@ public class ArtificerArtifact implements Serializable {
         this.type = type;
     }
 
-    @Lob
     @Field
     public String getDescription() {
         return description;
