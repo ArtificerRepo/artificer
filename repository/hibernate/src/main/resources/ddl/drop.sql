@@ -20,7 +20,7 @@
     drop table WsdlDocument;
     drop table Document;
     drop table Relationship;
-    drop table "COMMENT";
+    drop table ArtifactComment;
     drop table Artifact;
     drop sequence hibernate_sequence;
 
