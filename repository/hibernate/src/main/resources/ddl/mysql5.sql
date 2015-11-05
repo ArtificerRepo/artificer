@@ -1,5 +1,4 @@
 
-   SET GLOBAL max_allowed_packet=1073741824;
     
    create table Artifact (
         id bigint not null auto_increment,
@@ -62,7 +61,7 @@
         primary key (AuditItem_id, properties_KEY)
     );
 
-    create table Comment (
+    create table ArtifactComment (
         id bigint not null auto_increment,
         lastActionTime datetime,
         username varchar(50),
@@ -334,7 +333,7 @@
         foreign key (AuditItem_id) 
         references AuditItem (id);
 
-    alter table Comment 
+    alter table ArtifactComment 
         add index FK_lk7u6h2hivm5v2qx4q4iomjag (artifact_id), 
         add constraint FK_lk7u6h2hivm5v2qx4q4iomjag 
         foreign key (artifact_id) 

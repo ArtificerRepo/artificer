@@ -60,7 +60,7 @@
         primary key (AuditItem_id, properties_KEY)
     );
 
-    create table "COMMENT" (
+    create table ArtifactComment (
         id number(19,0) not null,
         lastActionTime timestamp,
         username varchar2(50 char),
@@ -324,7 +324,7 @@
         foreign key (AuditItem_id) 
         references AuditItem;
 
-    alter table "COMMENT" 
+    alter table ArtifactComment 
         add constraint FK_lk7u6h2hivm5v2qx4q4iomjag 
         foreign key (artifact_id) 
         references Artifact;

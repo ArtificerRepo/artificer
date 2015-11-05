@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Cacheable;
@@ -116,6 +117,7 @@ public class ArtificerArtifact implements Serializable {
     private List<ArtificerAuditEntry> auditEntries = new ArrayList<>();
 
     // Note: content and contentPath are mutually exclusive.  See FileManager impls.
+
     private byte[] content;
 
     // Note: content and contentPath are mutually exclusive.  See FileManager impls.
@@ -183,7 +185,6 @@ public class ArtificerArtifact implements Serializable {
         this.type = type;
     }
 
-    @Lob
     @Field
     public String getDescription() {
         return description;
@@ -328,6 +329,8 @@ public class ArtificerArtifact implements Serializable {
     @Lob
     @Field
     @FieldBridge(impl = ArtificerTikaBridge.class)
+    @Nullable
+    @Column(length = 20971520, nullable = true)
     public byte[] getContent() {
         return content;
     }

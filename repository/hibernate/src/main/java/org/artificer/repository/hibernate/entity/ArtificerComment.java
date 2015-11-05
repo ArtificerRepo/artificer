@@ -38,7 +38,7 @@ import org.hibernate.search.annotations.Field;
 @Immutable
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-@Table(name = "COMMENT")
+@Table(name = "ArtifactComment")
 public class ArtificerComment implements Serializable {
 
     private long id;
@@ -59,7 +59,6 @@ public class ArtificerComment implements Serializable {
         this.id = id;
     }
 
-    @Lob
     @Field // @IndexedEmbedded by ArtificerArtifact
     public String getText() {
         return text;
