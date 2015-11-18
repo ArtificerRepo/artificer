@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.artificer.demos</groupId>
     <artifactId>artificer-demos</artifactId>
-    <version>1.0.0.Final-redhat-4</version>
+    <version>1.0.0.Final-redhat-7</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>artificer-demos-xsd-wsdl-impact-analysis</artifactId>
