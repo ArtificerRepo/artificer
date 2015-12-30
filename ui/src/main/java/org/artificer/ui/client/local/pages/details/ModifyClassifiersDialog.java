@@ -180,7 +180,14 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     @Override
-    public void setValue(List<String> value, boolean fireEvents) {
+    public void setValue(List<String> val, boolean fireEvents) {
+    	List<String> value;
+    	if(val==null){
+    		value=new ArrayList<String>();
+    	}
+    	else{
+    		value=val;
+    	}
         this.originalValue = new HashSet<String>(value);
         this.value = new ArrayList<String>(value);
         if (fireEvents) {
