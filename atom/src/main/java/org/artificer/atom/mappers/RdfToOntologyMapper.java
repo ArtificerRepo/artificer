@@ -72,7 +72,7 @@ public class RdfToOntologyMapper {
 		ontology.setBase(base);
 		ontology.setId(rdfOntology.getID());
 		ontology.setLabel(rdfOntology.getLabel());
-		ontology.setComment(rdfOntology.getComment());
+		ontology.setAnnotation(rdfOntology.getComment());
 
 		// First create all the classes included in the RDF
 		List<Object[]> classes = new ArrayList<Object[]>();
@@ -82,7 +82,7 @@ public class RdfToOntologyMapper {
 			ArtificerOntologyClass oclass = new ArtificerOntologyClass();
 			oclass.setId(rdfClass.getID());
 			oclass.setLabel(rdfClass.getLabel());
-			oclass.setComment(rdfClass.getComment());
+			oclass.setAnnotation(rdfClass.getComment());
 			String uri = base + "#" + rdfClass.getID();
 			oclass.setUri(uri);
 			Object[] classData = new Object[] {

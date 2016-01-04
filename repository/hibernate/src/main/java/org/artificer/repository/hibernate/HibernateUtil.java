@@ -17,7 +17,22 @@ package org.artificer.repository.hibernate;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import java.io.Serializable;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.error.ArtificerNotFoundException;
@@ -29,19 +44,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernatePersistence;
 import org.hibernate.engine.spi.SessionImplementor;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.io.Serializable;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Locale;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Brett Meyer.
@@ -52,6 +56,8 @@ public class HibernateUtil {
 
     private static EntityManagerFactory entityManagerFactory = null;
 
+    private static Logger LOG = LoggerFactory.getLogger(HibernateUtil.class);
+
     /**
      * A worker pattern, used for *all* integration with the EntityManager.  This should be the only public means to use it.
      * @param <T>
@@ -61,6 +67,7 @@ public class HibernateUtil {
             EntityManager entityManager = null;
             try {
                 entityManager = entityManager();
+
                 entityManager.getTransaction().begin();
 
                 T rtn = doExecute(entityManager);
@@ -98,7 +105,7 @@ public class HibernateUtil {
         protected abstract T doExecute(EntityManager entityManager) throws Exception;
     }
 
-    private static EntityManager entityManager() throws Exception {
+    private synchronized static EntityManager entityManager() throws Exception {
         if (entityManagerFactory == null) {
             // Pass in all hibernate.* settings from artificer.properties
             Map<String, Object> properties = ArtificerConfig.getConfigProperties("hibernate");
@@ -150,18 +157,21 @@ public class HibernateUtil {
         // If the DDL is not already installed in the DB, automatically do it on first use.
         SessionImplementor session  = (SessionImplementor) entityManager.getDelegate();
         Connection connection = session.connection();
+        String schema = (String)properties.get("hibernate.default_schema");
 
-        if (!hasTables(connection)) {
+        if (!hasTables(connection, schema)) {
             // our tables don't exist -- create them
-            String dialect = (String) properties.get("hibernate.dialect");
+            String dialect = (String)properties.get("hibernate.dialect");
             if (dialect != null) {
                 String ddlFile;
+                boolean isOracle = false;
                 if (dialect.contains("PostgreSQL")) {
                     ddlFile = "postgres9.sql";
                 } else if (dialect.contains("MySQL")) {
                     ddlFile = "mysql5.sql";
                 } else if (dialect.contains("Oracle")) {
                     ddlFile = "oracle10.sql";
+                    isOracle = true;
                 } else if (dialect.contains("SQLServer")) {
                     ddlFile = "mssql2012.sql";
                 } else if (dialect.contains("DB2")) {
@@ -171,33 +181,52 @@ public class HibernateUtil {
                 }
 
                 Statement statement = null;
-                try {
-                    URL url = HibernateUtil.class.getClassLoader().getResource("ddl/" + ddlFile);
-                    String ddl = IOUtils.toString(url);
+                LOG.info("INITIALIZING DATABASE WITH SCRIPT: " + ddlFile);
+                URL url = HibernateUtil.class.getClassLoader().getResource("ddl/" + ddlFile);
+                String ddl = IOUtils.toString(url);
 
-                    statement = connection.createStatement();
-                    statement.executeUpdate(ddl);
-                } finally {
-                    if (statement != null) {
-                        statement.close();
+                String[] queries = StringUtils.split(ddl, ";");
+                if (queries != null && queries.length > 0) {
+                    for (String query : queries) {
+                        if (query != null && !query.trim().equals("")) {
+                            try {
+                                statement = connection.createStatement();
+                                if(query!=null && !query.trim().equals("")){
+                                    if (!isOracle) {
+                                        query += ";";
+                                    }
+                                    statement.executeUpdate(query);
+                                }
+                            } catch (Exception e) {
+                                LOG.error("Exception executing Query:" + query, e);
+                                throw e;
+                            } finally {
+                                if (statement != null) {
+                                    statement.close();
+                                }
+                                // do *not* close the connection -- it will
+                                // still be
+                                // used by this instance of the EntityManager
+                            }
+                        }
                     }
-                    // do *not* close the connection -- it will still be used by this instance of the EntityManager
                 }
+                LOG.info("END INITIALIZING DATABASE WITH SCRIPT");
             }
         }
     }
 
-    private static boolean hasTables(Connection connection) throws Exception {
+    private static boolean hasTables(Connection connection, String schema) throws Exception {
         DatabaseMetaData metadata = connection.getMetaData();
 
         // check if "ArtificerArtifact" table exists
-        ResultSet tables = metadata.getTables(null, null, ArtificerArtifact.class.getSimpleName(), null);
+        ResultSet tables = metadata.getTables(null, schema, "Artifact", null);
         if (tables.next()) {
             return true;
         }
 
         // also need to check all caps (thanks, Oracle)
-        tables = metadata.getTables(null, null, ArtificerArtifact.class.getSimpleName().toUpperCase(Locale.ROOT), null);
+        tables = metadata.getTables(null, schema, "ARTIFACT", null);
         if (tables.next()) {
             return true;
         }

@@ -46,7 +46,7 @@ public class OntologyToRdfMapper {
 		Ontology rdfOntology = new Ontology();
 		rdfOntology.setID(ontology.getId());
 		rdfOntology.setLabel(ontology.getLabel());
-		rdfOntology.setComment(ontology.getComment());
+		rdfOntology.setComment(ontology.getAnnotation());
 		rdf.getOtherAttributes().put(new QName("http://www.w3.org/XML/1998/namespace", "base"), ontology.getBase());
 		rdf.setOntology(rdfOntology);
 
@@ -54,7 +54,7 @@ public class OntologyToRdfMapper {
 			org.w3._2002._07.owl_.Class rdfClass = new org.w3._2002._07.owl_.Class();
 			rdfClass.setID(oclass.getId());
 			rdfClass.setLabel(oclass.getLabel());
-			rdfClass.setComment(oclass.getComment());
+			rdfClass.setComment(oclass.getAnnotation());
 			if (oclass.getParent() != null) {
 				SubClassOf subclass = new SubClassOf();
 				subclass.setResource(oclass.getParent().getUri());
