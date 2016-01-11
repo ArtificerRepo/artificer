@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -58,7 +59,7 @@ public class ArchiveExpansionTest extends AbstractNoAuditingPersistenceTest {
         xsdArtifact.getOtherAttributes().put(
                 ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME, "foo/path/jcr-sample-externalrefs.xsd");
         xsdArtifact = persistenceManager.persistArtifact(xsdArtifact,
-                new ArtifactContent("foo/path/jcr-sample-externalrefs.xsd", xsdUrl.openStream()));
+                new ArtifactContent("foo"+File.separatorChar+"path"+File.separatorChar+"jcr-sample-externalrefs.xsd", xsdUrl.openStream()));
 
         BaseArtifactType wsdlArtifact = ArtifactType.WsdlDocument().newArtifactInstance();
         wsdlArtifact.getOtherAttributes().put(
@@ -66,7 +67,7 @@ public class ArchiveExpansionTest extends AbstractNoAuditingPersistenceTest {
         wsdlArtifact.getOtherAttributes().put(
                 ArtificerConstants.ARTIFICER_EXPANDED_FROM_ARCHIVE_PATH_QNAME, "foo/path/jcr-sample-externalrefs.wsdl");
         wsdlArtifact = persistenceManager.persistArtifact(wsdlArtifact,
-                new ArtifactContent("foo/path/jcr-sample-externalrefs.wsdl", wsdlUrl.openStream()));
+                new ArtifactContent("foo"+File.separatorChar+"path"+File.separatorChar+"jcr-sample-externalrefs.wsdl", wsdlUrl.openStream()));
 
         // get the original, primary archive
         ArtificerQuery query = queryManager.createQuery("/s-ramp[@derived = 'false' and @expandedFromArchive = 'false']");
