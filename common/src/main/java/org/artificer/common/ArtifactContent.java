@@ -50,11 +50,11 @@ public class ArtifactContent {
     public ArtifactContent(String path, InputStream is) throws IOException {
         if (path != null) {
             // Normalize and ensure it's a *relative* path.
-            if (path.startsWith(File.separatorChar + "")) {
-                path = path.replaceFirst(File.separatorChar + "", "");
+            if (path.startsWith(File.separator)) {
+                path = path.substring(1);
             }
             this.path = path;
-            int index = path.lastIndexOf(File.separatorChar);
+            int index = path.lastIndexOf(File.separator);
             this.filename = path.substring(index + 1);
         } else {
             this.path = null;
