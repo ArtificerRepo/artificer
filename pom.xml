@@ -118,6 +118,7 @@
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
     <version.org.hibernate>4.2.18.Final</version.org.hibernate>
     <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
+    <version.org.apache.poi>3.13</version.org.apache.poi>
   </properties>
 
   <build>
@@ -221,6 +222,29 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+   
+      <!-- Overrides -->
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>${version.org.apache.poi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>${version.org.apache.poi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml-schemas</artifactId>
+        <version>${version.org.apache.poi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-scratchpad</artifactId>
+        <version>${version.org.apache.poi}</version>
+      </dependency>
+
 
       <!-- Internal Dependencies -->
       <dependency>
