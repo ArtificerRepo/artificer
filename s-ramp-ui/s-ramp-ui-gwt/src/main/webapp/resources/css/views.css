@@ -1,0 +1,67 @@
+.dashColumn {
+	width: 100%;
+}
+
+.dashColumn tr td {
+	padding: 5px;
+}
+
+.dashColumn tr td table tr td {
+	padding: 0px;
+}
+
+#dash-activitiesPanel ul {
+	list-style-position: inside;
+	list-style-type: disc;
+}
+
+#dash-uploadPanel form td {
+	padding: 3px;
+}
+
+.artifactSummaryPanel {
+	padding: 5px;
+	border: 1px solid #E5E2E0;
+}
+.artifactSummaryPanel .simpleFormPanel span.label {
+	padding-right: 5px;
+	font-size: 14px;
+	color: #777;
+}
+.artifactSummaryPanel .simpleFormPanel input {
+	width: 190px;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+.artifactSummaryPanel .simpleFormPanel .placeLinkWrapper {
+	padding-top: 10px;
+	text-align: right;
+}
+
+.artifactView .artifactView-content {
+	border-collapse: separate;
+	border-spacing: 10px;
+}
+.artifactView .dpanel {
+	width: 100%;
+	margin-bottom: 10px;
+}
+.artifactView .dpanel a.header {
+	color: #9C1919;
+	font-size: 18px;
+	border-bottom: 1px dotted grey;
+	padding-bottom: 3px;
+	text-decoration: none;
+}
+.artifactView .dpanel a.header:hover {
+	text-decoration: none;
+}
+.artifactView .dpanel .dpanel-content {
+	padding-top: 5px;
+}
+.artifactView .dpanel .dpanel-content span.label {
+	padding-right: 5px;
+	color: #777;
+}
+
