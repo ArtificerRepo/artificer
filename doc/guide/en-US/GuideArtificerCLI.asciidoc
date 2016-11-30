@@ -39,7 +39,7 @@ Atom Feed (9 entries)
 ....
 To obtain the metaData of `overlord.demo.SimpleReleaseProcess.bpmn`, which is number 8 in the list, issue
 ....
-artificer> getMetaData feed:8
+artificer> getMetaData --feed 8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
@@ -74,7 +74,7 @@ Successfully updated artifact overlord.demo.SimpleReleaseProcess.bpmn.
 ....
 To verify issue
 ....
-artificer> getMetaData feed:8
+artificer> getMetaData --feed 8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
@@ -103,7 +103,7 @@ Successfully updated artifact overlord.demo.SimpleReleaseProcess.bpmn.
 ....
 and to verify that the `custom property` was added issue
 ....
-artificer> getMetaData feed:8
+artificer> getMetaData --feed 8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
@@ -140,7 +140,7 @@ Successfully updated artifact overlord.demo.SimpleReleaseProcess.bpmn.
 ....
 and to verify that it was added
 ....
-artificer> getMetaData feed:8
+artificer> getMetaData --feed 8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
