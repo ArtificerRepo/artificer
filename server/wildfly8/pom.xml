@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.artificer</groupId>
     <artifactId>artificer</artifactId>
-    <version>1.0.0.Final-redhat-7</version>
+    <version>1.0.1.IDP</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>artificer-server-wildfly8</artifactId>
